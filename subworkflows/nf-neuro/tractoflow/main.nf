@@ -91,6 +91,7 @@ workflow TRACTOFLOW {
             .join(PREPROC_DWI.out.bvec)
             .join(PREPROC_DWI.out.b0_mask)
 
+        ch_dti_metrics.view()
         RECONST_DTIMETRICS( ch_dti_metrics )
         ch_versions = ch_versions.mix(RECONST_DTIMETRICS.out.versions.first())
         ch_mqc_files = ch_mqc_files.mix(RECONST_DTIMETRICS.out.mqc, RECONST_DTIMETRICS.out.residual_residuals_stats)
