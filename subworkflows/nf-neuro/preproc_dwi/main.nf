@@ -109,8 +109,8 @@ workflow PREPROC_DWI {
             ch_multiqc_files = ch_multiqc_files.mix(TOPUP_EDDY.out.mqc)
 
             ch_dwi = TOPUP_EDDY.out.dwi
-                       .join(TOPUP_EDDY.out.bval)
-                       .join(TOPUP_EDDY.out.bvec)
+                        .join(TOPUP_EDDY.out.bval)
+                        .join(TOPUP_EDDY.out.bvec)
         }
         // ** Bet-crop DWI ** //
         if (params.preproc_dwi_run_synthstrip) {
