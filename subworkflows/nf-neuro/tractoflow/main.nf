@@ -89,9 +89,11 @@ workflow TRACTOFLOW {
         ch_dti_metrics = PREPROC_DWI.out.dwi
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
-            .join(PREPROC_DWI.out.b0_mask)
 
-        ch_dti_metrics.view()
+        ch_dti_metrics = !params.preproc_dwi_keep_dwi_unbet
+            ? ch_dti_metrics.join(PREPROC_DWI.out.b0_mask)
+            : ch_dti_metrics.map{ it + [[]] }
+
         RECONST_DTIMETRICS( ch_dti_metrics )
         ch_versions = ch_versions.mix(RECONST_DTIMETRICS.out.versions.first())
         ch_mqc_files = ch_mqc_files.mix(RECONST_DTIMETRICS.out.mqc, RECONST_DTIMETRICS.out.residual_residuals_stats)
@@ -167,6 +169,8 @@ workflow TRACTOFLOW {
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
             .join(PREPROC_DWI.out.b0_mask)
+
+        ch_reconst_frf = ch_reconst_frf
             .join(ANATOMICAL_SEGMENTATION.out.wm_mask)
             .join(ANATOMICAL_SEGMENTATION.out.gm_mask)
             .join(ANATOMICAL_SEGMENTATION.out.csf_mask)
@@ -221,7 +225,12 @@ workflow TRACTOFLOW {
         ch_reconst_fodf = PREPROC_DWI.out.dwi
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
-            .join(PREPROC_DWI.out.b0_mask)
+
+        ch_reconst_fodf = !params.preproc_dwi_keep_dwi_unbet
+            ? ch_reconst_fodf.join(PREPROC_DWI.out.b0_mask)
+            : ch_reconst_fodf.map{ it + [[]] }
+
+        ch_reconst_fodf = ch_reconst_fodf
             .join(RECONST_DTIMETRICS.out.fa)
             .join(RECONST_DTIMETRICS.out.md)
             .join(ch_fiber_response)
@@ -242,7 +251,11 @@ workflow TRACTOFLOW {
             ch_qball_input = PREPROC_DWI.out.dwi
                 .join(PREPROC_DWI.out.bval)
                 .join(PREPROC_DWI.out.bvec)
-                .join(PREPROC_DWI.out.b0_mask)
+
+            ch_qball_input = !params.preproc_dwi_keep_dwi_unbet
+                ? ch_qball_input.join(PREPROC_DWI.out.b0_mask)
+                : ch_qball_input.map{ it + [[]] }
+
             RECONST_QBALL( ch_qball_input )
 
             ch_versions = ch_versions.mix(RECONST_QBALL.out.versions.first())
