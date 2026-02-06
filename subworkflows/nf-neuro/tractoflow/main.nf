@@ -169,8 +169,6 @@ workflow TRACTOFLOW {
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
             .join(PREPROC_DWI.out.b0_mask)
-
-        ch_reconst_frf = ch_reconst_frf
             .join(ANATOMICAL_SEGMENTATION.out.wm_mask)
             .join(ANATOMICAL_SEGMENTATION.out.gm_mask)
             .join(ANATOMICAL_SEGMENTATION.out.csf_mask)
