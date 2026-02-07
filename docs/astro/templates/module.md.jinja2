@@ -26,6 +26,7 @@ head:
 
 {{ channel | channel_format }}
 
+<div class="module-input-table">
 | | Type | Description | Mandatory | Pattern |
 |-|-|-|-|-|
 
@@ -44,8 +45,9 @@ head:
 {%- endfor %}
 
 {% endif %}
+</div>
 
-{%- endfor -%}
+{% endfor -%}
 
 ---
 
@@ -57,6 +59,7 @@ head:
 
 {{ channel[0] | channel_format }}
 
+<div class="module-output-table">
 | | Type | Description | Mandatory | Pattern |
 |-|-|-|-|-|
 
@@ -75,6 +78,8 @@ head:
 {%- endfor %}
 
 {% endif %}
+</div>
+
 {% endfor -%}
 
 {%- if args is iterable and args | length > 0 -%}
@@ -83,6 +88,7 @@ head:
 
 ## Arguments (see [process.ext](https://www.nextflow.io/docs/latest/reference/process.html#ext))
 
+<div class="module-args-table">
 | | Type | Description | Default | Choices |
 |-|-|-|-|-|
 
@@ -91,6 +97,7 @@ head:
 | {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.default }} | {{ content.choices | format_choices }} |
 {%- endfor %}
 {%- endfor %}
+</div>
 
 {%- endif %}
 
@@ -98,6 +105,7 @@ head:
 
 ## Tools
 
+<div class="module-tools-table">
 | | Description | DOI |
 |-|-|-|
 
@@ -106,6 +114,7 @@ head:
 | {{ name | link_tool(url=content.homepage) }} | {{ content.description | replace("\n", " ") }} | {% if content.doi %} [{{ content.doi }}](https://doi.org/{{ content.doi }}) {% endif %} |
 {%- endfor %}
 {%- endfor %}
+</div>
 
 ---
 

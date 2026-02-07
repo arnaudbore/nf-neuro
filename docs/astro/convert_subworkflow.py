@@ -28,7 +28,7 @@ def channel_description_format(description):
         return " ".join(_descr)
 
     _descr.remove(_structure)
-    _structure = _structure.replace('[', '`[').replace(']', ']`')
+    _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', ']`', 1)[::-1]
     return f"{' '.join(_descr)}<br /><br />{_structure}"
 
 
