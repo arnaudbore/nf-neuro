@@ -5,42 +5,41 @@ import datetime
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from docs.astro.formatting import (
+    format_choices,
+    format_description,
+    link,
+    sanitize_html_outside_codeblocks,
+)
 
-DOC_URL_BASE="https://nf-neuro.github.io"
 
-
-def li(text):
-    return f"- {str(text)}"
-
-
-def format_choices(choices):
-    if isinstance(choices, str):
-        choices = [c.strip() for c in choices.split(",")]
-
-    return "<br />".join([li(c) for c in choices]) if choices else ""
+DOC_URL_BASE = "https://nf-neuro.github.io"
 
 
 def channel_description_format(description):
+    """Format channel descriptions for subworkflow tables.
+
+    Splits on ``Structure:`` lines to format the structure separately,
+    then sanitises the result for safe MDX rendering.
+    """
     _descr = description.split("\n")
     try:
         _structure = next(filter(lambda x: "Structure:" in x, _descr))
     except StopIteration:
-        return " ".join(_descr)
+        return sanitize_html_outside_codeblocks(
+            " ".join(_descr), table_cell=True
+        )
 
     _descr.remove(_structure)
     _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', ']`', 1)[::-1]
-    return f"{' '.join(_descr)}<br /><br />{_structure}"
+    return sanitize_html_outside_codeblocks(
+        f"{' '.join(_descr)}<br /><br />{_structure}", table_cell=True
+    )
 
 
 def component_format(component):
     ctype = "module" if "/" in component else "subworkflow"
     return f"[{component}]({DOC_URL_BASE}/api/{ctype}s/{component})"
-
-
-def link(text, url=None):
-    if not url:
-        return text
-    return f"[{text}]({url})"
 
 
 def _create_parser():
@@ -59,15 +58,17 @@ def main():
     parser = _create_parser()
     args = parser.parse_args()
 
+    _templates_dir = Path(__file__).resolve().parent / 'templates'
     env = Environment(
-        loader=FileSystemLoader('docs/astro/templates'),
+        loader=FileSystemLoader(_templates_dir),
         autoescape=select_autoescape()
     )
     env.filters.update({
         'component_format': component_format,
         'link_tool': link,
         'channel_descr': channel_description_format,
-        'format_choices': format_choices
+        'format_choices': format_choices,
+        'format_description': format_description
     })
 
     with open(f"{args.subworkflow_path}/meta.yml", "r") as f:

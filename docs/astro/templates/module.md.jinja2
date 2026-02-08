@@ -9,7 +9,7 @@ head:
   attrs:
     name: description
     content: |
-        {{ description.split("\n") | map('trim') | join(' ') | truncate(200) }}
+        {{ description.split("\n") | map('trim') | map('escape') | join(' ') | truncate(200) }}
 ---
 
 {{ description }}
@@ -33,14 +33,14 @@ head:
 {%- if channel is mapping -%}
 
 {% for name, content in channel.items() %}
-| {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
+| {{ name | escape | escape_mdx }} | {{ content.type }} | {{ content.description | format_description }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
 {% endfor %}
 
 {% else -%}
 
 {% for item in channel %}
 {% for name, content in item.items() -%}
-| {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
+| {{ name | escape | escape_mdx }} | {{ content.type }} | {{ content.description | format_description }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
 {%- endfor %}
 {%- endfor %}
 
@@ -66,14 +66,14 @@ head:
 {%- if channel[0] is mapping -%}
 
 {% for name, content in channel[0].items() %}
-| {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
+| {{ name | escape | escape_mdx }} | {{ content.type }} | {{ content.description | format_description }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
 {% endfor -%}
 
 {%- else -%}
 
 {% for item in channel[0] %}
 {% for name, content in item.items() -%}
-| {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
+| {{ name | escape | escape_mdx }} | {{ content.type }} | {{ content.description | format_description }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
 {%- endfor %}
 {%- endfor %}
 
@@ -94,7 +94,7 @@ head:
 
 {%- for arg in args %}
 {% for name, content in arg.items() -%}
-| {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.default }} | {{ content.choices | format_choices }} |
+| {{ name | escape | escape_mdx }} | {{ content.type }} | {{ content.description | format_description }} | `{{ content.default }}` | {{ content.choices | format_choices }} |
 {%- endfor %}
 {%- endfor %}
 </div>
@@ -111,7 +111,7 @@ head:
 
 {%- for tool in tools %}
 {% for name, content in tool.items() -%}
-| {{ name | link_tool(url=content.homepage) }} | {{ content.description | replace("\n", " ") }} | {% if content.doi %} [{{ content.doi }}](https://doi.org/{{ content.doi }}) {% endif %} |
+| {{ name | link_tool(url=content.homepage) }} | {{ content.description | format_description }} | {% if content.doi %} [{{ content.doi }}](https://doi.org/{{ content.doi }}) {% endif %} |
 {%- endfor %}
 {%- endfor %}
 </div>

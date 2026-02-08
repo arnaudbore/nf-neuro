@@ -66,7 +66,7 @@ head:
 
 {%- for arg in args %}
 {% for name, content in arg.items() -%}
-| {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.default }} | {{ content.choices | format_choices }} |
+| {{ name }} | {{ content.type }} | {{ content.description | format_description }} | {{ content.default }} | {{ content.choices | format_choices }} |
 {%- endfor %}
 {%- endfor %}
 </div>
