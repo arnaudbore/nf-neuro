@@ -67,7 +67,7 @@ jobs:
 
       - name: Install nf-core tools
         run: |
-          poetry install --no-root
+          poetry install --extras docs
 
       - name: Lint ${{ inputs.type }} ${{ inputs.component }}
         env:
@@ -80,7 +80,7 @@ jobs:
 
       - name: Convert component meta.yml to markdown
         run: |
-          poetry run python docs/astro/convert_${{ inputs.type }}.py \
+          poetry run nf-neuro-convert-${{ inputs.type }} \
             ${{ inputs.type }}s/nf-neuro/${{ inputs.component }} \
             ${{ github.sha }} \
             $(echo "${{ inputs.component }}" | sed 's/\//_/g').md
