@@ -65,7 +65,7 @@ process BETCROP_FSLBETCROP {
         mrtrix: \$(mrcalc -version 2>&1 | sed -n 's/== mrcalc \\([0-9.]\\+\\).*/\\1/p')
         fsl: \$(flirt -version 2>&1 | sed -E 's/.*version ([0-9.]+).*/\\1/')
 
-    END_VERSION
+    END_VERSIONS
     """
 
     stub:
