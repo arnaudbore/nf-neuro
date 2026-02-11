@@ -82,7 +82,7 @@ nextflow_workflow {
     }
 
     test("preproc_dwi - AP DWI | PA sbref") {
-
+        config "./nextflow_synthstrip.config"
         when {
             workflow {
                 """

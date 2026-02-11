@@ -130,21 +130,26 @@ workflow PREPROC_DWI {
                 .branch { it ->
                     subject: (it instanceof List && it.size() == 2)
                         return it
-                    single: true
+                    single: it instanceof List || it instanceof String
                         return it
                 }
 
             ch_synthstrip_single = IMAGE_POWDERAVERAGE.out.pwd_avg
                 .combine(ch_weights.single)
-                .map{ meta, pwd_avg, weights ->
-                    [ meta, pwd_avg, weights ?: [] ]
+                .map{ tuple ->
+                    def meta = tuple[0]
+                    def pwd_avg = tuple[1]
+                    def weights = tuple.size() > 2 ? tuple[2] : []
+                    return [ meta, pwd_avg, weights ]
                 }
             ch_synthstrip_subject = IMAGE_POWDERAVERAGE.out.pwd_avg
                 .join(ch_weights.subject, remainder: true)
                 .map{ meta, pwd_avg, weights ->
                     [ meta, pwd_avg, weights ?: [] ]
                 }
-            ch_synthstrip = ch_synthstrip_single.mix( ch_synthstrip_subject )
+            ch_synthstrip = ch_synthstrip_single
+                .mix( ch_synthstrip_subject )
+                .unique()
             BETCROP_SYNTHSTRIP ( ch_synthstrip )
             ch_versions = ch_versions.mix(BETCROP_SYNTHSTRIP.out.versions.first())
 
