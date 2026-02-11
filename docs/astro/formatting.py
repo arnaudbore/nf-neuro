@@ -72,14 +72,19 @@ def sanitize_html_outside_codeblocks(text, table_cell=False):
                 if table_cell:
                     # Strip optional language tag (first line)
                     first_nl = content.find("\n")
+                    lang = None
                     if first_nl != -1:
+                        lang = content[:first_nl]
                         content = content[first_nl + 1:]
                     content = content.rstrip("\n")
                     # Escape HTML inside <code> so it renders literally
                     for char, entity in _HTML_ESCAPE.items():
                         content = content.replace(char, entity)
                     content = content.replace("\n", "<br />")
-                    result.append(f"<code>{content}</code>")
+                    tags = ""
+                    if lang:
+                        tags = f'lang="{lang}"'
+                    result.append(f"<pre><code {tags}>{escape_mdx(content)}</code></pre>")
                 else:
                     result.append(text[i : end + 3])
                 i = end + 3
@@ -88,13 +93,18 @@ def sanitize_html_outside_codeblocks(text, table_cell=False):
                 if table_cell:
                     content = text[i + 3:]
                     first_nl = content.find("\n")
+                    lang = None
                     if first_nl != -1:
+                        lang = content[:first_nl]
                         content = content[first_nl + 1:]
                     content = content.rstrip("\n")
                     for char, entity in _HTML_ESCAPE.items():
                         content = content.replace(char, entity)
                     content = content.replace("\n", "<br />")
-                    result.append(f"<code>{content}</code>")
+                    tags = ""
+                    if lang:
+                        tags = f'lang="{lang}"'
+                    result.append(f"<pre><code {tags}>{escape_mdx(content)}</code></pre>")
                 else:
                     result.append(text[i:])
                 break
@@ -136,10 +146,9 @@ _STRUCTURAL_LINE = re.compile(
     r"|>{1}\s?"         # blockquote
     r"|```"             # fenced code block delimiter
     r"|---+"            # horizontal rule (3+ dashes)
-    r"|\s{2,}\S"        # indented continuation (2+ spaces then content)
     r"|\*\*\S"          # bold start at beginning of line
     r")"
-    r"|.*:\s*$"         # line ending with ":" (label / definition)
+    r"|.{0,40}:\s*$"   # short line ending with ":" (label / definition)
 )
 
 #: Matches lines that are standalone structural elements — these should

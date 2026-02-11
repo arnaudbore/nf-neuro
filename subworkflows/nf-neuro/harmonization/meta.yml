@@ -14,7 +14,7 @@ description: |
 
   However, in other nf-neuro modules (e.g. stats/metricsinroi or bundle/stats), the
   output stats files are in TSV format with the following columns:
-  "sid,roi,\<covariates\>,metric1,metric2,...".
+  "sid,roi,<covariates>,metric1,metric2,...".
 
   You can simply provide the TSV stat files directly coming from bundle/stats or
   stats/metricsinroi to this subworkflow, and it will take care of formatting them
@@ -38,7 +38,7 @@ input:
       type: file
       description: |
         The input channel containing the reference site tractometry TSV stats file
-        with the following columns: "sid,roi,\<covariates\>,metric1,metric2,...".
+        with the following columns: "sid,roi,<covariates>,metric1,metric2,...".
         Structure: [ val(meta), path(tsv_file) ]
       pattern: "*.tsv"
       mandatory: true
@@ -46,7 +46,7 @@ input:
       type: file
       description: |
         The input channel containing the moving site tractometry TSV stats file
-        with the following columns: "sid,roi,\<covariates\>,metric1,metric2,...".
+        with the following columns: "sid,roi,<covariates>,metric1,metric2,...".
         Structure: [ val(meta), path(tsv_file) ]
       pattern: "*.tsv"
       mandatory: true
@@ -89,7 +89,23 @@ output:
         JSON files used to properly plot the harmonization results in a downstream MultiQC report.
           These files contain the regression curves and the percentiles computed before and after
           harmonization for all bundles of a given metric. The files have the following structure:
-          <pre><code>\{<br />  "bundle_name_1": \{<br />    "metric1": \{<br />      "plot_1": \{ ... },<br />      "plot_2": \{ ... },<br />    },<br />  "bundle_name_2": \{<br />    "metric1": \{<br />      "plot_1": \{ ... },<br />      "plot_2": \{ ... },<br />    }<br />}</code></pre>
+
+          ```json
+          {
+              "bundle_name_1": {
+                  "metric1": {
+                      "plot_1": { ... },
+                      "plot_2": { ... },
+                  }
+              },
+              "bundle_name_2": {
+                  "metric1": {
+                      "plot_1": { ... },
+                      "plot_2": { ... },
+                  }
+            }
+          }
+          ```
         Structure: [ path(*.json) ]
       pattern: "*.json"
       ontologies:

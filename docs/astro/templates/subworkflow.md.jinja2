@@ -12,7 +12,7 @@ head:
         {{ description.split("\n") | map('striptags') | join(' ') | truncate(200) }}
 ---
 
-{{ description }}
+{{ description | format_description }}
 
 **Keywords :** {{ keywords | join(', ') }}
 

@@ -32,8 +32,9 @@ def channel_description_format(description):
 
     _descr.remove(_structure)
     _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', ']`', 1)[::-1]
-    return sanitize_html_outside_codeblocks(
-        f"{' '.join(_descr)}<br /><br />{_structure}", table_cell=True
+    return "{}<br />{}".format(
+        format_description('\n'.join(_descr)),
+        sanitize_html_outside_codeblocks(_structure, table_cell=True)
     )
 
 
