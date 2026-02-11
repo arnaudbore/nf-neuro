@@ -23,8 +23,8 @@ process BETCROP_FSLBETCROP {
     def b0_thr = task.ext.b0_thr ? "--b0_threshold " + task.ext.b0_thr : ""
     def bet_f = task.ext.bet_f ? "-f " + task.ext.bet_f : ""
     def size_dil = task.ext.size_dil ? task.ext.size_dil : ""
-    def crop = !task.ext.crop ? false : true
-    def dilate = !task.ext.dilate ? false : true
+    def crop = task.ext.crop == null ?: task.ext.crop as Boolean
+    def dilate = task.ext.crop == null ?: task.ext.dilate as Boolean
 
     """
     export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=1
