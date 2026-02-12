@@ -221,7 +221,7 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.failed },
-                { assert workflow.stdout.contains("ERROR ~ Options must be a Map, got groovyx.gpars.dataflow.DataflowBroadcast. Expression: (options instanceof java.util.Map). Values: options = DataflowBroadcast around DataflowStream[?]")
+                { assert workflow.stdout.contains("ERROR ~ Options must be a Map, got groovyx.gpars.dataflow.DataflowBroadcast. Expression: (options instanceof java.util.Map). Values: options = DataflowBroadcast around DataflowStream[?]") }
             )
         }
     }
