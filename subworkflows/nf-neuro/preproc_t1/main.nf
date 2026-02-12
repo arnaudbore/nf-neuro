@@ -21,6 +21,10 @@ workflow PREPROC_T1 {
         ch_weights          // channel: [ val(meta), weights ]          , optional
         options             // [ optional ] map of options
     main:
+
+        // Check to ensure options is a list of options,
+        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+
         ch_versions = channel.empty()
         image_nlmeans = channel.empty()
         image_N4 = channel.empty()
