@@ -31,7 +31,7 @@ head:
 
 {%- for channel in input %}
 {% for name, content in channel.items() -%}
-| {{ name }} | {{ content.type }} | {{ content.description | channel_descr }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
+| {{ name }} | {{ content.type }} | {{ content.description | channel_descr }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern | escape_mdx }}` {% endif %} |
 {%- endfor %}
 {%- endfor %}
 </div>
@@ -48,7 +48,7 @@ head:
 
 {%- for channel in output %}
 {% for name, content in channel.items() -%}
-| {{ name }} | {{ content.type }} | {{ content.description | channel_descr }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
+| {{ name }} | {{ content.type }} | {{ content.description | channel_descr }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern | escape_mdx }}` {% endif %} |
 {%- endfor %}
 {%- endfor %}
 </div>

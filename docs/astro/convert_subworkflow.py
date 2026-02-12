@@ -6,10 +6,11 @@ import datetime
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from docs.astro.formatting import (
+    escape_mdx,
     format_choices,
     format_description,
     link,
-    sanitize_html_outside_codeblocks,
+    sanitize_outside_codeblocks,
 )
 
 
@@ -26,15 +27,13 @@ def channel_description_format(description):
     try:
         _structure = next(filter(lambda x: "Structure:" in x, _descr))
     except StopIteration:
-        return sanitize_html_outside_codeblocks(
-            " ".join(_descr), table_cell=True
-        )
+        return format_description("\n".join(_descr))
 
     _descr.remove(_structure)
     _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', '`]', 1)[::-1]
     return "{}<br />{}".format(
         format_description('\n'.join(_descr)),
-        sanitize_html_outside_codeblocks(_structure, table_cell=True)
+        sanitize_outside_codeblocks(_structure, table_cell=True)
     )
 
 
@@ -69,7 +68,8 @@ def main():
         'link_tool': link,
         'channel_descr': channel_description_format,
         'format_choices': format_choices,
-        'format_description': format_description
+        'format_description': format_description,
+        'escape_mdx': escape_mdx
     })
 
     with open(f"{args.subworkflow_path}/meta.yml", "r") as f:

@@ -142,18 +142,21 @@ output:
           JSON files used to properly plot the harmonization results in a downstream MultiQC report.
           These files contain the regression curves and the percentiles computed before and after
           harmonization for all bundles of a given metric. The files have the following structure:
+
+          ```json
           {
-            "bundle_name_1": {
-              "metric1": {
-                "plot_1": { ... },
-                "plot_2": { ... },
+              "bundle_name_1": {
+                  "metric1": {
+                      "plot_1": { ... },
+                      "plot_2": { ... },
               },
-            "bundle_name_2": {
-              "metric1": {
-                "plot_1": { ... },
-                "plot_2": { ... },
+              "bundle_name_2": {
+                  "metric1": {
+                      "plot_1": { ... },
+                      "plot_2": { ... },
               }
           }
+          ```
         pattern: "*.json"
   versions:
     - versions.yml:

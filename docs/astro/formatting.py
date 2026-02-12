@@ -35,21 +35,23 @@ def escape_mdx(text):
 # ---------------------------------------------------------------------------
 
 #: Characters that must be escaped when rendering markdown inside HTML / MDX.
-_HTML_ESCAPE = {
+_ESCAPE = {
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#39;",
+    "{": "\\{",
+    "}": "\\}"
 }
 
 
-def sanitize_html_outside_codeblocks(text, table_cell=False):
+def sanitize_outside_codeblocks(text, table_cell=False):
     """Escape HTML-sensitive characters in markdown text, preserving code blocks.
 
     Scans the text character by character, tracking whether we're inside
     an inline code span (``...``) or a fenced code block (````` ... `````).
-    Only escapes ``&``, ``<``, ``>``, ``"`` and ``'`` when outside of code
+    Only escapes ``&``, ``<``, ``>``, ``"``, ``'``, ``{`` and ``}`` when outside of code
     regions.
 
     When *table_cell* is ``True`` (for content inside markdown table cells):
@@ -78,13 +80,13 @@ def sanitize_html_outside_codeblocks(text, table_cell=False):
                         content = content[first_nl + 1:]
                     content = content.rstrip("\n")
                     # Escape HTML inside <code> so it renders literally
-                    for char, entity in _HTML_ESCAPE.items():
+                    for char, entity in _ESCAPE.items():
                         content = content.replace(char, entity)
                     content = content.replace("\n", "<br />")
                     tags = ""
                     if lang:
                         tags = f'lang="{lang}"'
-                    result.append(f"<pre><code {tags}>{escape_mdx(content)}</code></pre>")
+                    result.append(f"<pre><code {tags}>{content}</code></pre>")
                 else:
                     result.append(text[i : end + 3])
                 i = end + 3
@@ -98,13 +100,13 @@ def sanitize_html_outside_codeblocks(text, table_cell=False):
                         lang = content[:first_nl]
                         content = content[first_nl + 1:]
                     content = content.rstrip("\n")
-                    for char, entity in _HTML_ESCAPE.items():
+                    for char, entity in _ESCAPE.items():
                         content = content.replace(char, entity)
                     content = content.replace("\n", "<br />")
                     tags = ""
                     if lang:
                         tags = f'lang="{lang}"'
-                    result.append(f"<pre><code {tags}>{escape_mdx(content)}</code></pre>")
+                    result.append(f"<pre><code {tags}>{content}</code></pre>")
                 else:
                     result.append(text[i:])
                 break
@@ -126,7 +128,7 @@ def sanitize_html_outside_codeblocks(text, table_cell=False):
 
         # -- Regular character: escape when outside code --------------------
         else:
-            result.append(_HTML_ESCAPE.get(text[i], text[i]))
+            result.append(_ESCAPE.get(text[i], text[i]))
             i += 1
 
     return "".join(result)
@@ -247,7 +249,7 @@ def format_description(description):
     """
     if not description:
         return ""
-    return sanitize_html_outside_codeblocks(
+    return sanitize_outside_codeblocks(
         collapse_line_returns(str(description)), table_cell=True
     )
 
@@ -259,5 +261,5 @@ def format_choices(choices):
         choices = [c.strip() for c in choices.split(",")]
 
     return "<br />".join(
-        [li(sanitize_html_outside_codeblocks(str(c))) for c in choices]
+        [li(sanitize_outside_codeblocks(str(c))) for c in choices]
     ) if choices else ""
