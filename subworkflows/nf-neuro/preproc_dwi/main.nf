@@ -30,11 +30,14 @@ workflow PREPROC_DWI {
 
     main:
 
+        // Check to ensure options is a list of options,
+        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+
         ch_versions = channel.empty()
         ch_multiqc_files = channel.empty()
 
         // ** Denoise DWI ** //
-        if (options.preproc_dwi_run_denoising) {
+        if ( options.preproc_dwi_run_denoising ) {
             ch_dwi_bvalbvec = ch_dwi
                 .multiMap { meta, dwi, bval, bvec ->
                     dwi:    [ meta, dwi ]
@@ -72,7 +75,7 @@ workflow PREPROC_DWI {
                 .join(ch_rev_dwi_bvalbvec.rev_bvs_files)
         } // No else, we just use ch_dwi
 
-        if (options.preproc_dwi_run_degibbs) {
+        if ( options.preproc_dwi_run_degibbs ) {
             ch_dwi_bvalbvec = ch_dwi
                 .multiMap { meta, dwi, bval, bvec ->
                     dwi:    [ meta, dwi ]
@@ -104,7 +107,7 @@ workflow PREPROC_DWI {
         } // No else, we just use ch_dwi
 
         // ** Eddy Topup ** //
-        if (options.topup_eddy_run_topup || options.topup_eddy_run_eddy) {
+        if ( options.topup_eddy_run_topup || options.topup_eddy_run_eddy ) {
             TOPUP_EDDY (
                 ch_dwi,
                 ch_b0,
@@ -123,7 +126,7 @@ workflow PREPROC_DWI {
                         .join(TOPUP_EDDY.out.bvec)
         }
         // ** Bet-crop DWI ** //
-        if (options.preproc_dwi_run_synthstrip) {
+        if ( options.preproc_dwi_run_synthstrip ) {
 
             ch_pwd_avg = ch_dwi
                 .map{ meta, dwi, bval, _bvec -> [ meta, dwi, bval, [] ] }
@@ -185,7 +188,7 @@ workflow PREPROC_DWI {
             CONVERT ( CROPMASK.out.image )
             ch_versions = ch_versions.mix(CONVERT.out.versions.first())
 
-            if ( !options.preproc_dwi_keep_dwi_unbet) {
+            if ( !options.preproc_dwi_keep_dwi_with_skull) {
                 ch_dwi = CROPDWI.out.image
                             .join(ch_bvals_bvecs)
             }
@@ -201,7 +204,7 @@ workflow PREPROC_DWI {
             BETCROP_FSLBETCROP ( ch_dwi )
             ch_versions = ch_versions.mix(BETCROP_FSLBETCROP.out.versions.first())
 
-            if ( !options.preproc_dwi_keep_dwi_unbet) {
+            if ( !options.preproc_dwi_keep_dwi_with_skull) {
                 ch_dwi = BETCROP_FSLBETCROP.out.image
                             .join(ch_bvals_bvecs)
             }
@@ -209,7 +212,7 @@ workflow PREPROC_DWI {
             ch_bbox = BETCROP_FSLBETCROP.out.bbox
         } // No else, we just use ch_dwi
 
-        if (options.preproc_dwi_run_N4) {
+        if ( options.preproc_dwi_run_N4 ) {
             // ** N4 DWI ** //
             ch_N4 = ch_dwi
                 .join(ch_mask, remainder: true)
@@ -224,7 +227,7 @@ workflow PREPROC_DWI {
                         .join(ch_bvals_bvecs)
         } // No else, we just use ch_dwi
 
-        if (options.preproc_dwi_run_normalize) {
+        if ( options.preproc_dwi_run_normalize ) {
             // ** Normalize DWI ** //
             ch_normalize = ch_dwi
                 .join(ch_mask)
@@ -239,7 +242,7 @@ workflow PREPROC_DWI {
                         .join(ch_bvals_bvecs)
         } // No else, we just use ch_dwi
 
-        if (options.preproc_dwi_run_resampling) {
+        if ( options.preproc_dwi_run_resampling ) {
             // ** Resample DWI ** //
             ch_resample_dwi = ch_dwi
                 .map{ meta, dwi, _bval, _bvec -> [ meta, dwi, [] ] }
@@ -258,7 +261,7 @@ workflow PREPROC_DWI {
         UTILS_EXTRACTB0 ( ch_dwi )
         ch_versions = ch_versions.mix(UTILS_EXTRACTB0.out.versions.first())
 
-        if (options.preproc_dwi_run_resampling) {
+        if ( options.preproc_dwi_run_resampling ) {
             // ** Resample mask ** //
             ch_resample_mask = ch_mask
                 .join(UTILS_EXTRACTB0.out.b0)

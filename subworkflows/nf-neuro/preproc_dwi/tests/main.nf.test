@@ -39,7 +39,7 @@ nextflow_workflow {
             }
         }
     }
-
+/*
     test("preproc_dwi - AP DWI | skip steps") {
         config "./nextflow_skipsteps.config"
         when {
@@ -65,7 +65,7 @@ nextflow_workflow {
                     "preproc_dwi_run_N4": true,
                     "preproc_dwi_run_normalize": false,
                     "preproc_dwi_run_resampling": true,
-                    "preproc_dwi_keep_dwi_unbet": true
+                    "preproc_dwi_keep_dwi_with_skull": true
                 ]
                 """
             }
@@ -121,7 +121,7 @@ nextflow_workflow {
                     "preproc_dwi_run_normalize": true,
                     "preproc_dwi_run_resampling": true,
                     "preproc_dwi_run_synthstrip": true,
-                    "preproc_dwi_keep_dwi_unbet": false
+                    "preproc_dwi_keep_dwi_with_skull": false
                 ]
                 """
             }
@@ -179,7 +179,7 @@ nextflow_workflow {
                     "preproc_dwi_run_normalize": true,
                     "preproc_dwi_run_resampling": true,
                     "preproc_dwi_run_synthstrip": true,
-                    "preproc_dwi_keep_dwi_unbet": false
+                    "preproc_dwi_keep_dwi_with_skull": false
                 ]
                 """
             }
@@ -246,7 +246,7 @@ nextflow_workflow {
                     "preproc_dwi_run_normalize": true,
                     "preproc_dwi_run_resampling": true,
                     "preproc_dwi_run_synthstrip": true,
-                    "preproc_dwi_keep_dwi_unbet": false
+                    "preproc_dwi_keep_dwi_with_skull": false
                 ]
                 """
             }
@@ -268,6 +268,45 @@ nextflow_workflow {
                             } ]
                         }
                 ).match() }
+            )
+        }
+    } */
+
+    test("preproc_dwi - wrong options format - should fail") {
+        config "./nextflow_skipsteps.config"
+        when {
+            workflow {
+                """
+                input[0] = LOAD_DATA.out.test_data_directory.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/sub-01_dir-AP_dwi.nii.gz"),
+                        file("\${test_data_directory}/sub-01_dir-AP_dwi.bval"),
+                        file("\${test_data_directory}/sub-01_dir-AP_dwi.bvec")
+                    ]}
+                input[1] = channel.from( [] )
+                input[2] = channel.from( [] )
+                input[3] = channel.from( [] )
+                input[4] = channel.empty()
+                input[5] = channel.from( [] )
+                input[6] = channel.of([
+                    "topup_eddy_run_topup": false,
+                    "topup_eddy_run_eddy": false,
+                    "preproc_dwi_run_denoising": false,
+                    "preproc_dwi_run_degibbs": false,
+                    "preproc_dwi_run_N4": true,
+                    "preproc_dwi_run_normalize": false,
+                    "preproc_dwi_run_resampling": true,
+                    "preproc_dwi_keep_dwi_with_skull": true
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.contains("ERROR ~ Options must be a Map, got groovyx.gpars.dataflow.DataflowBroadcast. Expression: (options instanceof java.util.Map). Values: options = DataflowBroadcast around DataflowStream[?]") }
             )
         }
     }

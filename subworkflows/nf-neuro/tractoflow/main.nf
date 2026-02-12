@@ -47,6 +47,9 @@ workflow TRACTOFLOW {
         options                 // [ optional ] map of options
     main:
 
+        // Check to ensure options is a list of options,
+        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+
         ch_versions = channel.empty()
         ch_mqc_files = channel.empty()
         ch_global_mqc_files = channel.empty()
@@ -72,7 +75,7 @@ workflow TRACTOFLOW {
                 "preproc_dwi_run_normalize": options.preproc_dwi_run_normalize,
                 "preproc_dwi_run_resampling": options.preproc_dwi_run_resampling,
                 "preproc_dwi_run_synthstrip": options.preproc_dwi_run_synthstrip,
-                "preproc_dwi_keep_dwi_unbet": options.preproc_dwi_keep_dwi_unbet
+                "preproc_dwi_keep_dwi_with_skull": options.preproc_dwi_keep_dwi_with_skull
 
             ]
         )
@@ -111,7 +114,7 @@ workflow TRACTOFLOW {
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
 
-        ch_dti_metrics = !options.preproc_dwi_keep_dwi_unbet
+        ch_dti_metrics = !options.preproc_dwi_keep_dwi_with_skull
             ? ch_dti_metrics.join(PREPROC_DWI.out.b0_mask)
             : ch_dti_metrics.map{ it + [[]] }
 
@@ -245,7 +248,7 @@ workflow TRACTOFLOW {
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
 
-        ch_reconst_fodf = !options.preproc_dwi_keep_dwi_unbet
+        ch_reconst_fodf = !options.preproc_dwi_keep_dwi_with_skull
             ? ch_reconst_fodf.join(PREPROC_DWI.out.b0_mask)
             : ch_reconst_fodf.map{ it + [[]] }
 
@@ -266,12 +269,12 @@ workflow TRACTOFLOW {
         ch_qball_peak_indices  = channel.empty()
         ch_qball_gfa           = channel.empty()
         ch_qball_nufo          = channel.empty()
-        if (options.run_qball) {
+        if ( options.run_qball ) {
             ch_qball_input = PREPROC_DWI.out.dwi
                 .join(PREPROC_DWI.out.bval)
                 .join(PREPROC_DWI.out.bvec)
 
-            ch_qball_input = !options.preproc_dwi_keep_dwi_unbet
+            ch_qball_input = !options.preproc_dwi_keep_dwi_with_skull
                 ? ch_qball_input.join(PREPROC_DWI.out.b0_mask)
                 : ch_qball_input.map{ it + [[]] }
 
@@ -279,7 +282,7 @@ workflow TRACTOFLOW {
 
             ch_versions = ch_versions.mix(RECONST_QBALL.out.versions.first())
 
-            if (options.use_qball_for_tracking) {
+            if ( options.use_qball_for_tracking ) {
                 ch_diffusion_model = RECONST_QBALL.out.qball
             }
 

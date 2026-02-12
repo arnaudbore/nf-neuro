@@ -18,6 +18,10 @@ workflow TOPUP_EDDY {
         options         // [ optional ] map of options
 
     main:
+
+        // Check to ensure options is a list of options,
+        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+
         ch_versions = channel.empty()
         ch_multiqc_files = channel.empty()
 
@@ -26,7 +30,7 @@ workflow TOPUP_EDDY {
         ch_b0_corrected = channel.empty()
         ch_b0_mask = channel.empty()
 
-        if (options.topup_eddy_run_topup) {
+        if ( options.topup_eddy_run_topup ) {
             // ** Create channel for TOPUP ** //
             // Result : [ meta, dwi, bval, bvec, b0 | [], rev-dwi | [], rev-bval | [], rev-bvec | [], rev-b0 | [] ]
             //  Steps :
@@ -57,7 +61,7 @@ workflow TOPUP_EDDY {
             ch_b0_corrected = PREPROC_TOPUP.out.topup_corrected_b0s
         }
 
-        if (options.topup_eddy_run_eddy) {
+        if ( options.topup_eddy_run_eddy ) {
             // ** Create channel for EDDY ** //
             // Result : [ meta, dwi, bval, bvec, rev-dwi | [], rev-bval | [], rev-bvec | [], b0 | [], coeffs | [], movpar | [] ]
             //  Steps :
