@@ -7,7 +7,6 @@ include { BETCROP_SYNTHSTRIP} from '../../../modules/nf-neuro/betcrop/synthstrip
 include { IMAGE_CROPVOLUME as IMAGE_CROPVOLUME_T1 } from '../../../modules/nf-neuro/image/cropvolume/main'
 include { IMAGE_CROPVOLUME as IMAGE_CROPVOLUME_MASK } from '../../../modules/nf-neuro/image/cropvolume/main'
 
-params.preproc_t1_run_synthstrip = false
 
 workflow PREPROC_T1 {
 
@@ -20,7 +19,12 @@ workflow PREPROC_T1 {
         ch_ref_mask         // channel: [ val(meta), mask ]             , optional
         ch_ref_resample     // channel: [ val(meta), ref ]              , optional
         ch_weights          // channel: [ val(meta), weights ]          , optional
+        options             // [ optional ] map of options
     main:
+
+        // Check to ensure options is a list of options,
+        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+
         ch_versions = channel.empty()
         image_nlmeans = channel.empty()
         image_N4 = channel.empty()
@@ -32,7 +36,7 @@ workflow PREPROC_T1 {
         bbox = channel.empty()
         ch_mask = channel.empty()
 
-        if ( params.preproc_t1_run_denoising ) {
+        if ( options.preproc_t1_run_denoising ) {
 
             ch_nlmeans = ch_image
                 .join(ch_ref_mask, remainder: true)
@@ -44,7 +48,7 @@ workflow PREPROC_T1 {
             ch_image = DENOISING_NLMEANS.out.image
         }
 
-        if ( params.preproc_t1_run_N4 ) {
+        if ( options.preproc_t1_run_N4 ) {
             ch_N4 = ch_image
                 .map{ meta, image -> [meta, image, [], []] }
                 .join(ch_ref_mask, remainder: true)
@@ -56,7 +60,7 @@ workflow PREPROC_T1 {
             ch_image = PREPROC_N4.out.image
         }
 
-        if ( params.preproc_t1_run_resampling ) {
+        if ( options.preproc_t1_run_resampling ) {
             ch_resampling = ch_image
                 .join(ch_ref_resample, remainder: true)
                 .map{ meta, image, ref_image -> [meta, image, ref_image ?: []] }
@@ -67,7 +71,7 @@ workflow PREPROC_T1 {
             ch_image = IMAGE_RESAMPLE.out.image
         }
 
-        if ( params.preproc_t1_run_synthstrip ) {
+        if ( options.preproc_t1_run_synthstrip ) {
             ch_bet = ch_image
                 .join(ch_weights, remainder: true)
                 .map{ meta, image, weights -> [meta, image, weights ?: []] }
@@ -81,7 +85,7 @@ workflow PREPROC_T1 {
             mask_bet = BETCROP_SYNTHSTRIP.out.brain_mask
             ch_mask = BETCROP_SYNTHSTRIP.out.brain_mask
         }
-        else if ( params.preproc_t1_run_ants_bet ) {
+        else if ( options.preproc_t1_run_ants_bet ) {
             // ** ANTSBET ** //
             // The template and probability maps are mandatory if running antsBET. Since the
             // error message from nextflow when they are absent is either non-informative or
@@ -104,7 +108,7 @@ workflow PREPROC_T1 {
             ch_mask = BETCROP_ANTSBET.out.mask
         }
 
-        if ( params.preproc_t1_run_crop ) {
+        if ( options.preproc_t1_run_crop ) {
             // ** Crop image ** //
             ch_crop = ch_image
                 .map{ it + [[]] }

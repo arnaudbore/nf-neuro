@@ -52,6 +52,10 @@ nextflow_workflow {
                 input[2] = channel.from( [] )
                 input[3] = channel.from( [] )
                 input[4] = channel.from( [] )
+                input[5] = [
+                    "topup_eddy_run_topup": false,
+                    "topup_eddy_run_eddy": true
+                ]
                 """
             }
         }
@@ -104,6 +108,10 @@ nextflow_workflow {
                         file("\${test_data_directory}/sub-01_dir-PA_sbref.nii.gz")
                     ]}
                 input[4] = channel.from( [] )
+                input[5] = [
+                    "topup_eddy_run_topup": true,
+                    "topup_eddy_run_eddy": true
+                ]
                 """
             }
         }
@@ -156,6 +164,10 @@ nextflow_workflow {
                         file("\${test_data_directory}/sub-01_dir-PA_sbref.nii.gz")
                     ]}
                 input[4] = channel.from( [] )
+                input[5] = [
+                    "topup_eddy_run_topup": true,
+                    "topup_eddy_run_eddy": true
+                ]
                 """
             }
         }
@@ -174,6 +186,42 @@ nextflow_workflow {
                             } ]
                         }
                 ).match() }
+            )
+        }
+    }
+
+    test("topup_eddy - wrong options format - should fail") {
+
+        when {
+            workflow {
+                """
+                input[0] = LOAD_DATA.out.test_data_directory.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/sub-01_dir-AP_dwi.nii.gz"),
+                        file("\${test_data_directory}/sub-01_dir-AP_dwi.bval"),
+                        file("\${test_data_directory}/sub-01_dir-AP_dwi.bvec")
+                    ]}
+                input[1] = LOAD_DATA.out.test_data_directory.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/sub-01_dir-AP_sbref.nii.gz")
+                    ]}
+                input[2] = channel.from( [] )
+                input[3] = channel.from( [] )
+                input[4] = channel.from( [] )
+                input[5] = channel.of([
+                    "topup_eddy_run_topup": false,
+                    "topup_eddy_run_eddy": true
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.contains("ERROR ~ Options must be a Map, got groovyx.gpars.dataflow.DataflowBroadcast. Expression: (options instanceof java.util.Map). Values: options = DataflowBroadcast around DataflowStream[?]") }
             )
         }
     }

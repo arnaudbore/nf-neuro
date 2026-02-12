@@ -15,8 +15,13 @@ workflow TOPUP_EDDY {
         ch_rev_dwi      // channel: [ val(meta), rev-dwi, rev-bval, rev-bvec ], optional
         ch_rev_b0       // channel: [ val(meta), rev-b0 ], optional
         ch_config_topup // channel: [ 'topup.cnf' ], optional
+        options         // [ optional ] map of options
 
     main:
+
+        // Check to ensure options is a list of options,
+        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+
         ch_versions = channel.empty()
         ch_multiqc_files = channel.empty()
 
@@ -25,7 +30,7 @@ workflow TOPUP_EDDY {
         ch_b0_corrected = channel.empty()
         ch_b0_mask = channel.empty()
 
-        if (params.topup_eddy_run_topup) {
+        if ( options.topup_eddy_run_topup ) {
             // ** Create channel for TOPUP ** //
             // Result : [ meta, dwi, bval, bvec, b0 | [], rev-dwi | [], rev-bval | [], rev-bvec | [], rev-b0 | [] ]
             //  Steps :
@@ -56,7 +61,7 @@ workflow TOPUP_EDDY {
             ch_b0_corrected = PREPROC_TOPUP.out.topup_corrected_b0s
         }
 
-        if (params.topup_eddy_run_eddy) {
+        if ( options.topup_eddy_run_eddy ) {
             // ** Create channel for EDDY ** //
             // Result : [ meta, dwi, bval, bvec, rev-dwi | [], rev-bval | [], rev-bvec | [], b0 | [], coeffs | [], movpar | [] ]
             //  Steps :
