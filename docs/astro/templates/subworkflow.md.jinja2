@@ -12,9 +12,7 @@ head:
         {{ description.split("\n") | map('striptags') | join(' ') | truncate(200) }}
 ---
 
-## {{ name }}
-
-{{ description }}
+{{ description | format_description }}
 
 **Keywords :** {{ keywords | join(', ') }}
 
@@ -27,6 +25,7 @@ head:
 
 ### Inputs
 
+<div class="subworkflow-input-table">
 | | Type | Description | Mandatory | Pattern |
 |-|-|-|-|-|
 
@@ -34,7 +33,8 @@ head:
 {% for name, content in channel.items() -%}
 | {{ name }} | {{ content.type }} | {{ content.description | channel_descr }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
 {%- endfor %}
-{%- endfor -%}
+{%- endfor %}
+</div>
 {% endif %}
 
 {% if output %}
@@ -42,6 +42,7 @@ head:
 
 ### Outputs
 
+<div class="subworkflow-output-table">
 | | Type | Description | Mandatory | Pattern |
 |-|-|-|-|-|
 
@@ -49,7 +50,8 @@ head:
 {% for name, content in channel.items() -%}
 | {{ name }} | {{ content.type }} | {{ content.description | channel_descr }} | {{ content.mandatory | default(True) }} | {% if content.pattern %} `{{ content.pattern }}` {% endif %} |
 {%- endfor %}
-{%- endfor -%}
+{%- endfor %}
+</div>
 {% endif %}
 
 {%- if args is iterable and args | length > 0 -%}
@@ -58,14 +60,16 @@ head:
 
 ## Parameters (see [configuration](https://www.nextflow.io/docs/latest/config.html#parameters))
 
+<div class="subworkflow-args-table">
 | | Type | Description | Default | Choices |
 |-|-|-|-|-|
 
 {%- for arg in args %}
 {% for name, content in arg.items() -%}
-| {{ name }} | {{ content.type }} | {{ content.description | replace("\n", " ") }} | {{ content.default }} | {{ content.choices | format_choices }} |
+| {{ name }} | {{ content.type }} | {{ content.description | format_description }} | {{ content.default }} | {{ content.choices | format_choices }} |
 {%- endfor %}
 {%- endfor %}
+</div>
 
 {%- endif %}
 

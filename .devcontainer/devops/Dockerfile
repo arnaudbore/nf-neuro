@@ -17,6 +17,7 @@ RUN apt update && apt install -y \
         jq \
         openjdk-17-jre \
         pipx \
+        shellcheck \
         sudo \
         wget \
     && rm -rf /var/lib/apt/lists/*

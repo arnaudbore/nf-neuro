@@ -5,6 +5,14 @@ import datetime
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from docs.astro.formatting import (
+    escape_mdx,
+    format_choices,
+    format_description,
+    li,
+    link,
+)
+
 
 TYPE_TO_NTYPE = {
     "map": "val",
@@ -16,23 +24,6 @@ TYPE_TO_NTYPE = {
     "float": "val",
     "boolean": "val"
 }
-
-
-def li(text):
-    return f"- {str(text)}"
-
-
-def link(text, url=None):
-    if not url:
-        return text
-    return f"[{text}]({url})"
-
-
-def format_choices(choices):
-    if isinstance(choices, str):
-        choices = [c.strip() for c in choices.split(",")]
-
-    return "<br />".join([li(c) for c in choices]) if choices else ""
 
 
 def channel_format(_input):
@@ -66,15 +57,18 @@ def main():
     parser = _create_parser()
     args = parser.parse_args()
 
+    _templates_dir = Path(__file__).resolve().parent / 'templates'
     env = Environment(
-        loader=FileSystemLoader('docs/astro/templates'),
+        loader=FileSystemLoader(_templates_dir),
         autoescape=select_autoescape()
     )
     env.filters.update({
         'channel_format': channel_format,
         'link_tool': link,
         'format_li': li,
-        'format_choices': format_choices
+        'format_choices': format_choices,
+        'format_description': format_description,
+        'escape_mdx': escape_mdx
     })
 
     with open(f"{args.module_path}/meta.yml", "r") as f:
