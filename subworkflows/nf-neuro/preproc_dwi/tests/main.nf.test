@@ -39,7 +39,7 @@ nextflow_workflow {
             }
         }
     }
-/*
+
     test("preproc_dwi - AP DWI | skip steps") {
         config "./nextflow_skipsteps.config"
         when {
@@ -270,7 +270,7 @@ nextflow_workflow {
                 ).match() }
             )
         }
-    } */
+    }
 
     test("preproc_dwi - wrong options format - should fail") {
         config "./nextflow_skipsteps.config"
