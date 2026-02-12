@@ -44,6 +44,7 @@ workflow TRACTOFLOW {
         ch_bet_probability      // channel : [optional] meta, bet_probability
         ch_synthstrip_weights   // channel : [optional] meta, weights or weights
         ch_lesion_mask          // channel : [optional] meta, lesion_mask
+        options                 // [ optional ] map of options
     main:
 
         ch_versions = channel.empty()
@@ -61,7 +62,19 @@ workflow TRACTOFLOW {
             ch_sbref,
             ch_rev_sbref,
             ch_synthstrip_weights,
-            ch_topup_config
+            ch_topup_config,
+            [
+                "preproc_dwi_run_denoising": options.preproc_dwi_run_denoising,
+                "preproc_dwi_run_degibbs": options.preproc_dwi_run_degibbs,
+                "topup_eddy_run_topup": options.topup_eddy_run_topup,
+                "topup_eddy_run_eddy": options.topup_eddy_run_eddy,
+                "preproc_dwi_run_N4": options.preproc_dwi_run_N4,
+                "preproc_dwi_run_normalize": options.preproc_dwi_run_normalize,
+                "preproc_dwi_run_resampling": options.preproc_dwi_run_resampling,
+                "preproc_dwi_run_synthstrip": options.preproc_dwi_run_synthstrip,
+                "preproc_dwi_keep_dwi_unbet": options.preproc_dwi_keep_dwi_unbet
+
+            ]
         )
         ch_versions = ch_versions.mix(PREPROC_DWI.out.versions.first())
         ch_mqc_files = ch_mqc_files.mix(PREPROC_DWI.out.mqc)
@@ -77,7 +90,15 @@ workflow TRACTOFLOW {
             channel.empty(),
             channel.empty(),
             channel.empty(),
-            channel.empty()
+            channel.empty(),
+            [
+                "preproc_t1_run_denoising": options.preproc_t1_run_denoising,
+                "preproc_t1_run_N4": options.preproc_t1_run_N4,
+                "preproc_t1_run_resampling": options.preproc_t1_run_resampling,
+                "preproc_t1_run_synthstrip": options.preproc_t1_run_synthstrip,
+                "preproc_t1_run_ants_bet": options.preproc_t1_run_ants_bet,
+                "preproc_t1_run_crop": options.preproc_t1_run_crop
+            ]
         )
         ch_versions = ch_versions.mix(PREPROC_T1.out.versions.first())
 
@@ -90,7 +111,7 @@ workflow TRACTOFLOW {
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
 
-        ch_dti_metrics = !params.preproc_dwi_keep_dwi_unbet
+        ch_dti_metrics = !options.preproc_dwi_keep_dwi_unbet
             ? ch_dti_metrics.join(PREPROC_DWI.out.b0_mask)
             : ch_dti_metrics.map{ it + [[]] }
 
@@ -185,7 +206,7 @@ workflow TRACTOFLOW {
             .join(RECONST_FRF.out.csf_frf)
             .mix(ch_single_frf)
 
-        if ( params.frf_average_from_data ) {
+        if ( options.frf_average_from_data ) {
             ch_single_frf = group_frf("ssst", RECONST_FRF.out.frf)
 
             ch_wm_frf = group_frf("wm", RECONST_FRF.out.wm_frf)
@@ -224,7 +245,7 @@ workflow TRACTOFLOW {
             .join(PREPROC_DWI.out.bval)
             .join(PREPROC_DWI.out.bvec)
 
-        ch_reconst_fodf = !params.preproc_dwi_keep_dwi_unbet
+        ch_reconst_fodf = !options.preproc_dwi_keep_dwi_unbet
             ? ch_reconst_fodf.join(PREPROC_DWI.out.b0_mask)
             : ch_reconst_fodf.map{ it + [[]] }
 
@@ -245,12 +266,12 @@ workflow TRACTOFLOW {
         ch_qball_peak_indices  = channel.empty()
         ch_qball_gfa           = channel.empty()
         ch_qball_nufo          = channel.empty()
-        if (params.run_qball) {
+        if (options.run_qball) {
             ch_qball_input = PREPROC_DWI.out.dwi
                 .join(PREPROC_DWI.out.bval)
                 .join(PREPROC_DWI.out.bvec)
 
-            ch_qball_input = !params.preproc_dwi_keep_dwi_unbet
+            ch_qball_input = !options.preproc_dwi_keep_dwi_unbet
                 ? ch_qball_input.join(PREPROC_DWI.out.b0_mask)
                 : ch_qball_input.map{ it + [[]] }
 
@@ -258,7 +279,7 @@ workflow TRACTOFLOW {
 
             ch_versions = ch_versions.mix(RECONST_QBALL.out.versions.first())
 
-            if (params.use_qball_for_tracking) {
+            if (options.use_qball_for_tracking) {
                 ch_diffusion_model = RECONST_QBALL.out.qball
             }
 
@@ -275,7 +296,7 @@ workflow TRACTOFLOW {
         // MODULE: Run TRACKING/PFTTRACKING
         //
         ch_pft_tracking = channel.empty()
-        if ( params.run_pft_tracking ) {
+        if ( options.run_pft_tracking ) {
             ch_input_pft_tracking = ANATOMICAL_SEGMENTATION.out.wm_mask
                 .join(ANATOMICAL_SEGMENTATION.out.gm_mask)
                 .join(ANATOMICAL_SEGMENTATION.out.csf_mask)
@@ -298,7 +319,7 @@ workflow TRACTOFLOW {
         // MODULE: Run TRACKING/LOCALTRACKING
         //
         ch_local_tracking = channel.empty()
-        if ( params.run_local_tracking ) {
+        if ( options.run_local_tracking ) {
             ch_input_local_tracking = ANATOMICAL_SEGMENTATION.out.wm_mask
                 .join(ch_diffusion_model)
                 .join(RECONST_DTIMETRICS.out.fa)

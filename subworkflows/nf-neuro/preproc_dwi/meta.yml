@@ -133,6 +133,21 @@ input:
         Structure: [ path(config_file) ]
       pattern: "*.{cnf}"
       mandatory: false
+  - options:
+      type: map
+      description: |
+        Map of options for the preproc_dwi subworkflow.
+          - preproc_dwi_run_denoising (bool): If 'true', the DWI will be denoised using the MPPCA method from MRtrix3.
+          - preproc_dwi_run_degibbs (bool): If 'true', the Gibbs artifact removal will be performed using the mrdegibbs method from MRtrix3.
+          - topup_eddy_run_topup (bool): If 'true', the Topup correction will be performed using FSL's Topup.
+          - topup_eddy_run_eddy (bool): If 'true', the Eddy correction will be performed using FSL's Eddy.
+          - preproc_dwi_run_synthstrip (bool): If 'true', the brain extraction will be performed using SynthStrip. If 'false', FSL's BET will be used.
+          - preproc_dwi_keep_dwi_unbet (bool): If 'true', the DWI before brain extraction will be kept and used for the following steps. If 'false', the DWI after brain extraction will be used for the following steps.
+          - preproc_dwi_run_N4 (bool): If 'true', the N4 bias field correction will be performed using ANTs' N4BiasFieldCorrection.
+          - preproc_dwi_run_normalize (bool): If 'true', the DWI will be normalized to have a mean value in the WM of approximately 1000 using MRtrix3's dwinormalise.
+          - preproc_dwi_run_resampling (bool): If 'true', the DWI will be resampled to 1 mm isotropic spatial resolution using DIPY's resample.
+      mandatory: true
+      default: {}
 output:
   - dwi_resample:
       type: file

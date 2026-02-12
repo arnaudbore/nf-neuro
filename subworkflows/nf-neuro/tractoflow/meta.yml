@@ -84,30 +84,14 @@ args:
       type: boolean
       description: Fit spherical harmonics on specific shell instead of all shells.
       default: false
-  - preproc_dwi_run_denoising:
-      type: boolean
-      description: Enable MP-PCA denoising of the DWI image.
-      default: true
   - dwi_denoise_patch_size:
       type: integer
       description: Patch size for MP-PCA denoising algorithm.
       default: 7
-  - preproc_dwi_run_degibbs:
-      type: boolean
-      description: Enable Gibbs ringing removal correction.
-      default: false
-  - topup_eddy_run_topup:
-      type: boolean
-      description: Enable TOPUP correction for susceptibility distortions.
-      default: true
   - dwi_topup_config_file:
       type: string
       description: Configuration file for TOPUP processing (e.g., "b02b0.cnf").
       default: "b02b0.cnf"
-  - topup_eddy_run_eddy:
-      type: boolean
-      description: Enable EDDY correction for motion and eddy currents.
-      default: true
   - dwi_eddy_executable:
       type: string
       description: EDDY executable to use (e.g., "eddy_cpu" or "eddy_cuda10.2").
@@ -119,10 +103,6 @@ args:
       type: boolean
       description: Enable slice-wise outlier detection and replacement in EDDY.
       default: true
-  - preproc_dwi_run_synthstrip:
-      type: boolean
-      description: Enable SynthStrip brain extraction for DWI image.
-      default: false
   - preproc_t1_run_denoising:
       type: boolean
       description: Enable NL-Means denoising of the T1 image.
@@ -160,10 +140,6 @@ args:
         - quad
         - cubic
       default: "lin"
-  - preproc_dwi_run_N4:
-      type: boolean
-      description: Enable N4 bias field correction for DWI image.
-      default: true
   - dwi_n4_knot_interval:
       type: integer
       description: Number of voxels between splines' knots for DWI N4 bias correction.
@@ -172,10 +148,6 @@ args:
       type: integer
       description: Subsampling factor for DWI N4 bias correction.
       default: 2
-  - preproc_dwi_run_resampling:
-      type: boolean
-      description: Enable resampling of the DWI image to isotropic resolution.
-      default: true
   - dwi_resample_resolution_mm_iso:
       type: integer
       description: Isotropic resolution in mm for DWI resampling.
@@ -225,10 +197,6 @@ args:
       type: string
       description: Force specific FRF values instead of estimation (e.g., "15,4,4" for eigenvalues).
       default: null
-  - frf_average_from_data:
-      type: boolean
-      description: Average fiber response functions across all subjects.
-      default: false
   - fodf_sh_order:
       type: integer
       description: Spherical harmonics order for fODF reconstruction (must be even).
@@ -258,18 +226,6 @@ args:
       type: float
       description: Minimum MD value for ventricle mask creation.
       default: 0.003
-  - run_qball:
-      type: boolean
-      description: Enable Q-Ball modeling.
-      default: false
-  - use_qball_for_tracking:
-      type: boolean
-      description: Use Q-Ball model for tractography instead of fODFs.
-      default: false
-  - run_pft_tracking:
-      type: boolean
-      description: Enable Particle Filtering Tractography.
-      default: true
   - pft_random_seed:
       type: integer
       description: Random seed for PFT tractography reproducibility.
@@ -336,10 +292,6 @@ args:
       type: float
       description: Compression step size in mm for PFT streamlines.
       default: 0.2
-  - run_local_tracking:
-      type: boolean
-      description: Enable Local Tractography.
-      default: true
   - lt_processor:
       type: string
       description: Processor type for local tracking (e.g., "cpu", "gpu").
@@ -492,6 +444,32 @@ input:
         The input channel containing the lesion mask for segmentation.
         Structure: [ val(meta), path(lesion_mask) ]
       mandatory: false
+  - options:
+      type: map
+      description: |
+        Map of options for the subworkflow.
+          - preproc_dwi_run_denoising (bool): If 'true', the DWI will be denoised using the MPPCA method from MRtrix3.
+          - preproc_dwi_run_degibbs (bool): If 'true', the Gibbs artifact removal will be performed using the mrdegibbs method from MRtrix3.
+          - topup_eddy_run_topup (bool): If 'true', the Topup correction will be performed using FSL's Topup.
+          - topup_eddy_run_eddy (bool): If 'true', the Eddy correction will be performed using FSL's Eddy.
+          - preproc_dwi_run_synthstrip (bool): If 'true', the brain extraction will be performed using SynthStrip. If 'false', FSL's BET will be used.
+          - preproc_dwi_keep_dwi_unbet (bool): If 'true', the DWI before brain extraction will be kept and used for the following steps. If 'false', the DWI after brain extraction will be used for the following steps.
+          - preproc_dwi_run_N4 (bool): If 'true', the N4 bias field correction will be performed using ANTs' N4BiasFieldCorrection.
+          - preproc_dwi_run_normalize (bool): If 'true', the DWI will be normalized to have a mean value in the WM of approximately 1000 using MRtrix3's dwinormalise.
+          - preproc_dwi_run_resampling (bool): If 'true', the DWI will be resampled to 1 mm isotropic spatial resolution using DIPY's resample.
+          - preproc_t1_run_denoising (bool): If 'true', the anatomical image will be denoised using the nlmeans method from scilpy.
+          - preproc_t1_run_N4 (bool): If 'true', the N4 bias field correction will be performed using the N4BiasFieldCorrection method from ANTs.
+          - preproc_t1_run_resample (bool): If 'true', the anatomical image will be resampled using the resample method from DIPY.
+          - preproc_t1_run_synthstrip (bool): If 'true', the subworkflow will use SynthStrip for brain extraction.
+          - preproc_t1_run_ants_bet (bool): If 'true', the subworkflow will use ANTs' BET for brain extraction.
+          - preproc_t1_run_crop (bool): If 'true', the subworkflow will crop the image after brain extraction.
+          - frf_average_from_data (bool): If 'true', the fiber response function will be averaged across all subjects. If 'false', the fiber response function will be estimated for each subject independently.
+          - run_qball (bool): If 'true', the Q-Ball model will be fitted on the DWI data and used for fODF reconstruction and tracking.
+          - use_qball_for_tracking (bool): If 'true', the Q-Ball model will be used for tractography instead of the fODF model. This option is only relevant if run_qball is 'true'.
+          - run_pft_tracking (bool): If 'true', Particle Filtering Tractography (PFT) will be performed using DIPY.
+          - run_local_tracking (bool): If 'true', Local Tracking will be performed.
+      mandatory: true
+      default: {}
 output:
   - dwi:
       type: file
