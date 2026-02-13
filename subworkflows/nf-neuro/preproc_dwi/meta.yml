@@ -90,6 +90,8 @@ components:
   - utils/extractb0
   - preproc/gibbs
   - topup_eddy
+  - getoptionswithdefaults
+
 input:
   - ch_dwi:
       type: file
