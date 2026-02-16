@@ -26,19 +26,17 @@ keywords:
 components: []
 
 input:
-  - ch_meta_file:
+  - meta_file:
       type: file
       description: |
-        Channel containing the path to a meta.yml file from which to extract default options.
-        Structure: [ path(meta.yml) ]
+        Path to a meta.yml file from which to extract default options.
       pattern: "*.yml"
       mandatory: true
-  - ch_options:
+  - options:
       type: map
       description: |
-        Channel containing the metadata and user-provided options to compare with defaults.
-        Structure: [ val(meta), val(options) ]
-        where options is a Map of option key-value pairs
+        User-provided options to merge with defaults.
+        Map of option key-value pairs.
       mandatory: true
 
 output:

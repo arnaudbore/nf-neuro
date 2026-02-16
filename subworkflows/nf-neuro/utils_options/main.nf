@@ -9,7 +9,7 @@ import groovy.yaml.YamlSlurper
 def parseDefaultsFromMeta(String metaFilePath) {
     def metaFile = new File(metaFilePath)
     if (!metaFile.exists()) {
-        log.error "Meta file not found: ${metaFilePath}"
+        error "Meta file not found: ${metaFilePath}"
         return [:]
     }
 
@@ -94,17 +94,19 @@ def getOptionsWithDefaults(Map options, String metaPath) {
 workflow UTILS_OPTIONS {
 
     take:
-        ch_meta_file    // channel: [ path(meta.yml) ]
-        ch_options      // channel: [ val(meta), val(options) ]
+        meta_file    // file: path(.../meta.yml)
+        options      // map: val(options)
 
     main:
         ch_versions = channel.empty()
 
+        // Capture options in a local variable to avoid dataflow broadcast issues
+        def provided_options = options
+
         // Parse defaults and merge with provided options
-        ch_merged_options = ch_meta_file
-            .combine(ch_options)
-            .map { meta_file, _meta, provided_options ->
-                def defaults = parseDefaultsFromMeta(meta_file.toString())
+        ch_merged_options = channel.of(meta_file)
+            .map { meta_file_path ->
+                def defaults = parseDefaultsFromMeta(meta_file_path.toString())
                 def merged = mergeWithDefaults(provided_options, defaults, false)
                 merged
             }

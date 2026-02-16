@@ -31,17 +31,12 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = Channel.of(test_meta_file)
-                input[1] = Channel.of(
-                    [
-                        [ id: 'test_subject' ],
-                        [
-                            "option_a": true,
-                            "option_b": false,
-                            "option_d": true  // Not in defaults
-                        ]
-                    ]
-                )
+                input[0] = test_meta_file
+                input[1] = [
+                    "option_a": true,
+                    "option_b": false,
+                    "option_d": true  // Not in defaults
+                ]
                 """
             }
         }
@@ -76,16 +71,11 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta_partial.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = Channel.of(test_meta_file)
-                input[1] = Channel.of(
-                    [
-                        [ id: 'test_subject' ],
-                        [
-                            "option_a": true,
-                            "option_unknown": false
-                        ]
-                    ]
-                )
+                input[0] = test_meta_file
+                input[1] = [
+                    "option_a": true,
+                    "option_unknown": false
+                ]
                 """
             }
         }
@@ -120,13 +110,8 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta_defaults.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = Channel.of(test_meta_file)
-                input[1] = Channel.of(
-                    [
-                        [ id: 'test_subject' ],
-                        [:]  // Empty options, should use all defaults
-                    ]
-                )
+                input[0] = test_meta_file
+                input[1] = [:]  // Empty options, should use all defaults
                 """
             }
         }
