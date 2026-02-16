@@ -31,9 +31,6 @@ workflow PREPROC_DWI {
 
     main:
 
-        // Check to ensure options is a Map
-        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
-
         // Merge options with defaults from meta.yml
         options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
 

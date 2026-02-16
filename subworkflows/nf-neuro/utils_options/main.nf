@@ -53,7 +53,16 @@ def parseDefaultsFromMeta(String metaFilePath) {
  * @param strict If true, only allow keys that exist in defaults
  * @return Map containing merged options with defaults filled in
  */
-def mergeWithDefaults(Map provided, Map defaults, boolean strict = false) {
+def mergeWithDefaults(Object provided, Object defaults, boolean strict = false) {
+
+    // Check to ensure options is a Map
+    if (!(provided instanceof Map)) {
+        throw new IllegalArgumentException("Provided options must be a Map, but received ${provided?.getClass()?.getName() ?: 'null'}")
+    }
+    if (!(defaults instanceof Map)) {
+        throw new IllegalArgumentException("Default options must be a Map, but received ${defaults?.getClass()?.getName() ?: 'null'}")
+    }
+
     // Create a new map and populate with defaults
     def merged = new HashMap()
     if (defaults) {
@@ -85,7 +94,13 @@ def mergeWithDefaults(Map provided, Map defaults, boolean strict = false) {
  * @param metaPath Path to the meta.yml file (can use ${moduleDir}/meta.yml)
  * @return Map containing merged options with defaults filled in
  */
-def getOptionsWithDefaults(Map options, String metaPath) {
+def getOptionsWithDefaults(Object options, String metaPath) {
+
+    // Check to ensure options is a Map
+    if (!(options instanceof Map)) {
+        throw new IllegalArgumentException("Options must be a Map, but received ${options?.getClass()?.getName() ?: 'null'}")
+    }
+
     def defaults = parseDefaultsFromMeta(metaPath)
     return mergeWithDefaults(options, defaults, false)
 }

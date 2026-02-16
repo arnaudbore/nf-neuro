@@ -76,7 +76,6 @@ workflow TRACTOFLOW {
                 "preproc_dwi_run_resampling": options.preproc_dwi_run_resampling,
                 "preproc_dwi_run_synthstrip": options.preproc_dwi_run_synthstrip,
                 "preproc_dwi_keep_dwi_with_skull": options.preproc_dwi_keep_dwi_with_skull
-
             ]
         )
         ch_versions = ch_versions.mix(PREPROC_DWI.out.versions.first())
