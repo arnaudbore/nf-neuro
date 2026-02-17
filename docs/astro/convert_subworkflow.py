@@ -9,6 +9,7 @@ from docs.astro.formatting import (
     escape_mdx,
     format_choices,
     format_description,
+    format_map_entries,
     link,
     sanitize_outside_codeblocks,
 )
@@ -17,24 +18,29 @@ from docs.astro.formatting import (
 DOC_URL_BASE = "https://nf-neuro.github.io"
 
 
-def channel_description_format(description):
+def channel_description_format(content):
     """Format channel descriptions for subworkflow tables.
 
     Splits on ``Structure:`` lines to format the structure separately,
     then sanitises the result for safe MDX rendering.
     """
-    _descr = description.split("\n")
+    _cell = ""
+    _descr = content["description"].split("\n")
     try:
         _structure = next(filter(lambda x: "Structure:" in x, _descr))
+        _descr.remove(_structure)
+        _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', '`]', 1)[::-1]
+        _cell = "{}<br />{}".format(
+            format_description('\n'.join(_descr)),
+            sanitize_outside_codeblocks(_structure, table_cell=True)
+        )
     except StopIteration:
-        return format_description("\n".join(_descr))
+        _cell = format_description("\n".join(_descr))
 
-    _descr.remove(_structure)
-    _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', '`]', 1)[::-1]
-    return "{}<br />{}".format(
-        format_description('\n'.join(_descr)),
-        sanitize_outside_codeblocks(_structure, table_cell=True)
-    )
+    if content["type"].lower() == "map" and "entries" in content:
+        _cell += "<br />{}".format(format_map_entries(content["entries"]))
+
+    return _cell
 
 
 def component_format(component):
@@ -66,7 +72,7 @@ def main():
     env.filters.update({
         'component_format': component_format,
         'link_tool': link,
-        'channel_descr': channel_description_format,
+        'channel_description': channel_description_format,
         'format_choices': format_choices,
         'format_description': format_description,
         'escape_mdx': escape_mdx

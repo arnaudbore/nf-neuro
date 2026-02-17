@@ -263,3 +263,16 @@ def format_choices(choices):
     return "<br />".join(
         [li(sanitize_outside_codeblocks(str(c))) for c in choices]
     ) if choices else ""
+
+
+def format_map_entries(entries):
+    """Format a list of map entries as a comma-separated list of inline
+    code spans."""
+    def _fmt(entry):
+        _descr = sanitize_outside_codeblocks(
+            collapse_line_returns(str(entry["description"])), table_cell=True
+        )
+        return f"({entry['type']}) [Default: {str(entry['default'])}]<br />{_descr}"
+
+    _conversion = [f"<li>**{n}** {_fmt(e)}</li>"for n, e in entries.items()]
+    return f"<ul>{''.join(_conversion)}</ul>"
