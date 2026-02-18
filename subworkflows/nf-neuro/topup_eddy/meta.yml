@@ -23,7 +23,7 @@ components:
   - preproc/topup
   - preproc/eddy
   - utils/extractb0
-  - betcrop/fslbetcrop
+  - getoptionswithdefaults
 input:
   - ch_dwi:
       type: file
@@ -66,7 +66,9 @@ input:
           - topup_eddy_run_topup (bool): If 'true', the subworkflow will run FSL Topup for distorsion correction.
           - topup_eddy_run_eddy (bool): If 'true', the subworkflow will run FSL Eddy for motion and eddy current correction.
       mandatory: true
-      default: {}
+      default:
+        - topup_eddy_run_topup: true
+        - topup_eddy_run_eddy: true
 output:
   - dwi:
       type: file

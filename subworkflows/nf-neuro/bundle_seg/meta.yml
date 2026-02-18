@@ -32,17 +32,7 @@ keywords:
 components:
   - bundle/recognize
   - registration
-args:
-  - run_synthmorph:
-      type: boolean
-      description: "Run SynthMorph registration instead of ANTs."
-      default: false
-  - atlas_directory:
-      type: directory
-      default: ""
-      description: |
-        Use an alternative atlas to the default BundleSeg one available on Zenodo (https://zenodo.org/records/10103446).
-        The folder MUST follow the same organisation as archive `atlas.zip` hosted on Zenodo at the link above.
+  - getoptionswithdefaults
 input:
   - ch_fa:
       type: file
@@ -66,6 +56,19 @@ input:
         Structure: [ val(meta), path(license) ]
       pattern: "*.txt"
       mandatory: false
+  - options:
+      type: Map
+      description: |
+        Map of options for the subworkflow, including:
+          - run_synthmorph (bool): If 'true', the subworkflow will use Synthmorph ML registration model instead of ANTs.
+          - run_easyreg (bool): This option is not supported and will throw an error if set to 'true'.
+          - atlas_directory (str): Use an alternative atlas to the default BundleSeg one available on Zenodo (https://zenodo.org/records/10103446). The folder MUST follow the same organisation as archive `atlas.zip` hosted on Zenodo at the link above.
+      mandatory: false
+      default:
+        - run_synthmorph: false
+        - run_easyreg: false
+        - atlas_directory: null
+
 output:
   - bundles:
       type: file

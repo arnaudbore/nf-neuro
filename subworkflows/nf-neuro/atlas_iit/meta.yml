@@ -23,23 +23,18 @@ keywords:
   - template
 components:
   - image/math
-args:
-  - atlas_iit_b0:
-      type: string
+  - getoptionswithdefaults
+input:
+  - options:
+      type: map
       description: |
-        Path to a Mean B0 map of the IIT Human Brain Atlas.
-        If provided, this input will be used instead of downloading the Mean B0 map.
-        Structure: path(img)
+        Map of options for the subworkflow, including:
+          - atlas_iit_b0 (str): Path to a Mean B0 map of the IIT Human Brain Atlas. If provided, this input will be used instead of downloading the Mean B0 map.
+          - atlas_iit_bundle_masks_dir (str): Path to a directory containing IIT bundle masks. If provided, these inputs will be used instead of downloading and processing the bundle masks.
       mandatory: false
-      default: null
-  - atlas_iit_bundle_masks_dir:
-      type: string
-      description: |
-        Path to a directory containing IIT bundle masks.
-        If provided, these inputs will be used instead of downloading and processing the bundle masks.
-      Structure: path(dir)
-      mandatory: false
-      default: null
+      default:
+        - atlas_iit_b0: null
+        - atlas_iit_bundle_masks_dir: null
 output:
   - bundle_masks:
       type: file

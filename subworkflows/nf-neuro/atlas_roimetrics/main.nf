@@ -2,24 +2,28 @@ include { REGISTRATION_ANTS as REGISTER_ATLAS_REF } from '../../../modules/nf-ne
 include { REGISTRATION_ANTSAPPLYTRANSFORMS as TRANSFORM_ATLAS_BUNDLES } from '../../../modules/nf-neuro/registration/antsapplytransforms/main.nf'
 include { STATS_METRICSINROI     } from '../../../modules/nf-neuro/stats/metricsinroi/main'
 include { ATLAS_IIT              } from '../../nf-neuro/atlas_iit/main'
+include { getOptionsWithDefaults } from '../utils_options/main'
 
 workflow ATLAS_ROIMETRICS {
     take:
-    ch_subject_reference  // channel : [required] meta, subject_ref_image
-    ch_metrics            // channel : [required] meta, [metrics]
-    options               // channel : [optional] map of options
+        ch_subject_reference  // channel : [required] meta, subject_ref_image
+        ch_metrics            // channel : [required] meta, [metrics]
+        options               // channel : [optional] map of options
 
     main:
-    ch_versions = channel.empty()
-    ch_bundle_masks = channel.empty()
-    ch_template_ref = channel.empty()
+        ch_versions = channel.empty()
+        ch_bundle_masks = channel.empty()
+        ch_template_ref = channel.empty()
+
+    // Merge options with defaults from meta.yml
+    options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
 
     assert [options.use_atlas_iit].count(true) <= 1 :
         "Only one atlas can be selected at a time for ROI metrics extraction." +
         " Please set only one of the options 'use_atlas_*' to 'true'."
 
-    if (options.use_atlas_iit) {
-        ATLAS_IIT()
+    if ( options.use_atlas_iit ) {
+        ATLAS_IIT([:])
         ch_versions = ch_versions.mix(ATLAS_IIT.out.versions)
         ch_bundle_masks = ATLAS_IIT.out.bundle_masks.toList()
         ch_template_ref = ATLAS_IIT.out.b0
@@ -62,9 +66,9 @@ workflow ATLAS_ROIMETRICS {
     ch_versions = ch_versions.mix(STATS_METRICSINROI.out.versions)
 
     emit:
-    stats_json        = STATS_METRICSINROI.out.stats_json
-    stats_tab_mean    = STATS_METRICSINROI.out.stats_mean
-    stats_tab_std     = STATS_METRICSINROI.out.stats_std
+        stats_json        = STATS_METRICSINROI.out.stats_json
+        stats_tab_mean    = STATS_METRICSINROI.out.stats_mean
+        stats_tab_std     = STATS_METRICSINROI.out.stats_std
 
-    versions        = ch_versions
+        versions        = ch_versions
 }

@@ -24,7 +24,7 @@ def parseDefaultsFromMeta(String metaFilePath) {
                 def optionsInput = inputDef.options
 
                 // The 'default' field contains the default values as a map
-                if (optionsInput.containsKey('default')) {
+                if ( optionsInput.containsKey('default') ) {
                     def defaultValue = optionsInput.default
 
                     // If default is a Map, use it directly

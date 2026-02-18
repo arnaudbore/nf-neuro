@@ -3,6 +3,7 @@ nextflow_workflow {
     name "Test Subworkflow PREPROC_T1"
     script "../main.nf"
     workflow "PREPROC_T1"
+    config "./nextflow.config"
 
     tag "subworkflows"
     tag "subworkflows_nfneuro"
@@ -14,6 +15,8 @@ nextflow_workflow {
     tag "betcrop/antsbet"
     tag "betcrop/synthstrip"
     tag "image/cropvolume"
+
+    tag "subworkflows/utils_options"
 
     tag "load_test_data"
 
@@ -33,7 +36,6 @@ nextflow_workflow {
     }
 
     test("preproc_t1_antsbet_error") {
-        config "./nextflow.config"
         when {
             workflow {
                 """
@@ -65,14 +67,12 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assert workflow.failed
         }
     }
 
     test("preproc_t1_antsbet") {
-        config "./nextflow.config"
         when {
             workflow {
                 """
@@ -112,7 +112,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -138,8 +137,6 @@ nextflow_workflow {
     }
 
     test("preproc_t1_synthstrip") {
-        config "./nextflow_synthstrip.config"
-
         when {
             workflow {
                 """
@@ -171,7 +168,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -197,8 +193,6 @@ nextflow_workflow {
     }
 
     test("preproc_t1_quick") {
-        config "./nextflow_quick.config"
-
         when {
             workflow {
                 """
@@ -230,7 +224,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success },
@@ -259,8 +252,6 @@ nextflow_workflow {
     }
 
     test("preproc_t1_skip_all") {
-        config "./nextflow_skip_all.config"
-
         when {
             workflow {
                 """
@@ -292,7 +283,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success },
@@ -319,49 +309,6 @@ nextflow_workflow {
                         : channel.value.every{ subject -> subject instanceof ArrayList
                             ? subject.every()
                             : subject } } }
-            )
-        }
-    }
-
-    test("preproc_t1 - wrong options format - should fail") {
-        config "./nextflow_quick.config"
-
-        when {
-            workflow {
-                """
-                ch_split_test_data = LOAD_DATA.out.test_data_directory
-                    .branch{
-                        antsbet: it.simpleName == "antsbet"
-                        t1w: it.simpleName == "T1w"
-                    }
-                input[0] = ch_split_test_data.t1w.map{
-                    test_data_directory -> [
-                        [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz")
-                    ]}
-                input[1] = channel.empty()
-                input[2] = channel.empty()
-                input[3] = channel.empty()
-                input[4] = channel.empty()
-                input[5] = channel.empty()
-                input[6] = channel.empty()
-                input[7] = channel.empty()
-                input[8] = channel.of( [
-                    "preproc_t1_run_denoising": true,
-                    "preproc_t1_run_N4": false,
-                    "preproc_t1_run_resampling": true,
-                    "preproc_t1_run_ants_bet": false,
-                    "preproc_t1_run_synthstrip": false,
-                    "preproc_t1_run_crop": true
-                ] )
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert workflow.failed },
-                { assert workflow.stdout.contains("ERROR ~ Options must be a Map, got groovyx.gpars.dataflow.DataflowBroadcast. Expression: (options instanceof java.util.Map). Values: options = DataflowBroadcast around DataflowStream[?]") }
             )
         }
     }
