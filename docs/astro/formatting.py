@@ -276,3 +276,30 @@ def format_map_entries(entries):
 
     _conversion = [f"<li>**{n}** {_fmt(e)}</li>"for n, e in entries.items()]
     return f"<ul>{''.join(_conversion)}</ul>"
+
+
+TYPE_TO_NTYPE = {
+    "map": "val",
+    "file": "path",
+    "string": "val",
+    "list": "val",
+    "directory": "path",
+    "integer": "val",
+    "float": "val",
+    "boolean": "val"
+}
+
+
+def channel_format(_input, heading="Format"):
+    if isinstance(_input, list):
+        def _nametype(_name, _meta):
+            if _meta["type"] == "files":
+                return f"[ {TYPE_TO_NTYPE['file']}({_name}1), {TYPE_TO_NTYPE['file']}({_name}2), ... ]"
+            return f"{TYPE_TO_NTYPE[_meta['type']]}({_name})"
+
+        return f"**{heading} :** `tuple {', '.join([_nametype(*next(iter(field.items()))) for field in _input])}`"
+    elif isinstance(_input, dict):
+        name, meta = next(iter(_input.items()))
+        return f"**{heading} :** `{TYPE_TO_NTYPE[meta['type']]}({name})`"
+    else:
+        raise ValueError("Input must be a list or a dict")

@@ -6,6 +6,7 @@ import datetime
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from docs.astro.formatting import (
+    channel_format,
     escape_mdx,
     format_choices,
     format_description,
@@ -26,14 +27,28 @@ def channel_description_format(content):
     """
     _cell = ""
     _descr = content["description"].split("\n")
+
     try:
-        _structure = next(filter(lambda x: "Structure:" in x, _descr))
-        _descr.remove(_structure)
-        _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', '`]', 1)[::-1]
-        _cell = "{}<br />{}".format(
-            format_description('\n'.join(_descr)),
-            sanitize_outside_codeblocks(_structure, table_cell=True)
-        )
+        # First check if a structure element defines a list for the structure content.
+        if "structure" in content:
+            _header = channel_format(content["structure"], heading="Structure")
+
+            _structure = []
+            for it in content["structure"]:
+                _name, _content = next(iter(it.items()))
+                _structure.append(f"<li>**{_name}** [{_content['type']}] {format_description(_content['description'])}</li>")
+
+            _structure = _header + "<br /><ul>" + "".join(_structure) + "</ul>"
+
+        # Else, try to extract the structure line from the description element (legacy),
+        # or fallback to formatting the whole description.
+        else:
+            _structure = next(filter(lambda x: "Structure:" in x, _descr))
+            _descr.remove(_structure)
+            _structure = _structure.replace('[', '`[', 1)[::-1].replace(']', '`]', 1)[::-1]
+            _structure = sanitize_outside_codeblocks(_structure, table_cell=True)
+
+        _cell = "{}<br />{}".format(format_description('\n'.join(_descr)), _structure)
     except StopIteration:
         _cell = format_description("\n".join(_descr))
 
