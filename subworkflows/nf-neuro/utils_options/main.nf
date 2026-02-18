@@ -1,6 +1,3 @@
-import groovy.yaml.YamlSlurper
-
-
 /**
  * Parse default options from a subworkflow meta.yml file
  * @param metaFilePath Path to the meta.yml file
@@ -13,7 +10,7 @@ def parseDefaultsFromMeta(String metaFilePath) {
         return [:]
     }
 
-    def yaml = new YamlSlurper().parse(metaFile)
+    def yaml = new groovy.yaml.YamlSlurper().parse(metaFile)
     def defaults = [:]
 
     // Extract defaults from the 'options' input definition in meta.yml
