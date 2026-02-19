@@ -46,7 +46,7 @@ workflow TRACTOFLOW {
         ch_bet_probability      // channel : [optional] meta, bet_probability
         ch_synthstrip_weights   // channel : [optional] meta, weights or weights
         ch_lesion_mask          // channel : [optional] meta, lesion_mask
-        options                 // Map of options [ options ] 
+        options                 // Map of options [ options ]
     main:
         // Merge options with defaults from meta.yml
         options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
