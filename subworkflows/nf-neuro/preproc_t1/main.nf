@@ -20,7 +20,7 @@ workflow PREPROC_T1 {
         ch_ref_mask         // channel: [ val(meta), mask ]             , optional
         ch_ref_resample     // channel: [ val(meta), ref ]              , optional
         ch_weights          // channel: [ val(meta), weights ]          , optional
-        options             // Map of options [ options ] 
+        options             // Map of options [ options ]
     main:
 
         // Merge options with defaults from meta.yml

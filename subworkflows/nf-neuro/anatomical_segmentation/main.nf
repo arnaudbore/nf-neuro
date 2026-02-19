@@ -15,7 +15,7 @@ workflow ANATOMICAL_SEGMENTATION {
         ch_freesurferseg    // channel: [ val(meta), [ aparc_aseg, wmparc ] ], optional
         ch_lesion           // channel: [ val(meta), [ lesion ] ], optional
         ch_fs_license       // channel: [ val[meta], [ fs_license ] ], optional
-        options             // Map of options [ options ] 
+        options             // Map of options [ options ]
 
     main:
         // Merge options with defaults from meta.yml

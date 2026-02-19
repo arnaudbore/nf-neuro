@@ -2,7 +2,6 @@ nextflow_workflow {
     name "Test Subworkflow RECONST_FW_NODDI"
     script "../main.nf"
     workflow "RECONST_FW_NODDI"
-    config "./nextflow.config"
 
     tag "subworkflows"
     tag "subworkflows_nfneuro"

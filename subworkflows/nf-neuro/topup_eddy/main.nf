@@ -15,7 +15,7 @@ workflow TOPUP_EDDY {
         ch_rev_dwi      // channel: [ val(meta), rev-dwi, rev-bval, rev-bvec ], optional
         ch_rev_b0       // channel: [ val(meta), rev-b0 ], optional
         ch_config_topup // channel: [ 'topup.cnf' ], optional
-        options         // Map of options [ options ] 
+        options         // Map of options [ options ]
 
     main:
         // Merge options with defaults from meta.yml

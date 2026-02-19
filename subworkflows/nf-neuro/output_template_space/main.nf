@@ -20,7 +20,7 @@ workflow OUTPUT_TEMPLATE_SPACE {
         ch_labels_files             // channel: [ val(meta), [ labels_files ] ]
         ch_trk_files                // channel: [ val(meta), [ trk_files ] ]
         ch_freesurfer_license       // channel: [ val(freesurfer_license) ]
-        options                     // Map of options [ options ] 
+        options                     // Map of options [ options ]
 
     main:
         // Merge options with defaults from meta.yml

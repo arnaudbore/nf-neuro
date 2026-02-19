@@ -108,7 +108,7 @@ boolean allBundleFilesExist(Map thresholds, File dir) {
 
 workflow ATLAS_IIT {
     take:
-        options             // Map of options [ options ] 
+        options             // Map of options [ options ]
 
     main:
 
