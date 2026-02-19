@@ -23,7 +23,10 @@ workflow ATLAS_ROIMETRICS {
         " Please set only one of the options 'use_atlas_*' to 'true'."
 
     if ( options.use_atlas_iit ) {
-        ATLAS_IIT([:])
+        ATLAS_IIT([
+            'atlas_iit_b0': options.atlas_iit_b0,
+            'atlas_iit_bundle_masks_dir': options.atlas_iit_bundle_masks_dir
+        ])
         ch_versions = ch_versions.mix(ATLAS_IIT.out.versions)
         ch_bundle_masks = ATLAS_IIT.out.bundle_masks.toList()
         ch_template_ref = ATLAS_IIT.out.b0

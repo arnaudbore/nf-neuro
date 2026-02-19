@@ -111,15 +111,17 @@ workflow ATLAS_IIT {
         options             // Map of options [ options ]
 
     main:
-
         ch_versions = channel.empty()
 
         // Merge options with defaults from meta.yml
         options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
 
+        def input_b0 = options.atlas_iit_b0 ?: null
+        def input_bundle_masks_dir = options.atlas_iit_bundle_masks_dir ?: null
+
         // Fetch Mean B0
-        if ( options.atlas_iit_b0 ) {
-            ch_b0 = channel.fromPath(options.atlas_iit_b0, checkIfExists: true)
+        if ( input_b0 ) {
+            ch_b0 = channel.fromPath(input_b0, checkIfExists: true)
         }
         else {
             new File("${workflow.workDir}/atlas_iit/").mkdirs()
@@ -134,8 +136,8 @@ workflow ATLAS_IIT {
         }
 
         // Fetch and Process Bundle Masks
-        if ( options.atlas_iit_bundle_masks_dir ) {
-            ch_bundle_masks = channel.fromPath(options.atlas_iit_bundle_masks_dir + "/*.nii.gz", checkIfExists: true)
+        if ( input_bundle_masks_dir ) {
+            ch_bundle_masks = channel.fromPath(input_bundle_masks_dir + "/*.nii.gz", checkIfExists: true)
                 .collect(sort: { path_a, path_b ->
                     def name_a = path_a.getName()
                     def name_b = path_b.getName()
