@@ -1,11 +1,30 @@
 include { IMAGE_MATH as THR_BUNDLE_MASK } from '../../../modules/nf-neuro/image/math/main'
 
+def download_file(url, output_path) {
+    HttpURLConnection connection = new URL(url).openConnection()
+    connection.setInstanceFollowRedirects(true)
+    connection.setRequestProperty("User-Agent", "nf-neuro/atlas_iit (subworkflow)")
+    connection.setRequestProperty("Accept", "*/*")
+    connection.setRequestProperty("Accept-Encoding", "identity")
+    connection.setRequestProperty("Connection", "Keep-Alive")
+    connection.connect()
+
+    if (connection.responseCode != 200) {
+        error "Failed to download file: HTTP ${connection.responseCode}"
+    }
+
+    new File(output_path).withOutputStream { out ->
+        out << connection.inputStream
+    }
+}
+
 // Fetch IIT Atlas Mean B0
 def fetch_iit_atlas_b0(b0Url, dest) {
-    def b0 = new File("$dest/IITmean_b0.nii.gz").withOutputStream{ out ->
-        new URL(b0Url).withInputStream { from -> out << from; }
-    }
-    return b0
+    def outFile = new File("$dest/IITmean_b0.nii.gz")
+
+    download_file(b0Url, outFile.absolutePath)
+
+    return outFile
 }
 
 // Fetch Bundles Track Density Maps
@@ -21,9 +40,7 @@ def fetch_iit_atlas_tdi(bundleMapsUrl, dest, thresholds) {
     def intermediate_dir = new File("$dest/intermediate")
     intermediate_dir.mkdirs()
 
-    new File("$intermediate_dir/IIT_bundles.zip").withOutputStream{ out ->
-        new URL(bundleMapsUrl).withInputStream { from -> out << from; }
-    }
+    download_file(bundleMapsUrl, "$intermediate_dir/IIT_bundles.zip")
 
     def bundleMapsFile = new java.util.zip.ZipFile("$intermediate_dir/IIT_bundles.zip")
     bundleMapsFile.entries().each{ it ->
