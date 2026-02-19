@@ -40,6 +40,21 @@ args:
       Structure: path(dir)
       mandatory: false
       default: null
+input:
+  - options:
+      type: channel
+      description: |
+        Map of options for the subworkflow, including:
+          - threshold_bundles (bool): If enabled, this will threshold the TDI bundle maps with the
+            recommended thresholds to create binary bundle masks. If disabled, the subworkflow will
+            output the TDI bundle maps.
+          - smooth_sigma (float): If `threshold_bundles` is enabled, this will apply a gaussian smoothing
+            with the specified sigma to the TDI bundle maps before thresholding. This is based on the
+            recommendation of the IIT atlas authors to apply some smoothing to the TDI maps before thresholding.
+      mandatory: false
+      default:
+        - threshold_bundles: false
+        - smooth_sigma: 1.0
 output:
   - bundle_masks:
       type: file

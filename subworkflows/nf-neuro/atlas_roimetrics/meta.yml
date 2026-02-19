@@ -21,23 +21,6 @@ components:
   - registration/ants
   - stats/metricsinroi
   - registration/antsapplytransforms
-args:
-  - atlas_iit_b0:
-      type: string
-      description: |
-        Path to a Mean B0 map of the IIT Human Brain Atlas.
-        If provided, this input will be used instead of downloading the Mean B0 map.
-        Structure: path(img)
-      mandatory: false
-      default: null
-  - atlas_iit_bundle_masks_dir:
-      type: string
-      description: |
-        Path to a directory containing IIT bundle masks.
-        If provided, these inputs will be used instead of downloading and processing the bundle masks.
-      Structure: path(dir)
-      mandatory: false
-      default: null
 input:
   - ch_subject_reference:
       type: file
@@ -60,10 +43,32 @@ input:
   - options:
       type: map
       description: |
-        Map of options for the subworkflow.
+        Map of options for the subworkflow, including:
           - use_atlas_iit (bool): If 'true', the IIT Human Brain Atlas will be used for ROI metrics extraction.
+          - use_binary_masks (bool): If 'true', the IIT bundle masks will be thresholded to create binary masks before extracting the metrics.
+          - atlas_iit_b0 (str): Path to a Mean B0 map of the IIT Human Brain Atlas. If provided, this input will be used instead of downloading the Mean B0 map.
+          - atlas_iit_bundle_masks_dir (str): Path to a directory containing IIT bundle masks. If provided, these inputs will be used instead of downloading and processing the bundle masks.
       mandatory: true
-      default: {}
+      default:
+        - use_atlas_iit: true
+        - use_binary_masks: false
+        - atlas_iit_b0: null
+        - atlas_iit_bundle_masks_dir: null
+
+  - options:
+      type: channel
+      description: |
+        Map of options for the subworkflow, including:
+          - threshold_bundles (bool): If enabled, this will threshold the TDI bundle maps with the
+            recommended thresholds to create binary bundle masks. If disabled, the subworkflow will
+            output the TDI bundle maps.
+          - smooth_sigma (float): If `threshold_bundles` is enabled, this will apply a gaussian smoothing
+            with the specified sigma to the TDI bundle maps before thresholding. This is based on the
+            recommendation of the IIT atlas authors to apply some smoothing to the TDI maps before thresholding.
+      mandatory: false
+      default:
+        - threshold_bundles: false
+        - smooth_sigma: 1.0
 output:
   - json:
       type: file
