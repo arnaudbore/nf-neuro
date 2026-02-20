@@ -39,7 +39,13 @@ input:
       description: |
         The input channel containing the reference site tractometry TSV stats file
         with the following columns: "sid,roi,<covariates>,metric1,metric2,...".
-        Structure: [ val(meta), path(tsv_file) ]
+      structure:
+        - meta:
+            type: map
+            description: Metadata map.
+        - tsv_file:
+            type: file
+            description: Reference site TSV stats file.
       pattern: "*.tsv"
       mandatory: true
   - ch_moving_site:
@@ -47,7 +53,13 @@ input:
       description: |
         The input channel containing the moving site tractometry TSV stats file
         with the following columns: "sid,roi,<covariates>,metric1,metric2,...".
-        Structure: [ val(meta), path(tsv_file) ]
+      structure:
+        - meta:
+            type: map
+            description: Metadata map.
+        - tsv_file:
+            type: file
+            description: Moving site TSV stats file.
       pattern: "*.tsv"
       mandatory: true
 output:
@@ -55,7 +67,10 @@ output:
       type: file
       description: |
         Harmonized stats file in TSV format (MultiQC ready format).
-        Structure: [ path(*.tsv) ]
+      structure:
+        - harmonized_metrics:
+            type: file
+            description: Harmonized metrics TSV file.
       pattern: "*.tsv"
       ontologies:
         - edam: http://edamontology.org/format_3475 # TSV format
@@ -63,7 +78,10 @@ output:
       type: file
       description: |
         PNG figures illustrating the harmonization results for each metric and each bundle.
-        Structure: [ path(img) ]
+      structure:
+        - img:
+            type: file
+            description: Harmonization figures (PNG).
       pattern: "*.png"
       ontologies:
         - edam: http://edamontology.org/format_3603 # PNG
@@ -71,7 +89,10 @@ output:
       type: file
       description: |
         Harmonization fitted model.
-        Structure: [ path(model_file) ]
+      structure:
+        - model_file:
+            type: file
+            description: Harmonization model file.
       pattern: "*.model.csv"
       ontologies:
         - edam: http://edamontology.org/format_3752 # CSV format
@@ -79,7 +100,10 @@ output:
       type: file
       description: |
         Values that can be reported in QC reports.
-        Structure: [ path(*bhattacharrya.txt) ]
+      structure:
+        - qc_reports:
+            type: file
+            description: QC report file (Bhattacharyya distance).
       pattern: "*bhattacharrya.txt"
       ontologies:
         - edam: http://edamontology.org/format_2330 # Plain text format
@@ -88,7 +112,7 @@ output:
       description: |
         JSON files used to properly plot the harmonization results in a downstream MultiQC report.
           These files contain the regression curves and the percentiles computed before and after
-          harmonization for all bundles of a given metric. The files have the following structure:
+          harmonization for all bundles of a given metric. The files have the following layout:
 
           ```json
           {
@@ -106,7 +130,10 @@ output:
             }
           }
           ```
-        Structure: [ path(*.json) ]
+      structure:
+        - qc_plot_data:
+            type: file
+            description: QC plot data JSON file.
       pattern: "*.json"
       ontologies:
         - edam: http://edamontology.org/format_3464 # JSON format
@@ -114,7 +141,10 @@ output:
       type: file
       description: |
         File containing software versions
-        Structure: [ path(versions.yml) ]
+      structure:
+        - versions:
+            type: file
+            description: Versions YAML file.
       pattern: "versions.yml"
 authors:
   - "@levje"

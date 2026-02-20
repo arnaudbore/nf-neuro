@@ -1,6 +1,3 @@
-import groovy.yaml.YamlSlurper
-
-
 /**
  * Parse default options from a subworkflow meta.yml file
  * @param metaFilePath Path to the meta.yml file
@@ -13,26 +10,25 @@ def parseDefaultsFromMeta(String metaFilePath) {
         return [:]
     }
 
-    def yaml = new YamlSlurper().parse(metaFile)
+    def yaml = new groovy.yaml.YamlSlurper().parse(metaFile)
     def defaults = [:]
 
     // Extract defaults from the 'options' input definition in meta.yml
     if (yaml.input) {
         yaml.input.each { inputDef ->
-            // Look for the 'options' input which contains the default values
+            // Look for the 'options' input which contains the entries with default values
             if (inputDef.containsKey('options')) {
                 def optionsInput = inputDef.options
 
-                // The 'default' field contains the default values as a map
-                if ( optionsInput.containsKey('default') ) {
-                    def defaultValue = optionsInput.default
+                // The 'entries' field contains each option with its default value
+                if (optionsInput.containsKey('entries')) {
+                    def entries = optionsInput.entries
 
-                    // If default is a Map, use it directly
-                    if (defaultValue instanceof Map) {
-                        defaults = defaultValue
-                    } else if (defaultValue == null || defaultValue == [:] || defaultValue.toString() == '{}') {
-                        // If default is empty, try to extract from description
-                        log.warn "No default values found in meta.yml 'default' field"
+                    // Extract default value from each entry
+                    entries.each { key, value ->
+                        if (value.containsKey('default')) {
+                            defaults[key] = value.default
+                        }
                     }
                 }
             }
@@ -94,7 +90,7 @@ def mergeWithDefaults(Object provided, Object defaults, boolean strict = false) 
  * @param metaPath Path to the meta.yml file (can use ${moduleDir}/meta.yml)
  * @return Map containing merged options with defaults filled in
  */
-def getOptionsWithDefaults(Object options, String metaPath) {
+def getOptionsWithDefaults(Object options, String metaPath, boolean strict = true) {
 
     // Check to ensure options is a Map
     if (!(options instanceof Map)) {
@@ -102,7 +98,7 @@ def getOptionsWithDefaults(Object options, String metaPath) {
     }
 
     def defaults = parseDefaultsFromMeta(metaPath)
-    return mergeWithDefaults(options, defaults, false)
+    return mergeWithDefaults(options, defaults, strict)
 }
 
 
@@ -111,18 +107,20 @@ workflow UTILS_OPTIONS {
     take:
         meta_file    // file: path(.../meta.yml)
         options      // map: val(options)
+        strict       // bool: val(strict) - if true, only allow options that exist in defaults
 
     main:
         ch_versions = channel.empty()
 
         // Capture options in a local variable to avoid dataflow broadcast issues
         def provided_options = options
+        def strict_mode = strict
 
         // Parse defaults and merge with provided options
         ch_merged_options = channel.of(meta_file)
             .map { meta_file_path ->
                 def defaults = parseDefaultsFromMeta(meta_file_path.toString())
-                def merged = mergeWithDefaults(provided_options, defaults, false)
+                def merged = mergeWithDefaults(provided_options, defaults, strict_mode)
                 merged
             }
 

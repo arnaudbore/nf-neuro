@@ -6,39 +6,13 @@ import datetime
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from docs.astro.formatting import (
+    channel_format,
     escape_mdx,
     format_choices,
     format_description,
     li,
     link,
 )
-
-
-TYPE_TO_NTYPE = {
-    "map": "val",
-    "file": "path",
-    "string": "val",
-    "list": "val",
-    "directory": "path",
-    "integer": "val",
-    "float": "val",
-    "boolean": "val"
-}
-
-
-def channel_format(_input):
-    if isinstance(_input, list):
-        def _nametype(_name, _meta):
-            return f"{TYPE_TO_NTYPE[_meta['type']]}({_name})"
-
-        return "**Format :** `tuple {format}`".format(
-            format=', '.join([_nametype(*next(iter(field.items()))) for field in _input])
-        )
-    elif isinstance(_input, dict):
-        name, meta = next(iter(_input.items()))
-        return f"**Format :** `{TYPE_TO_NTYPE[meta['type']]}({name})`"
-    else:
-        raise ValueError("Input must be a list or a dict")
 
 
 def _create_parser():

@@ -38,19 +38,32 @@ input:
         User-provided options to merge with defaults.
         Map of option key-value pairs.
       mandatory: true
+  - strict:
+      type: boolean
+      description: |
+        If true, only allow options that exist in defaults (unknown options will be ignored with a warning).
+        If false, all provided options are accepted.
+      mandatory: false
+      default: true
 
 output:
   - options:
       type: map
       description: |
         Channel containing the final merged options (provided options + defaults for missing keys).
-        Structure: [ val(merged_options) ]
-        where merged_options is a Map of option key-value pairs
+        Contains merged_options as a Map of option key-value pairs.
+      structure:
+        - merged_options:
+            type: map
+            description: Map of merged option key-value pairs.
   - versions:
       type: file
       description: |
         File containing software versions (empty for this utility subworkflow)
-        Structure: [ path(versions.yml) ]
+      structure:
+        - versions:
+            type: file
+            description: Versions YAML file.
       pattern: "versions.yml"
 
 authors:
