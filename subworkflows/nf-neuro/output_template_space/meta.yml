@@ -92,12 +92,12 @@ input:
           - run_synthmorph (bool): If 'true', the subworkflow will use Synthmorph ML registration model.
       mandatory: false
       default:
-        - template: null
-        - templateflow_home: "./templateflow"
-        - templateflow_res: null
-        - templateflow_cohort: null
-        - run_easyreg: false
-        - run_synthmorph: false
+        template: null
+        templateflow_home: "./templateflow"
+        templateflow_res: null
+        templateflow_cohort: null
+        run_easyreg: false
+        run_synthmorph: false
 output:
   - ch_t1w_tpl:
       type: file

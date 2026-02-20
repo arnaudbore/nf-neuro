@@ -33,8 +33,8 @@ input:
           - atlas_iit_bundle_masks_dir (str): Path to a directory containing IIT bundle masks. If provided, these inputs will be used instead of downloading and processing the bundle masks.
       mandatory: false
       default:
-        - atlas_iit_b0: null
-        - atlas_iit_bundle_masks_dir: null
+        atlas_iit_b0: null
+        atlas_iit_bundle_masks_dir: null
 output:
   - bundle_masks:
       type: file

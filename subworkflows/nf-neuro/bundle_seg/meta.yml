@@ -65,9 +65,9 @@ input:
           - atlas_directory (str): Use an alternative atlas to the default BundleSeg one available on Zenodo (https://zenodo.org/records/10103446). The folder MUST follow the same organisation as archive `atlas.zip` hosted on Zenodo at the link above.
       mandatory: false
       default:
-        - run_synthmorph: false
-        - run_easyreg: false
-        - atlas_directory: null
+        run_synthmorph: false
+        run_easyreg: false
+        atlas_directory: null
 
 output:
   - bundles:

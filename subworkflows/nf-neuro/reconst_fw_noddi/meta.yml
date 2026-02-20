@@ -72,9 +72,9 @@ input:
           - average_diff_priors (bool): If 'true', the diffusivity priors computed from the RECONST/DIFFUSIVITYPRIORS module will be averaged across all subjects. (Recommended)
       mandatory: false
       default:
-        - run_noddi: false
-        - run_freewater: false
-        - average_diff_priors: false
+        run_noddi: false
+        run_freewater: false
+        average_diff_priors: false
 output:
   - noddi_dir:
       type: file

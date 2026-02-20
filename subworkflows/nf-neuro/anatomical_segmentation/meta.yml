@@ -57,7 +57,7 @@ input:
         Map of options for the subworkflow, including:
           - run_synthseg (bool): Whether to run SynthSeg for segmentation. If false, FSL's fast will be used for segmentation. Default is false.
       default:
-        - run_synthseg: false
+        run_synthseg: false
 output:
   - wm_mask:
       type: file

@@ -67,8 +67,8 @@ input:
           - topup_eddy_run_eddy (bool): If 'true', the subworkflow will run FSL Eddy for motion and eddy current correction.
       mandatory: true
       default:
-        - topup_eddy_run_topup: true
-        - topup_eddy_run_eddy: true
+        topup_eddy_run_topup: true
+        topup_eddy_run_eddy: true
 output:
   - dwi:
       type: file
