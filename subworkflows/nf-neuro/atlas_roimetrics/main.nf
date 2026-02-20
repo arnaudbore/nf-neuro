@@ -42,7 +42,7 @@ workflow ATLAS_ROIMETRICS {
                 'atlas_iit_bundle_masks_dir': options.atlas_iit_bundle_masks_dir
             ])
             ch_versions = ch_versions.mix(ATLAS_IIT.out.versions)
-            ch_bundle_masks = ATLAS_IIT.out.bundle_masks.toList()
+            ch_bundle_masks = ATLAS_IIT.out.bundles.toList()
             ch_template_ref = ATLAS_IIT.out.b0
         }
         else {
