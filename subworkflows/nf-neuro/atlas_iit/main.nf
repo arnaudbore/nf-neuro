@@ -1,4 +1,5 @@
 include { IMAGE_MATH as THR_BUNDLE_MASK } from '../../../modules/nf-neuro/image/math/main'
+include { getOptionsWithDefaults } from '../utils_options/main'
 
 def download_file(url, output_path) {
     HttpURLConnection connection = new URL(url).openConnection()
@@ -123,71 +124,76 @@ boolean allBundleFilesExist(Map thresholds, File dir) {
 }
 
 workflow ATLAS_IIT {
+    take:
+        options             // Map of options [ options ]
+
     main:
+        ch_versions = channel.empty()
 
-    ch_versions = channel.empty()
+        // Merge options with defaults from meta.yml
+        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
 
-    def input_b0 = params.atlas_iit_b0 ?: null
-    def input_bundle_masks_dir = params.atlas_iit_bundle_masks_dir ?: null
+        def input_b0 = options.atlas_iit_b0 ?: null
+        def input_bundle_masks_dir = options.atlas_iit_bundle_masks_dir ?: null
 
-    // Fetch Mean B0
-    if (input_b0) {
-        ch_b0 = channel.fromPath(input_b0, checkIfExists: true)
-    }
-    else {
-        new File("${workflow.workDir}/atlas_iit/").mkdirs()
+        // Fetch Mean B0
+        if ( input_b0 ) {
+            ch_b0 = channel.fromPath(input_b0, checkIfExists: true)
+        }
+        else {
+            new File("${workflow.workDir}/atlas_iit/").mkdirs()
 
-        if (!new File("${workflow.workDir}/atlas_iit/IITmean_b0.nii.gz").exists()) {
-            fetch_iit_atlas_b0(
-                "https://www.nitrc.org/frs/download.php/11266/IITmean_b0.nii.gz",
-                "${workflow.workDir}/atlas_iit/"
+            if (!new File("${workflow.workDir}/atlas_iit/IITmean_b0.nii.gz").exists()) {
+                fetch_iit_atlas_b0(
+                    "https://www.nitrc.org/frs/download.php/11266/IITmean_b0.nii.gz",
+                    "${workflow.workDir}/atlas_iit/"
+                )
+            }
+            ch_b0 = channel.fromPath("${workflow.workDir}/atlas_iit/IITmean_b0.nii.gz", checkIfExists: true)
+        }
+
+        // Fetch and Process Bundle Masks
+        if ( input_bundle_masks_dir ) {
+            ch_bundle_masks = channel.fromPath(input_bundle_masks_dir + "/*.nii.gz", checkIfExists: true)
+                .collect(sort: { path_a, path_b ->
+                    def name_a = path_a.getName()
+                    def name_b = path_b.getName()
+                    name_a <=> name_b
+                })
+        }
+        else {
+            def thresholds = get_tdi_thresholds()
+            def atlas_tdi = fetch_iit_atlas_tdi(
+                "https://www.nitrc.org/frs/download.php/11472/IIT_bundles.zip",
+                "${workflow.workDir}/atlas_iit/bundles/tdi",
+                thresholds
             )
+
+            bundle_maps = channel.fromPath(atlas_tdi + "/*.nii.gz", checkIfExists: true)
+
+            // Pair all bundle maps with their respective thresholds
+            ch_bundle_maps_with_thresholds = bundle_maps.map { file ->
+                def file_base_name = file.baseName.replace(".nii.gz", "").replace(".nii", "")
+                def thr_find = thresholds.find { line -> line.key == file_base_name }?.value
+                def thr = thr_find != null ? thr_find : null
+                def meta = [ id: file_base_name ]
+                return [meta, file, thr]
+            }
+
+            THR_BUNDLE_MASK(ch_bundle_maps_with_thresholds)
+            ch_versions = ch_versions.mix(THR_BUNDLE_MASK.out.versions).first()
+
+            ch_bundle_masks = THR_BUNDLE_MASK.out.image
+                .map { _meta, mask -> mask }
+                .collect(sort: { path_a, path_b ->
+                    def name_a = path_a.getName()
+                    def name_b = path_b.getName()
+                    name_a <=> name_b
+                })
         }
-        ch_b0 = channel.fromPath("${workflow.workDir}/atlas_iit/IITmean_b0.nii.gz", checkIfExists: true)
-    }
-
-    // Fetch and Process Bundle Masks
-    if (input_bundle_masks_dir) {
-        ch_bundle_masks = channel.fromPath(input_bundle_masks_dir + "/*.nii.gz", checkIfExists: true)
-            .collect(sort: { path_a, path_b ->
-                def name_a = path_a.getName()
-                def name_b = path_b.getName()
-                name_a <=> name_b
-            })
-    }
-    else {
-        def thresholds = get_tdi_thresholds()
-        def atlas_tdi = fetch_iit_atlas_tdi(
-            "https://www.nitrc.org/frs/download.php/11472/IIT_bundles.zip",
-            "${workflow.workDir}/atlas_iit/bundles/tdi",
-            thresholds
-        )
-
-        bundle_maps = channel.fromPath(atlas_tdi + "/*.nii.gz", checkIfExists: true)
-
-        // Pair all bundle maps with their respective thresholds
-        ch_bundle_maps_with_thresholds = bundle_maps.map { file ->
-            def file_base_name = file.baseName.replace(".nii.gz", "").replace(".nii", "")
-            def thr_find = thresholds.find { line -> line.key == file_base_name }?.value
-            def thr = thr_find != null ? thr_find : null
-            def meta = [ id: file_base_name ]
-            return [meta, file, thr]
-        }
-
-        THR_BUNDLE_MASK(ch_bundle_maps_with_thresholds)
-        ch_versions = ch_versions.mix(THR_BUNDLE_MASK.out.versions).first()
-
-        ch_bundle_masks = THR_BUNDLE_MASK.out.image
-            .map { _meta, mask -> mask }
-            .collect(sort: { path_a, path_b ->
-                def name_a = path_a.getName()
-                def name_b = path_b.getName()
-                name_a <=> name_b
-            })
-    }
 
     emit:
-    b0 = ch_b0
-    bundle_masks = ch_bundle_masks
-    versions = ch_versions
+        b0 = ch_b0
+        bundle_masks = ch_bundle_masks
+        versions = ch_versions
 }

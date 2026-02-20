@@ -16,6 +16,9 @@ nextflow_workflow {
     tag "registration/ants"
     tag "registration/antsapplytransforms"
 
+    tag "subworkflows/utils_options"
+
+    tag "load_test_data"
 
     tag "stub"
     options "-stub-run"
@@ -51,11 +54,10 @@ nextflow_workflow {
                         file("\${test_data_directory}/rd.nii.gz"),
                         file("\${test_data_directory}/md.nii.gz")]
                     ]}
-                input[2] = [use_atlas_iit: true]
+                input[2] = [ "use_atlas_iit": true]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success },
@@ -94,11 +96,10 @@ nextflow_workflow {
                         file("\${test_data_directory}/rd.nii.gz"),
                         file("\${test_data_directory}/md.nii.gz")]
                     ]}
-                input[2] = [ : ]
+                input[2] = [:]
                 """
             }
         }
-
         then {
             assert workflow.failed
         }

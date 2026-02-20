@@ -35,27 +35,7 @@ components:
   - betcrop/fslbetcrop
   - utils/templateflow
   - registration
-args:
-  - template:
-      type: string
-      description: Name of the template to use (see https://templateflow.org).
-  - templateflow_home:
-      type: string
-      description: Path to the templateflow local home directory where files are located and/or downloaded.
-  - templateflow_res:
-      type: int
-      description: Template resolution to use or download.
-  - templateflow_cohort:
-      type: string
-      description: Name/type of the cohort to use.
-  - run_easyreg:
-      type: boolean
-      description: Use Easyreg any-to-any registration model.
-      default: false
-  - run_synthmorph:
-      type: boolean
-      description: Use Synthmorph ML registration model.
-      default: false
+  - getoptionswithdefaults
 input:
   - ch_anat:
       type: file
@@ -100,6 +80,24 @@ input:
         Structure: [ val(meta), path(license) ]
       pattern: "*.txt"
       mandatory: false
+  - options:
+      type: map
+      description: |
+        Map of options for the subworkflow, including:
+          - template (str): Name of the template to use (see https://templateflow.org).
+          - templateflow_home (str): Path to the templateflow local home directory where files are located and/or downloaded.
+          - templateflow_res (int): Template resolution to use or download.
+          - templateflow_cohort (str): Name/type of the cohort to use.
+          - run_easyreg (bool): If 'true', the subworkflow will use Easyreg any-to-any registration model.
+          - run_synthmorph (bool): If 'true', the subworkflow will use Synthmorph ML registration model.
+      mandatory: false
+      default:
+        template: null
+        templateflow_home: "./templateflow"
+        templateflow_res: null
+        templateflow_cohort: null
+        run_easyreg: false
+        run_synthmorph: false
 output:
   - ch_t1w_tpl:
       type: file

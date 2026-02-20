@@ -19,6 +19,8 @@ include { RECONST_QBALL      } from '../../../modules/nf-neuro/reconst/qball/mai
 include { TRACKING_PFTTRACKING   } from '../../../modules/nf-neuro/tracking/pfttracking/main'
 include { TRACKING_LOCALTRACKING } from '../../../modules/nf-neuro/tracking/localtracking/main'
 
+// UTILS
+include { getOptionsWithDefaults } from '../utils_options/main'
 
 // ** UTILITY FUNCTIONS ** //
 
@@ -44,11 +46,10 @@ workflow TRACTOFLOW {
         ch_bet_probability      // channel : [optional] meta, bet_probability
         ch_synthstrip_weights   // channel : [optional] meta, weights or weights
         ch_lesion_mask          // channel : [optional] meta, lesion_mask
-        options                 // [ optional ] map of options
+        options                 // Map of options [ options ]
     main:
-
-        // Check to ensure options is a list of options,
-        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+        // Merge options with defaults from meta.yml
+        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
 
         ch_versions = channel.empty()
         ch_mqc_files = channel.empty()
@@ -131,7 +132,11 @@ workflow TRACTOFLOW {
             channel.empty(),
             channel.empty(),
             channel.empty(),
-            channel.empty()
+            channel.empty(),
+            [
+                "run_easyreg": options.run_easyreg,
+                "run_synthmorph": options.run_synthmorph,
+            ]
         )
         ch_versions = ch_versions.mix(T1_REGISTRATION.out.versions.first())
         ch_mqc_files = ch_mqc_files.mix(T1_REGISTRATION.out.mqc)
@@ -178,7 +183,8 @@ workflow TRACTOFLOW {
             TRANSFORM_APARC_ASEG.out.warped_image
                 .join(TRANSFORM_WMPARC.out.warped_image),
             TRANSFORM_LESION_MASK.out.warped_image,
-            channel.empty()
+            channel.empty(),
+            [ "run_synthseg": options.run_synthseg ]
         )
         ch_versions = ch_versions.mix(ANATOMICAL_SEGMENTATION.out.versions.first())
         ch_global_mqc_files = ch_global_mqc_files.mix(ANATOMICAL_SEGMENTATION.out.qc_score)

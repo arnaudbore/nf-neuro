@@ -6,6 +6,7 @@ include { BETCROP_ANTSBET } from '../../../modules/nf-neuro/betcrop/antsbet/main
 include { BETCROP_SYNTHSTRIP} from '../../../modules/nf-neuro/betcrop/synthstrip/main'
 include { IMAGE_CROPVOLUME as IMAGE_CROPVOLUME_T1 } from '../../../modules/nf-neuro/image/cropvolume/main'
 include { IMAGE_CROPVOLUME as IMAGE_CROPVOLUME_MASK } from '../../../modules/nf-neuro/image/cropvolume/main'
+include { getOptionsWithDefaults } from '../utils_options/main'
 
 
 workflow PREPROC_T1 {
@@ -19,11 +20,11 @@ workflow PREPROC_T1 {
         ch_ref_mask         // channel: [ val(meta), mask ]             , optional
         ch_ref_resample     // channel: [ val(meta), ref ]              , optional
         ch_weights          // channel: [ val(meta), weights ]          , optional
-        options             // [ optional ] map of options
+        options             // Map of options [ options ]
     main:
 
-        // Check to ensure options is a list of options,
-        assert options instanceof Map : "Options must be a Map, got ${options.getClass().getName()}"
+        // Merge options with defaults from meta.yml
+        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
 
         ch_versions = channel.empty()
         image_nlmeans = channel.empty()

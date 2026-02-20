@@ -14,6 +14,8 @@ nextflow_workflow {
     tag "segmentation/freesurferseg"
     tag "segmentation/synthseg"
 
+    tag "subworkflows/utils_options"
+
     tag "load_test_data"
 
     tag "stub"
@@ -50,6 +52,7 @@ nextflow_workflow {
                 input[1] = channel.empty()
                 input[2] = channel.empty()
                 input[3] = channel.empty()
+                input[4] = [:]
                 """
             }
         }
@@ -105,6 +108,7 @@ nextflow_workflow {
                 }
                 input[2] = channel.empty()
                 input[3] = channel.empty()
+                input[4] = [:]
                 """
             }
         }
@@ -162,6 +166,7 @@ nextflow_workflow {
                 }
                 input[2] = channel.empty()
                 input[3] = channel.empty()
+                input[4] = [:]
                 """
             }
         }
@@ -198,7 +203,6 @@ nextflow_workflow {
     }
 
     test("anatomical_segmentation - synthseg") {
-        config "./synthseg.config"
         when {
             workflow {
                 """
@@ -221,6 +225,7 @@ nextflow_workflow {
                         file("\${test_data_directory}/license.txt", checkIfExists: true)
                     ]
                 }
+                input[4] = [ "run_synthseg": true ]
                 """
             }
         }
