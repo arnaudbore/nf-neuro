@@ -218,7 +218,7 @@ output:
             type: map
             description: Metadata map.
         - transforms:
-            type: files
+            type: file
             description: List of forward transformation files.
       pattern: "*__forward*.{nii,nii.gz,mat,lta}"
   - backward_image_transform:
@@ -231,7 +231,7 @@ output:
             type: map
             description: Metadata map.
         - transforms:
-            type: files
+            type: file
             description: List of backward transformation files.
       pattern: "*__backward*.{nii,nii.gz,mat,lta}"
   - forward_tractogram_transform:
@@ -244,7 +244,7 @@ output:
             type: map
             description: Metadata map.
         - transforms:
-            type: files
+            type: file
             description: List of transformation files for tractograms.
       pattern: "*__backward*.{nii,nii.gz,mat,lta}"
   - backward_tractogram_transform:
@@ -257,7 +257,7 @@ output:
             type: map
             description: Metadata map.
         - transforms:
-            type: files
+            type: file
             description: List of transformation files for tractograms.
       pattern: "*__forward*.{nii,nii.gz,mat,lta}"
   - segmentation:

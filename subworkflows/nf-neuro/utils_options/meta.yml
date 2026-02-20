@@ -38,6 +38,13 @@ input:
         User-provided options to merge with defaults.
         Map of option key-value pairs.
       mandatory: true
+  - strict:
+      type: boolean
+      description: |
+        If true, only allow options that exist in defaults (unknown options will be ignored with a warning).
+        If false, all provided options are accepted.
+      mandatory: false
+      default: true
 
 output:
   - options:

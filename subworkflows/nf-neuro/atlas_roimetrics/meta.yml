@@ -49,7 +49,7 @@ input:
             type: map
             description: Metadata map.
         - metrics:
-            type: files
+            type: file
             description: |
               List of metric maps for a subject in the subject's DWI space.
       pattern: "*.nii.gz"
@@ -82,7 +82,7 @@ output:
             type: map
             description: Metadata map.
         - img:
-            type: files
+            type: file
             description: List of binary bundle masks in the subject's DWI space.
       pattern: "*.nii.gz"
       ontologies:

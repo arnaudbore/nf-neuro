@@ -102,7 +102,7 @@ output:
             type: map
             description: Metadata map.
         - bundles:
-            type: files
+            type: file
             description: List of segmented bundle files.
       pattern: "*.trk"
   - mqc:

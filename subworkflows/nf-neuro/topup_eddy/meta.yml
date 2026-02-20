@@ -178,7 +178,7 @@ output:
         Channel containing the quality control images for MultiQC.
       structure:
         - mqc:
-            type: files
+            type: file
             description: Quality control images.
       pattern: "*_mqc.{gif,png}"
       mandatory: false

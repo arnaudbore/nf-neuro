@@ -45,7 +45,7 @@ output:
         List of IIT binary bundle masks.
       structure:
         - bundle_masks:
-            type: files
+            type: file
             description: List of IIT binary bundle mask files.
       pattern: "*.nii.gz"
       ontologies:

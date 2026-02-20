@@ -65,7 +65,7 @@ input:
             type: map
             description: Metadata map.
         - bundles:
-            type: files
+            type: file
             description: List of bundle tractogram files.
       pattern: "*.trk"
 
@@ -78,7 +78,7 @@ input:
             type: map
             description: Metadata map.
         - centroids:
-            type: files
+            type: file
             description: List of centroid tractogram files.
       pattern: "*.trk"
 
@@ -92,7 +92,7 @@ input:
             type: map
             description: Metadata map.
         - metrics:
-            type: files
+            type: file
             description: List of metric image files.
       pattern: "*.nii.gz"
 

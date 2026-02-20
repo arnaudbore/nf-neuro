@@ -60,7 +60,7 @@ input:
             type: map
             description: Metadata map.
         - nifti_files:
-            type: files
+            type: file
             description: List of NIfTI files to register.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
@@ -73,7 +73,7 @@ input:
             type: map
             description: Metadata map.
         - mask_files:
-            type: files
+            type: file
             description: List of binary mask files.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
@@ -86,7 +86,7 @@ input:
             type: map
             description: Metadata map.
         - label_files:
-            type: files
+            type: file
             description: List of label files.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
@@ -99,7 +99,7 @@ input:
             type: map
             description: Metadata map.
         - trk_files:
-            type: files
+            type: file
             description: List of tractogram files.
       pattern: "*.trk"
       mandatory: false
@@ -185,7 +185,7 @@ output:
             type: map
             description: Metadata map.
         - nifti_files:
-            type: files
+            type: file
             description: List of registered NIfTI files.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
@@ -198,7 +198,7 @@ output:
             type: map
             description: Metadata map.
         - mask_files:
-            type: files
+            type: file
             description: List of registered mask files.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
@@ -211,7 +211,7 @@ output:
             type: map
             description: Metadata map.
         - label_files:
-            type: files
+            type: file
             description: List of registered label files.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
@@ -224,7 +224,7 @@ output:
             type: map
             description: Metadata map.
         - trk_files:
-            type: files
+            type: file
             description: List of registered tractogram files.
       pattern: "*.trk"
       mandatory: false
