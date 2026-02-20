@@ -58,7 +58,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success },
@@ -101,7 +100,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assert workflow.failed
         }

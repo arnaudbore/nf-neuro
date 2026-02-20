@@ -50,7 +50,7 @@ input:
           - atlas_iit_bundle_masks_dir (str): Path to a directory containing IIT bundle masks. This input will be used instead of downloading and processing the bundle masks if `use_atlas_iit` is set to 'true'.
       mandatory: true
       default:
-        use_atlas_iit: true
+        use_atlas_iit: false
         atlas_iit_b0: null
         atlas_iit_bundle_masks_dir: null
 output:
