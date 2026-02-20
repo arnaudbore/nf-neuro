@@ -23,7 +23,7 @@ def parseDefaultsFromMeta(String metaFilePath) {
                 // The 'entries' field contains each option with its default value
                 if (optionsInput.containsKey('entries')) {
                     def entries = optionsInput.entries
-                    
+
                     // Extract default value from each entry
                     entries.each { key, value ->
                         if (value.containsKey('default')) {

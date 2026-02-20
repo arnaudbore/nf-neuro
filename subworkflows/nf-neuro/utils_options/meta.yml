@@ -44,13 +44,19 @@ output:
       type: map
       description: |
         Channel containing the final merged options (provided options + defaults for missing keys).
-        Structure: [ val(merged_options) ]
-        where merged_options is a Map of option key-value pairs
+        Contains merged_options as a Map of option key-value pairs.
+      structure:
+        - merged_options:
+            type: map
+            description: Map of merged option key-value pairs.
   - versions:
       type: file
       description: |
         File containing software versions (empty for this utility subworkflow)
-        Structure: [ path(versions.yml) ]
+      structure:
+        - versions:
+            type: file
+            description: Versions YAML file.
       pattern: "versions.yml"
 
 authors:
