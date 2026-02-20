@@ -117,10 +117,10 @@
                     ]
                 ],
                 "ch_t1w_tpl": [
-                    "null_T1w.nii.gz"
+                    "MNI152NLin2009bSym_T1w.nii.gz"
                 ],
                 "ch_t2w_tpl": [
-                    "null_T2w.nii.gz"
+                    "MNI152NLin2009bSym_T2w.nii.gz"
                 ],
                 "mqc": [
                     [
@@ -152,7 +152,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-18T15:11:12.038833313"
+        "timestamp": "2026-02-20T10:03:09.839689352"
     },
     "Template MNI152NLin2009cAsym - local templates": {
         "content": [
