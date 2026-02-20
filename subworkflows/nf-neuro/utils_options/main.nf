@@ -41,7 +41,6 @@ def parseDefaultsFromMeta(String metaFilePath) {
 
     if (defaults.isEmpty()) {
         log.warn "Could not find default values in meta.yml file: ${metaFilePath}"
-        log.warn "Defaults found: ${defaults}"
     }
 
     return defaults

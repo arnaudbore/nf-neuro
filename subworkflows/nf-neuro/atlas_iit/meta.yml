@@ -26,23 +26,6 @@ keywords:
 components:
   - image/math
   - getoptionswithdefaults
-args:
-  - atlas_iit_b0:
-      type: string
-      description: |
-        Path to a Mean B0 map of the IIT Human Brain Atlas.
-        If provided, this input will be used instead of downloading the Mean B0 map.
-        Structure: path(img)
-      mandatory: false
-      default: null
-  - atlas_iit_bundle_masks_dir:
-      type: string
-      description: |
-        Path to a directory containing IIT bundle masks.
-        If provided, these inputs will be used instead of downloading and processing the bundle masks.
-      Structure: path(dir)
-      mandatory: false
-      default: null
 input:
   - options:
       type: map
@@ -54,10 +37,14 @@ input:
           - smooth_sigma (float): If `threshold_bundles` is enabled, this will apply a gaussian smoothing
             with the specified sigma to the TDI bundle maps before thresholding. This is based on the
             recommendation of the IIT atlas authors to apply some smoothing to the TDI maps before thresholding.
+          - atlas_iit_b0 (str): Path to a Mean B0 map of the IIT Human Brain Atlas. If provided, this input will be used instead of downloading the Mean B0 map.
+          - atlas_iit_bundle_masks_dir (str): Path to a directory containing IIT bundle masks. If provided, these inputs will be used instead of downloading and processing the bundle masks.
       mandatory: false
       default:
         threshold_bundles: false
         smooth_sigma: 1.0
+        atlas_iit_b0: null
+        atlas_iit_bundle_masks_dir: null
 output:
   - bundle_masks:
       type: file
