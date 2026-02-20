@@ -20,6 +20,7 @@ components:
   - segmentation/fastseg
   - segmentation/freesurferseg
   - segmentation/synthseg
+  - getoptionswithdefaults
 input:
   - ch_image:
       type: file
@@ -50,6 +51,13 @@ input:
         The input channel containing the FreeSurfer license.To get one, go to https://surfer.nmr.mgh.harvard.edu/registration.html. Optional. If you have already set your license as prescribed by Freesurfer (copied to a .license file in your $FREESURFER_HOME), this is not required.
         Structure: [ val(meta). path(fs_license) ]
       mandatory: false
+  - options:
+      type: map
+      description: |
+        Map of options for the subworkflow, including:
+          - run_synthseg (bool): Whether to run SynthSeg for segmentation. If false, FSL's fast will be used for segmentation. Default is false.
+      default:
+        run_synthseg: false
 output:
   - wm_mask:
       type: file

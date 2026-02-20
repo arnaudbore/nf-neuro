@@ -27,7 +27,7 @@ workflow PREPROC_DWI {
         ch_rev_b0               // channel: [ val(meta), rev-b0 ], optional
         ch_synthstrip_weights   // channel: [ val(meta), 'weights.pt' ] or [ 'weights.pt' ], optional
         ch_config_topup         // channel: [ 'topup.cnf' ], optional
-        options                 // [ optional ] map of options
+        options                 // Map of options [ options ]
 
     main:
 

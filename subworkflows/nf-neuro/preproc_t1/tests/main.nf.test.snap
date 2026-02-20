@@ -2,6 +2,14 @@
     "preproc_t1_quick": {
         "content": [
             {
+                "crop_box": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_t1_cropped_bbox.pkl"
+                    ]
+                ],
                 "image_nlmeans": [
                     [
                         {
@@ -23,7 +31,7 @@
                         {
                             "id": "test"
                         },
-                        "test_cropped.nii.gz"
+                        "test_t1_cropped.nii.gz"
                     ]
                 ],
                 "versions": [
@@ -34,10 +42,10 @@
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-30T13:25:40.996984"
+        "timestamp": "2026-02-18T11:58:49.181745957"
     },
     "preproc_t1_skip_all": {
         "content": [

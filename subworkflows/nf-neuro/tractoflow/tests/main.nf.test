@@ -25,6 +25,8 @@ nextflow_workflow {
     tag "tracking/localtracking"
     tag "tracking/pfttracking"
 
+    tag "subworkflows/utils_options"
+
     tag "stub"
     options "-stub-run"
 
@@ -103,7 +105,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -187,7 +188,6 @@ nextflow_workflow {
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -202,71 +202,6 @@ nextflow_workflow {
                             } ]
                         }
                 ).match() }
-            )
-        }
-    }
-
-    test("tractoflow - wrong options format - should fail") {
-        when {
-            workflow {
-                """
-                ch_split_test_data = LOAD_DATA.out.test_data_directory
-                    .branch{
-                        dwi: it.simpleName == "raw_DWIss1000-dir32"
-                        t1w: it.simpleName == "raw_T1w"
-                        template: it.simpleName == "antsbet"
-                    }
-                input[0] = ch_split_test_data.dwi.map{
-                    test_data_directory -> [
-                        [ id:'test' ],
-                        file("\${test_data_directory}/dwi.nii.gz"),
-                        file("\${test_data_directory}/dwi.bval"),
-                        file("\${test_data_directory}/dwi.bvec")
-                    ]}
-                input[1] = ch_split_test_data.t1w.map{
-                    test_data_directory -> [
-                        [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz")
-                    ]}
-                input[2] = channel.empty()
-                input[3] = channel.empty()
-                input[4] = channel.empty()
-                input[5] = channel.empty()
-                input[6] = channel.empty()
-                input[7] = channel.empty()
-                input[8] = ch_split_test_data.template.map{
-                    test_data_directory -> [
-                        [ id:'test' ],
-                        file("\${test_data_directory}/t1_template.nii.gz")
-                    ]}
-                input[9] = ch_split_test_data.template.map{
-                    test_data_directory -> [
-                        [ id:'test' ],
-                        file("\${test_data_directory}/t1_brain_probability_map.nii.gz")
-                    ]}
-                input[10] = channel.from("https://surfer.nmr.mgh.harvard.edu/docs/synthstrip/requirements/synthstrip.1.pt")
-                input[11] = channel.empty()
-                input[12] = channel.of([
-                    "preproc_dwi_run_denoising": true,
-                    "preproc_dwi_run_degibbs": false,
-                    "topup_eddy_run_topup": true,
-                    "topup_eddy_run_eddy": true,
-                    "preproc_dwi_run_N4": true,
-                    "preproc_dwi_run_resampling": true,
-                    "preproc_dwi_run_normalize": true,
-                    "preproc_dwi_run_synthstrip": true,
-                    "frf_average_from_data": false,
-                    "run_local_tracking": true,
-                    "run_pft_tracking": true
-                    ])
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert workflow.failed },
-                { assert workflow.stdout.contains("ERROR ~ Options must be a Map, got groovyx.gpars.dataflow.DataflowBroadcast. Expression: (options instanceof java.util.Map). Values: options = DataflowBroadcast around DataflowStream[?]") }
             )
         }
     }

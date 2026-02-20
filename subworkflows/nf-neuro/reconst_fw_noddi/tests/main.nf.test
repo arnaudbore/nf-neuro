@@ -14,6 +14,8 @@ nextflow_workflow {
     tag "reconst/meandiffusivitypriors"
     tag "reconst/dtimetrics"
 
+    tag "subworkflows/utils_options"
+
     tag "stub"
     options "-stub-run"
 
@@ -31,8 +33,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - noddi") {
         when {
-            config "./noddi.config"
-
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -67,10 +67,12 @@ nextflow_workflow {
                     perp_diff_min: channel.empty(),
                     perp_diff_max: channel.empty()
                 ]
+                input[4] = [ "run_noddi": true,
+                             "run_freewater": false,
+                             "average_diff_priors": false]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -97,8 +99,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - freewater") {
         when {
-            config "./fw.config"
-
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -133,10 +133,12 @@ nextflow_workflow {
                     perp_diff_min: channel.empty(),
                     perp_diff_max: channel.empty()
                 ]
+                input[4] = [ "run_noddi": false,
+                             "run_freewater": true,
+                             "average_diff_priors": false]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -163,8 +165,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - noddi & freewater") {
         when {
-            config "./noddi_fw.config"
-
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -199,10 +199,12 @@ nextflow_workflow {
                     perp_diff_min: channel.empty(),
                     perp_diff_max: channel.empty()
                 ]
+                input[4] = [ "run_noddi": true,
+                             "run_freewater": true,
+                             "average_diff_priors": false]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -229,8 +231,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - noddi & freewater - average priors") {
         when {
-            config "./noddi_fw_avg_priors.config"
-
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -265,10 +265,12 @@ nextflow_workflow {
                     perp_diff_min: channel.empty(),
                     perp_diff_max: channel.empty()
                 ]
+                input[4] = [ "run_noddi": true,
+                             "run_freewater": true,
+                             "average_diff_priors": true]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -295,7 +297,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - noddi & freewater - custom priors") {
         when {
-            config "./noddi_fw_custom_priors.config"
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -356,6 +357,9 @@ nextflow_workflow {
                     perp_diff_min: channel.value(0.0001),
                     perp_diff_max: channel.value(0.0007)
                 ]
+                input[4] = [ "run_noddi": true,
+                             "run_freewater": true,
+                             "average_diff_priors": true]
                 """
             }
         }
@@ -386,7 +390,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - noddi & freewater - custom priors subject-bound") {
         when {
-            config "./noddi_fw_custom_priors.config"
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -421,10 +424,12 @@ nextflow_workflow {
                     perp_diff_min: channel.of(tuple([ id:'test', single_end:false ], 0.0001)),
                     perp_diff_max: channel.of(tuple([ id:'test', single_end:false ], 0.0007))
                 ]
+                input[4] = [ "run_noddi": true,
+                             "run_freewater": true,
+                             "average_diff_priors": true]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -451,7 +456,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - noddi - custom priors") {
         when {
-            config "./noddi_custom_priors.config"
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -486,10 +490,12 @@ nextflow_workflow {
                     perp_diff_min: channel.value(0.0001),
                     perp_diff_max: channel.value(0.0007)
                 ]
+                input[4] = [ "run_noddi": true,
+                             "run_freewater": false,
+                             "average_diff_priors": true]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -516,7 +522,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - freewater - custom priors") {
         when {
-            config "./fw_custom_priors.config"
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -551,10 +556,12 @@ nextflow_workflow {
                     perp_diff_min: channel.value(0.0001),
                     perp_diff_max: channel.value(0.0007)
                 ]
+                input[4] = [ "run_noddi": false,
+                             "run_freewater": true,
+                             "average_diff_priors": true]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -581,8 +588,6 @@ nextflow_workflow {
 
     test("reconst_fw_noddi - no noddi & no freewater") {
         when {
-            config "./expect_error.config"
-
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
@@ -611,6 +616,10 @@ nextflow_workflow {
                         file("\${test_data_directory}/rd.nii.gz"),
                         file("\${test_data_directory}/md.nii.gz")
                     ]}
+                input[3] = channel.empty()
+                input[4] = [ "run_noddi": false,
+                             "run_freewater": false,
+                             "average_diff_priors": true]
                 """
             }
         }
