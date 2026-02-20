@@ -21,6 +21,7 @@ components:
   - registration/ants
   - stats/metricsinroi
   - registration/antsapplytransforms
+  - getoptionswithdefaults
 input:
   - ch_subject_reference:
       type: file
@@ -50,25 +51,10 @@ input:
           - atlas_iit_bundle_masks_dir (str): Path to a directory containing IIT bundle masks. If provided, these inputs will be used instead of downloading and processing the bundle masks.
       mandatory: true
       default:
-        - use_atlas_iit: true
-        - use_binary_masks: false
-        - atlas_iit_b0: null
-        - atlas_iit_bundle_masks_dir: null
-
-  - options:
-      type: channel
-      description: |
-        Map of options for the subworkflow, including:
-          - threshold_bundles (bool): If enabled, this will threshold the TDI bundle maps with the
-            recommended thresholds to create binary bundle masks. If disabled, the subworkflow will
-            output the TDI bundle maps.
-          - smooth_sigma (float): If `threshold_bundles` is enabled, this will apply a gaussian smoothing
-            with the specified sigma to the TDI bundle maps before thresholding. This is based on the
-            recommendation of the IIT atlas authors to apply some smoothing to the TDI maps before thresholding.
-      mandatory: false
-      default:
-        - threshold_bundles: false
-        - smooth_sigma: 1.0
+        use_atlas_iit: true
+        use_binary_masks: false
+        atlas_iit_b0: null
+        atlas_iit_bundle_masks_dir: null
 output:
   - json:
       type: file

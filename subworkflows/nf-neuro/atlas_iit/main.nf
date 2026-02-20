@@ -208,7 +208,7 @@ workflow ATLAS_IIT {
                 .map { _meta, mask -> mask }
         }
 
-        ch_bundles = THR_SMOOTHED_MASK.out.image
+        ch_bundles = ch_bundles
             .collect(sort: { path_a, path_b ->
                 def name_a = path_a.getName()
                 def name_b = path_b.getName()
