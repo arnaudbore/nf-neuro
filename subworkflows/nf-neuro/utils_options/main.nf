@@ -23,7 +23,7 @@ def parseDefaultsFromMeta(String metaFilePath) {
                 // The 'entries' field contains each option with its default value
                 if (optionsInput.containsKey('entries')) {
                     def entries = optionsInput.entries
-                    
+
                     // Extract default value from each entry
                     entries.each { key, value ->
                         if (value.containsKey('default')) {
@@ -90,7 +90,7 @@ def mergeWithDefaults(Object provided, Object defaults, boolean strict = false) 
  * @param metaPath Path to the meta.yml file (can use ${moduleDir}/meta.yml)
  * @return Map containing merged options with defaults filled in
  */
-def getOptionsWithDefaults(Object options, String metaPath) {
+def getOptionsWithDefaults(Object options, String metaPath, boolean strict = true) {
 
     // Check to ensure options is a Map
     if (!(options instanceof Map)) {
@@ -98,7 +98,7 @@ def getOptionsWithDefaults(Object options, String metaPath) {
     }
 
     def defaults = parseDefaultsFromMeta(metaPath)
-    return mergeWithDefaults(options, defaults, false)
+    return mergeWithDefaults(options, defaults, strict)
 }
 
 
@@ -107,18 +107,20 @@ workflow UTILS_OPTIONS {
     take:
         meta_file    // file: path(.../meta.yml)
         options      // map: val(options)
+        strict       // bool: val(strict) - if true, only allow options that exist in defaults
 
     main:
         ch_versions = channel.empty()
 
         // Capture options in a local variable to avoid dataflow broadcast issues
         def provided_options = options
+        def strict_mode = strict
 
         // Parse defaults and merge with provided options
         ch_merged_options = channel.of(meta_file)
             .map { meta_file_path ->
                 def defaults = parseDefaultsFromMeta(meta_file_path.toString())
-                def merged = mergeWithDefaults(provided_options, defaults, false)
+                def merged = mergeWithDefaults(provided_options, defaults, strict_mode)
                 merged
             }
 
