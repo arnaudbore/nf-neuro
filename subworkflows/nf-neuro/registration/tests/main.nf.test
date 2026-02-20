@@ -17,6 +17,8 @@ nextflow_workflow {
     tag "registration/easyreg"
     tag "registration/synthmorph"
 
+    tag "subworkflows/utils_options"
+
     tag "load_test_data"
 
     tag "stub"
@@ -35,7 +37,6 @@ nextflow_workflow {
     }
 
     test("registration - ANTs - Anat to DWI") {
-        config "./ants.config"
         when {
             workflow {
                 """
@@ -67,10 +68,10 @@ nextflow_workflow {
                 input[4] = channel.empty()
                 input[5] = channel.empty()
                 input[6] = channel.empty()
+                input[7] = [:]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -99,7 +100,6 @@ nextflow_workflow {
     }
 
     test("registration - ANTs - SyNQuick") {
-        config "./ants.config"
         when {
             workflow {
                 """
@@ -127,10 +127,10 @@ nextflow_workflow {
                 input[4] = channel.empty()
                 input[5] = channel.empty()
                 input[6] = channel.empty()
+                input[7] = [:]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -159,7 +159,6 @@ nextflow_workflow {
     }
 
     test("registration - easyreg") {
-        config "./easyreg.config"
         when {
             workflow {
                 """
@@ -185,10 +184,10 @@ nextflow_workflow {
                 input[4] = channel.empty()
                 input[5] = channel.empty()
                 input[6] = channel.empty()
+                input[7] = [ "run_easyreg": true ]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},
@@ -208,7 +207,6 @@ nextflow_workflow {
     }
 
     test("registration - Synthmorph") {
-        config "./synthmorph.config"
         when {
             workflow {
                 """
@@ -237,10 +235,10 @@ nextflow_workflow {
                 input[6] = ch_split_test_data.freesurfer.map{
                     test_data_directory -> file("\${test_data_directory}/license.txt")
                 }
+                input[7] = [ "run_synthmorph": true ]
                 """
             }
         }
-
         then {
             assertAll(
                 { assert workflow.success},

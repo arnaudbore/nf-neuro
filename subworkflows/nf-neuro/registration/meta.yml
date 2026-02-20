@@ -47,6 +47,7 @@ components:
   - registration/convert
   - registration/easyreg
   - registration/synthmorph
+  - getoptionswithdefaults
 input:
   - ch_fixed_image:
       type: file
@@ -92,6 +93,15 @@ input:
         segmentation + parcellation in moving image space (floating in Easyreg naming convention) image.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
+  - options:
+      type: map
+      description: |
+        Map of options for the subworkflow, including:
+          - run_easyreg (bool): Whether to run EasyReg for registration. If false, SynthMorph will be used if `run_synthmorph` is set to true, and ANTs SyN will be used if `run_synthmorph` is set to false. Default is false.
+          - run_synthmorph (bool): Whether to run SynthMorph for registration. If false, EasyReg will be used if `run_easyreg` is set to true, and ANTs SyN will be used if `run_easyreg` is set to false. Default is false.
+      default:
+        run_easyreg: false
+        run_synthmorph: false
 output:
   - image_warped:
       type: file

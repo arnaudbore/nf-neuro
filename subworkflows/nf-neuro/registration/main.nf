@@ -3,9 +3,7 @@ include { REGISTRATION_ANTS   } from '../../../modules/nf-neuro/registration/ant
 include { REGISTRATION_EASYREG   } from '../../../modules/nf-neuro/registration/easyreg/main'
 include { REGISTRATION_SYNTHMORPH } from '../../../modules/nf-neuro/registration/synthmorph/main'
 include { REGISTRATION_CONVERT } from '../../../modules/nf-neuro/registration/convert/main'
-
-params.run_easyreg      = false
-params.run_synthmorph   = false
+include { getOptionsWithDefaults } from '../utils_options/main'
 
 
 workflow REGISTRATION {
@@ -25,11 +23,16 @@ workflow REGISTRATION {
         ch_segmentation                 // channel: [ val(meta), segmentation ], optional
         ch_moving_segmentation          // channel: [ val(meta), segmentation ], optional
         ch_freesurfer_license           // channel: [ license ], optional
+        options                         // Map of options
+
     main:
         ch_versions = channel.empty()
         ch_mqc = channel.empty()
 
-        if ( params.run_easyreg ) {
+        // Merge options with defaults from meta.yml
+        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+
+        if ( options.run_easyreg ) {
             // ** Registration using Easyreg ** //
             // Result : [ meta, reference, image | [], ref-segmentation | [], segmentation | [] ]
             //  Steps :
@@ -64,7 +67,7 @@ workflow REGISTRATION {
             out_segmentation = ch_segmentation.mix( REGISTRATION_EASYREG.out.segmentation_warped )
             out_ref_segmentation = ch_moving_segmentation.mix( REGISTRATION_EASYREG.out.fixed_segmentation_warped )
         }
-        else if ( params.run_synthmorph ) {
+        else if ( options.run_synthmorph ) {
             // ** Registration using synthmorph ** //
             ch_register = ch_fixed_image
                 .join(ch_moving_image)

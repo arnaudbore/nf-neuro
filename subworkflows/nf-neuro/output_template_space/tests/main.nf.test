@@ -17,6 +17,8 @@ nextflow_workflow {
     tag "betcrop/fslbetcrop"
     tag "utils/templateflow"
 
+    tag "subworkflows/utils_options"
+
     tag "stub"
     options "-stub-run"
 
@@ -33,7 +35,6 @@ nextflow_workflow {
     }
 
     test("Template MNI152NLin2009cAsym - local templates") {
-        config "./local.config"
         when {
             workflow {
                 """
@@ -75,6 +76,8 @@ nextflow_workflow {
                     ]
                 }
                 input[5] = channel.empty()
+                input[6] = [ "template": "MNI152NLin2009cAsym",
+                             "templateflow_home": "$launchDir/templateflow_home"]
                 """
             }
         }
@@ -115,7 +118,6 @@ nextflow_workflow {
     }
 
     test("Template MNI152NLin2009bSym - no brain mask") {
-        config "./no_brain_mask.config"
         tag "no_brain_mask"
         when {
             workflow {
@@ -158,6 +160,8 @@ nextflow_workflow {
                     ]
                 }
                 input[5] = channel.empty()
+                input[6] = [ "template": "MNI152NLin2009bSym",
+                             "templateflow_home": "$launchDir/templateflow_home" ]
                 """
             }
         }
@@ -198,7 +202,6 @@ nextflow_workflow {
     }
 
     test("Template MNI152NLin2009aAsym - using synthmorph registration") {
-        config "./synthmorph.config"
         when {
             workflow {
                 """
@@ -243,6 +246,9 @@ nextflow_workflow {
                 input[5] = ch_split_test_data.freesurfer.map{
                     test_data_directory -> file("\${test_data_directory}/license.txt")
                 }
+                input[6] = [ "run_synthmorph": true,
+                             "template": "MNI152NLin2009bSym",
+                             "templateflow_home": "$launchDir/templateflow_home" ]
                 """
             }
         }

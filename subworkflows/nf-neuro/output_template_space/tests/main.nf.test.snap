@@ -37,10 +37,10 @@
                     ]
                 ],
                 "ch_t1w_tpl": [
-                    "MNI152NLin2009aAsym_T1w.nii.gz"
+                    "MNI152NLin2009bSym_T1w.nii.gz"
                 ],
                 "ch_t2w_tpl": [
-                    "MNI152NLin2009aAsym_T2w.nii.gz"
+                    "MNI152NLin2009bSym_T2w.nii.gz"
                 ],
                 "mqc": [
                     [
@@ -77,7 +77,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-23T17:13:23.006171379"
+        "timestamp": "2026-02-18T15:32:34.613817021"
     },
     "Template MNI152NLin2009aAsym - using synthmorph registration": {
         "content": [
@@ -117,10 +117,10 @@
                     ]
                 ],
                 "ch_t1w_tpl": [
-                    "MNI152NLin2009aAsym_T1w.nii.gz"
+                    "MNI152NLin2009bSym_T1w.nii.gz"
                 ],
                 "ch_t2w_tpl": [
-                    "MNI152NLin2009aAsym_T2w.nii.gz"
+                    "MNI152NLin2009bSym_T2w.nii.gz"
                 ],
                 "mqc": [
                     [
@@ -138,9 +138,9 @@
                 ],
                 "versions": [
                     "versions.yml:md5,08c023826481c9130c3914096cda7f63",
-                    "versions.yml:md5,2bc8cc6be1d34553d314a3e77a549b2f",
-                    "versions.yml:md5,462865f76de54b3d8ee0547e3b67847b",
                     "versions.yml:md5,5091055c3aacdbd4dccc294cc841b8b3",
+                    "versions.yml:md5,513f314aaedec96c49c67ed0bd3bbf4b",
+                    "versions.yml:md5,53e0a593f56efd67061357b22888233f",
                     "versions.yml:md5,6e9699943a528da0a010defdd462fa3a",
                     "versions.yml:md5,837bc1b10db6cb6c459b8871725ba254",
                     "versions.yml:md5,9013974da5ab5a7ae91e580948968e75",
@@ -152,7 +152,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-23T17:13:43.380937304"
+        "timestamp": "2026-02-20T10:03:09.839689352"
     },
     "Template MNI152NLin2009cAsym - local templates": {
         "content": [
@@ -220,9 +220,9 @@
                 "versions": [
                     "versions.yml:md5,08c023826481c9130c3914096cda7f63",
                     "versions.yml:md5,2b72cc481686daf9f4a00587bbf1efa3",
-                    "versions.yml:md5,2bc8cc6be1d34553d314a3e77a549b2f",
-                    "versions.yml:md5,462865f76de54b3d8ee0547e3b67847b",
                     "versions.yml:md5,5091055c3aacdbd4dccc294cc841b8b3",
+                    "versions.yml:md5,513f314aaedec96c49c67ed0bd3bbf4b",
+                    "versions.yml:md5,53e0a593f56efd67061357b22888233f",
                     "versions.yml:md5,6e9699943a528da0a010defdd462fa3a",
                     "versions.yml:md5,957fd24bd8b559411e3a565ac7313f40"
                 ]
@@ -232,6 +232,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-23T17:12:48.237620499"
+        "timestamp": "2026-02-18T15:09:34.238061542"
     }
 }
