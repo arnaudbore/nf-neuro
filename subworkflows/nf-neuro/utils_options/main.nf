@@ -16,20 +16,19 @@ def parseDefaultsFromMeta(String metaFilePath) {
     // Extract defaults from the 'options' input definition in meta.yml
     if (yaml.input) {
         yaml.input.each { inputDef ->
-            // Look for the 'options' input which contains the default values
+            // Look for the 'options' input which contains the entries with default values
             if (inputDef.containsKey('options')) {
                 def optionsInput = inputDef.options
 
-                // The 'default' field contains the default values as a map
-                if (optionsInput.containsKey('default')) {
-                    def defaultValue = optionsInput.default
-
-                    // If default is a Map, use it directly
-                    if (defaultValue instanceof Map) {
-                        defaults = defaultValue
-                    } else if (defaultValue == null || defaultValue == [:] || defaultValue.toString() == '{}') {
-                        // If default is empty, try to extract from description
-                        log.warn "No default values found in meta.yml 'default' field"
+                // The 'entries' field contains each option with its default value
+                if (optionsInput.containsKey('entries')) {
+                    def entries = optionsInput.entries
+                    
+                    // Extract default value from each entry
+                    entries.each { key, value ->
+                        if (value.containsKey('default')) {
+                            defaults[key] = value.default
+                        }
                     }
                 }
             }
