@@ -17,7 +17,7 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = [ threshold_bundles: false ]
+                input[0] = [ : ] // threshold_bundles: false
                 """
             }
         }

@@ -95,7 +95,7 @@ nextflow_workflow {
                         file("\${test_data_directory}/rd.nii.gz"),
                         file("\${test_data_directory}/md.nii.gz")]
                     ]}
-                input[2] = [use_atlas_iit: true, use_binary_mask: false]
+                input[2] = [use_atlas_iit: true] // use_binary_mask: false
                 """
             }
         }
