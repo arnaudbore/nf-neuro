@@ -15,20 +15,22 @@ workflow ATLAS_ROIMETRICS {
         ch_bundle_masks = channel.empty()
         ch_template_ref = channel.empty()
 
-        // Merge options with defaults from meta.yml
         options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
 
         assert [options.use_atlas_iit].count(true) <= 1 :
             "Only one atlas can be selected at a time for ROI metrics extraction." +
             " Please set only one of the options 'use_atlas_*' to 'true'."
 
-        if ( options.use_atlas_iit ) {
-            ATLAS_IIT([
-                'atlas_iit_b0': options.atlas_iit_b0,
-                'atlas_iit_bundle_masks_dir': options.atlas_iit_bundle_masks_dir
-            ])
+        if (options.use_atlas_iit) {
+            ATLAS_IIT(
+                [
+                    threshold_bundles: options.use_binary_masks ?: false,
+                    atlas_iit_b0: options.atlas_iit_b0,
+                    atlas_iit_bundle_masks_dir: options.atlas_iit_bundle_masks_dir
+                ]
+            )
             ch_versions = ch_versions.mix(ATLAS_IIT.out.versions)
-            ch_bundle_masks = ATLAS_IIT.out.bundle_masks.toList()
+            ch_bundle_masks = ATLAS_IIT.out.bundles.toList()
             ch_template_ref = ATLAS_IIT.out.b0
         }
         else {

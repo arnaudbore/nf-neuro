@@ -5,8 +5,8 @@ description: |
   for each bundle mask of the configured atlas. The subworkflow takes as input the reference
   image from each subject (e.g. the B0). The atlas template reference image is registered
   to the subject's DWI space. The transformation is then applied on the bundle masks for each
-  subject, allowing us to have the bundle masks in the same space as the input metric images (i.e.
-  in the subject's DWI space).
+  subject, allowing us to have the bundle maps/masks in the same space as the input metric
+  images (i.e. in the subject's DWI space).
 keywords:
   - atlas
   - bundles
@@ -57,8 +57,7 @@ input:
         - edam: http://edamontology.org/format_4001 # NIFTI format
   - options:
       type: map
-      description: |
-        Map of options for the subworkflow.
+      description: Map of options for the subworkflow.
       entries:
         use_atlas_iit:
           type: boolean
@@ -72,6 +71,10 @@ input:
           type: string
           description: Path to a directory containing IIT bundle masks. This input will be used instead of downloading and processing the bundle masks if `use_atlas_iit` is set to 'true'.
           default: null
+        use_binary_masks:
+          type: boolean
+          description: If 'true', the IIT bundle masks will be thresholded to create binary masks before extracting the metrics.
+          default: false
       mandatory: true
 output:
   - json:

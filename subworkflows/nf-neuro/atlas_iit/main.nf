@@ -1,4 +1,6 @@
 include { IMAGE_MATH as THR_BUNDLE_MASK } from '../../../modules/nf-neuro/image/math/main'
+include { IMAGE_MATH as SMOOTH_MASK } from '../../../modules/nf-neuro/image/math/main'
+include { IMAGE_MATH as THR_SMOOTHED_MASK } from '../../../modules/nf-neuro/image/math/main'
 include { getOptionsWithDefaults } from '../utils_options/main'
 
 def download_file(url, output_path) {
@@ -149,12 +151,13 @@ workflow ATLAS_IIT {
                     "${workflow.workDir}/atlas_iit/"
                 )
             }
+
             ch_b0 = channel.fromPath("${workflow.workDir}/atlas_iit/IITmean_b0.nii.gz", checkIfExists: true)
         }
 
         // Fetch and Process Bundle Masks
-        if ( input_bundle_masks_dir ) {
-            ch_bundle_masks = channel.fromPath(input_bundle_masks_dir + "/*.nii.gz", checkIfExists: true)
+        if (input_bundle_masks_dir) {
+            ch_bundles = channel.fromPath(input_bundle_masks_dir + "/*.nii.gz", checkIfExists: true)
                 .collect(sort: { path_a, path_b ->
                     def name_a = path_a.getName()
                     def name_b = path_b.getName()
@@ -169,22 +172,46 @@ workflow ATLAS_IIT {
                 thresholds
             )
 
-            bundle_maps = channel.fromPath(atlas_tdi + "/*.nii.gz", checkIfExists: true)
+            ch_bundles = channel.fromPath(atlas_tdi + "/*.nii.gz", checkIfExists: true)
 
-            // Pair all bundle maps with their respective thresholds
-            ch_bundle_maps_with_thresholds = bundle_maps.map { file ->
-                def file_base_name = file.baseName.replace(".nii.gz", "").replace(".nii", "")
-                def thr_find = thresholds.find { line -> line.key == file_base_name }?.value
-                def thr = thr_find != null ? thr_find : null
-                def meta = [ id: file_base_name ]
-                return [meta, file, thr]
+            // Enabling this option will convert the track density maps to binary
+            // bundle masks based on the recommended thresholds.
+            //
+            // One might choose to disable this thresholding step if they want to
+            // use the track density maps as "soft" bundle masks instead of binary
+            // masks.
+            //
+            if (options.threshold_bundles) {
+                // Pair all bundle maps with their respective thresholds
+                ch_bundle_maps_with_thresholds = ch_bundles.map { file ->
+                    def file_base_name = file.baseName.replace(".nii.gz", "").replace(".nii", "")
+                    def thr_find = thresholds.find { line -> line.key == file_base_name }?.value
+                    def thr = thr_find != null ? thr_find : null
+                    def meta = [ id: file_base_name ]
+                    return [meta, file, thr]
+                }
+
+                // Threshold the track density maps to get binary bundle masks
+                THR_BUNDLE_MASK(ch_bundle_maps_with_thresholds)
+                ch_versions = ch_versions.mix(THR_BUNDLE_MASK.out.versions).first()
+
+                // Smooth the mask with a gaussian kernel of sigma 1
+                ch_smooth_mask_input = THR_BUNDLE_MASK.out.image
+                    .map { meta, image -> [meta, image, options.smooth_sigma ?: 1.0] }
+                SMOOTH_MASK(ch_smooth_mask_input)
+                ch_versions = ch_versions.mix(SMOOTH_MASK.out.versions).first()
+
+                // Threshold the smoothed mask with a threshold of 0.5 to get a binary mask again
+                ch_thr_smoothed_mask_input = SMOOTH_MASK.out.image
+                    .map { meta, image -> [meta, image, 0.5] }
+                THR_SMOOTHED_MASK(ch_thr_smoothed_mask_input)
+                ch_versions = ch_versions.mix(THR_SMOOTHED_MASK.out.versions).first()
+
+                ch_bundles = THR_SMOOTHED_MASK.out.image
+                    .map { _meta, mask -> mask }
             }
 
-            THR_BUNDLE_MASK(ch_bundle_maps_with_thresholds)
-            ch_versions = ch_versions.mix(THR_BUNDLE_MASK.out.versions).first()
-
-            ch_bundle_masks = THR_BUNDLE_MASK.out.image
-                .map { _meta, mask -> mask }
+            ch_bundles = ch_bundles
                 .collect(sort: { path_a, path_b ->
                     def name_a = path_a.getName()
                     def name_b = path_b.getName()
@@ -194,6 +221,6 @@ workflow ATLAS_IIT {
 
     emit:
         b0 = ch_b0
-        bundle_masks = ch_bundle_masks
+        bundles = ch_bundles
         versions = ch_versions
 }
