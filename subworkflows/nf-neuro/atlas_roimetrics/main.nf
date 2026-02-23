@@ -2,7 +2,7 @@ include { REGISTRATION_ANTS as REGISTER_ATLAS_REF } from '../../../modules/nf-ne
 include { REGISTRATION_ANTSAPPLYTRANSFORMS as TRANSFORM_ATLAS_BUNDLES } from '../../../modules/nf-neuro/registration/antsapplytransforms/main.nf'
 include { STATS_METRICSINROI     } from '../../../modules/nf-neuro/stats/metricsinroi/main'
 include { ATLAS_IIT              } from '../../nf-neuro/atlas_iit/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 workflow ATLAS_ROIMETRICS {
     take:
@@ -15,7 +15,8 @@ workflow ATLAS_ROIMETRICS {
         ch_bundle_masks = channel.empty()
         ch_template_ref = channel.empty()
 
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
+        options = UTILS_OPTIONS.out.options
 
         assert [options.use_atlas_iit].count(true) <= 1 :
             "Only one atlas can be selected at a time for ROI metrics extraction." +

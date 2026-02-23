@@ -54,7 +54,7 @@ components:
   - registration/antsapplytransforms
   - tracking/localtracking
   - tracking/pfttracking
-  - getoptionswithdefaults
+  - utils_options
 args:
   - b0_max_threshold:
       type: float

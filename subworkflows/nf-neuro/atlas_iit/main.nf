@@ -1,7 +1,7 @@
 include { IMAGE_MATH as THR_BUNDLE_MASK } from '../../../modules/nf-neuro/image/math/main'
 include { IMAGE_MATH as SMOOTH_MASK } from '../../../modules/nf-neuro/image/math/main'
 include { IMAGE_MATH as THR_SMOOTHED_MASK } from '../../../modules/nf-neuro/image/math/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 def download_file(url, output_path) {
     HttpURLConnection connection = new URL(url).openConnection()
@@ -133,7 +133,8 @@ workflow ATLAS_IIT {
         ch_versions = channel.empty()
 
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
+        options = UTILS_OPTIONS.out.options
 
         def input_b0 = options.atlas_iit_b0 ?: null
         def input_bundle_masks_dir = options.atlas_iit_bundle_masks_dir ?: null

@@ -23,7 +23,7 @@ components:
   - preproc/topup
   - preproc/eddy
   - utils/extractb0
-  - getoptionswithdefaults
+  - utils_options
 input:
   - ch_dwi:
       type: file

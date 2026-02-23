@@ -20,7 +20,7 @@ include { TRACKING_PFTTRACKING   } from '../../../modules/nf-neuro/tracking/pftt
 include { TRACKING_LOCALTRACKING } from '../../../modules/nf-neuro/tracking/localtracking/main'
 
 // UTILS
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 // ** UTILITY FUNCTIONS ** //
 
@@ -49,7 +49,8 @@ workflow TRACTOFLOW {
         options                 // Map of options [ options ]
     main:
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
+        options = UTILS_OPTIONS.out.options
 
         ch_versions = channel.empty()
         ch_mqc_files = channel.empty()

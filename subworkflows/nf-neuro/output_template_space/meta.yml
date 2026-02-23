@@ -35,7 +35,7 @@ components:
   - betcrop/fslbetcrop
   - utils/templateflow
   - registration
-  - getoptionswithdefaults
+  - utils_options
 input:
   - ch_anat:
       type: file

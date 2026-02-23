@@ -125,6 +125,6 @@ workflow UTILS_OPTIONS {
             }
 
     emit:
-        options = ch_merged_options      // channel: [ val(merged_options) ]
+        options = ch_merged_options.first()      // value channel: val(merged_options)
         versions = ch_versions           // channel: [ versions.yml ]
 }

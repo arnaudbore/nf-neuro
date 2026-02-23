@@ -2,7 +2,7 @@
 include { PREPROC_TOPUP } from '../../../modules/nf-neuro/preproc/topup/main'
 include { PREPROC_EDDY } from '../../../modules/nf-neuro/preproc/eddy/main'
 include { UTILS_EXTRACTB0 } from '../../../modules/nf-neuro/utils/extractb0/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 workflow TOPUP_EDDY {
 
@@ -19,7 +19,8 @@ workflow TOPUP_EDDY {
 
     main:
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
+        options = UTILS_OPTIONS.out.options
 
         ch_versions = channel.empty()
         ch_multiqc_files = channel.empty()

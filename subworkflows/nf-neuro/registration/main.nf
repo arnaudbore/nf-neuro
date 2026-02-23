@@ -3,7 +3,7 @@ include { REGISTRATION_ANTS   } from '../../../modules/nf-neuro/registration/ant
 include { REGISTRATION_EASYREG   } from '../../../modules/nf-neuro/registration/easyreg/main'
 include { REGISTRATION_SYNTHMORPH } from '../../../modules/nf-neuro/registration/synthmorph/main'
 include { REGISTRATION_CONVERT } from '../../../modules/nf-neuro/registration/convert/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 
 workflow REGISTRATION {
@@ -30,7 +30,8 @@ workflow REGISTRATION {
         ch_mqc = channel.empty()
 
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
+        options = UTILS_OPTIONS.out.options
 
         if ( options.run_easyreg ) {
             // ** Registration using Easyreg ** //
