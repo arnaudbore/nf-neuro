@@ -3,7 +3,7 @@ include { RECONST_MEANDIFFUSIVITYPRIORS } from '../../../modules/nf-neuro/recons
 include { RECONST_NODDI          } from '../../../modules/nf-neuro/reconst/noddi/main'
 include { RECONST_FREEWATER      } from '../../../modules/nf-neuro/reconst/freewater/main'
 include { RECONST_DTIMETRICS as FW_CORRECTED_DTIMETRICS } from '../../../modules/nf-neuro/reconst/dtimetrics/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 
 workflow RECONST_FW_NODDI {
@@ -16,7 +16,8 @@ workflow RECONST_FW_NODDI {
         options         // Map of options [ options ] , including:
     main:
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
         ch_versions = channel.empty()
 
         // Make sure that at least one of the two reconstructions is requested

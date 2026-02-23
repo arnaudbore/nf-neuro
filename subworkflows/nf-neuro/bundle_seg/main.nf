@@ -1,6 +1,6 @@
 include { BUNDLE_RECOGNIZE  } from '../../../modules/nf-neuro/bundle/recognize/main'
 include { REGISTRATION } from '../registration/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 def fetch_bundleseg_atlas(atlasUrl, configUrl, dest) {
 
@@ -52,7 +52,8 @@ workflow BUNDLE_SEG {
 
     main:
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
 
         if ( options.run_easyreg ) error "The BUNDLE_SEG workflow does not support the easyreg registration method."
         if ( options.run_synthmorph ) {

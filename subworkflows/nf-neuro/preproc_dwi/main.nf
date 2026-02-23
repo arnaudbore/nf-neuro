@@ -15,7 +15,7 @@ include { IMAGE_RESAMPLE as RESAMPLE_DWI } from '../../../modules/nf-neuro/image
 include { IMAGE_RESAMPLE as RESAMPLE_MASK } from '../../../modules/nf-neuro/image/resample/main'
 include { UTILS_EXTRACTB0 } from '../../../modules/nf-neuro/utils/extractb0/main'
 include { TOPUP_EDDY } from '../topup_eddy/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 
 workflow PREPROC_DWI {
@@ -32,7 +32,8 @@ workflow PREPROC_DWI {
     main:
 
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
 
         ch_versions = channel.empty()
         ch_multiqc_files = channel.empty()

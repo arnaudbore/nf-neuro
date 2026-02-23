@@ -20,7 +20,7 @@ components:
   - segmentation/fastseg
   - segmentation/freesurferseg
   - segmentation/synthseg
-  - getoptionswithdefaults
+  - utils_options
 input:
   - ch_image:
       type: file

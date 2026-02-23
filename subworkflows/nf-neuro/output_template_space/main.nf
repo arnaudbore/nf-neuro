@@ -9,7 +9,7 @@ include { REGISTRATION_ANTSAPPLYTRANSFORMS as WARPLABELS } from '../../../module
 include { REGISTRATION_TRACTOGRAM                        } from '../../../modules/nf-neuro/registration/tractogram/main.nf'
 include { REGISTRATION } from '../registration/main.nf'
 
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS } from '../utils_options/main'
 
 workflow OUTPUT_TEMPLATE_SPACE {
 
@@ -24,7 +24,8 @@ workflow OUTPUT_TEMPLATE_SPACE {
 
     main:
         // Merge options with defaults from meta.yml
-        options = getOptionsWithDefaults(options, "${moduleDir}/meta.yml")
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
         ch_versions = channel.empty()
         ch_mqc = channel.empty()
 
