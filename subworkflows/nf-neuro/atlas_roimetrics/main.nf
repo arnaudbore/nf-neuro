@@ -2,7 +2,7 @@ include { REGISTRATION_ANTS as REGISTER_ATLAS_REF } from '../../../modules/nf-ne
 include { REGISTRATION_ANTSAPPLYTRANSFORMS as TRANSFORM_ATLAS_BUNDLES } from '../../../modules/nf-neuro/registration/antsapplytransforms/main.nf'
 include { STATS_METRICSINROI     } from '../../../modules/nf-neuro/stats/metricsinroi/main'
 include { ATLAS_IIT              } from '../../nf-neuro/atlas_iit/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 workflow ATLAS_ROIMETRICS {
     take:

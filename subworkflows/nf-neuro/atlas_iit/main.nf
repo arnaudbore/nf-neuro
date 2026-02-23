@@ -1,7 +1,7 @@
 include { IMAGE_MATH as THR_BUNDLE_MASK } from '../../../modules/nf-neuro/image/math/main'
 include { IMAGE_MATH as SMOOTH_MASK } from '../../../modules/nf-neuro/image/math/main'
 include { IMAGE_MATH as THR_SMOOTHED_MASK } from '../../../modules/nf-neuro/image/math/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 def download_file(url, output_path) {
     HttpURLConnection connection = new URL(url).openConnection()

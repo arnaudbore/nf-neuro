@@ -59,7 +59,7 @@ components:
   - betcrop/antsbet
   - betcrop/synthstrip
   - image/cropvolume
-  - getoptionswithdefaults
+  - utils_options
 
 input:
   - ch_image:

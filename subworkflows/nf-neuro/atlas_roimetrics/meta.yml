@@ -21,7 +21,7 @@ components:
   - registration/ants
   - stats/metricsinroi
   - registration/antsapplytransforms
-  - getoptionswithdefaults
+  - utils_options
 input:
   - ch_subject_reference:
       type: file

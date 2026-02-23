@@ -2,7 +2,7 @@
 include { PREPROC_TOPUP } from '../../../modules/nf-neuro/preproc/topup/main'
 include { PREPROC_EDDY } from '../../../modules/nf-neuro/preproc/eddy/main'
 include { UTILS_EXTRACTB0 } from '../../../modules/nf-neuro/utils/extractb0/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 workflow TOPUP_EDDY {
 

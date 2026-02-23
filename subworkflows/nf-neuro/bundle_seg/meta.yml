@@ -32,7 +32,7 @@ keywords:
 components:
   - bundle/recognize
   - registration
-  - getoptionswithdefaults
+  - utils_options
 input:
   - ch_fa:
       type: file

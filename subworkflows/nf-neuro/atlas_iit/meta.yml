@@ -25,7 +25,7 @@ keywords:
   - template
 components:
   - image/math
-  - getoptionswithdefaults
+  - utils_options
 input:
   - options:
       type: map

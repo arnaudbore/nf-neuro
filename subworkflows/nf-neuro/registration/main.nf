@@ -3,7 +3,7 @@ include { REGISTRATION_ANTS   } from '../../../modules/nf-neuro/registration/ant
 include { REGISTRATION_EASYREG   } from '../../../modules/nf-neuro/registration/easyreg/main'
 include { REGISTRATION_SYNTHMORPH } from '../../../modules/nf-neuro/registration/synthmorph/main'
 include { REGISTRATION_CONVERT } from '../../../modules/nf-neuro/registration/convert/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 
 workflow REGISTRATION {

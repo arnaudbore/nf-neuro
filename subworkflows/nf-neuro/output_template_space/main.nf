@@ -9,7 +9,7 @@ include { REGISTRATION_ANTSAPPLYTRANSFORMS as WARPLABELS } from '../../../module
 include { REGISTRATION_TRACTOGRAM                        } from '../../../modules/nf-neuro/registration/tractogram/main.nf'
 include { REGISTRATION } from '../registration/main.nf'
 
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 workflow OUTPUT_TEMPLATE_SPACE {
 

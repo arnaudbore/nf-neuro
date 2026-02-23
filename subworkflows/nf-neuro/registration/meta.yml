@@ -47,7 +47,7 @@ components:
   - registration/convert
   - registration/easyreg
   - registration/synthmorph
-  - getoptionswithdefaults
+  - utils_options
 input:
   - ch_fixed_image:
       type: file

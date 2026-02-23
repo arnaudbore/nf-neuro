@@ -18,7 +18,7 @@ components:
   - reconst/diffusivitypriors
   - reconst/meandiffusivitypriors
   - reconst/dtimetrics
-  - getoptionswithdefaults
+  - utils_options
 input:
   - dwi_bval_bvec:
       type: file

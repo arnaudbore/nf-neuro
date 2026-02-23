@@ -20,7 +20,7 @@ include { TRACKING_PFTTRACKING   } from '../../../modules/nf-neuro/tracking/pftt
 include { TRACKING_LOCALTRACKING } from '../../../modules/nf-neuro/tracking/localtracking/main'
 
 // UTILS
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 // ** UTILITY FUNCTIONS ** //
 

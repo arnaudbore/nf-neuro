@@ -6,7 +6,7 @@ include { BETCROP_ANTSBET } from '../../../modules/nf-neuro/betcrop/antsbet/main
 include { BETCROP_SYNTHSTRIP} from '../../../modules/nf-neuro/betcrop/synthstrip/main'
 include { IMAGE_CROPVOLUME as IMAGE_CROPVOLUME_T1 } from '../../../modules/nf-neuro/image/cropvolume/main'
 include { IMAGE_CROPVOLUME as IMAGE_CROPVOLUME_MASK } from '../../../modules/nf-neuro/image/cropvolume/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 
 workflow PREPROC_T1 {

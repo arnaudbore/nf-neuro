@@ -1,6 +1,6 @@
 include { BUNDLE_RECOGNIZE  } from '../../../modules/nf-neuro/bundle/recognize/main'
 include { REGISTRATION } from '../registration/main'
-include { getOptionsWithDefaults } from '../utils_options/main'
+include { UTILS_OPTIONS; getOptionsWithDefaults } from '../utils_options/main'
 
 def fetch_bundleseg_atlas(atlasUrl, configUrl, dest) {
 
