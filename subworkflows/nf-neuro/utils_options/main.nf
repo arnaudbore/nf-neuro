@@ -1,6 +1,4 @@
-
 workflow UTILS_OPTIONS {
-
     take:
         meta_file    // file: path(.../meta.yml)
         options      // map: val(options)
@@ -8,21 +6,13 @@ workflow UTILS_OPTIONS {
 
     main:
         ch_versions = channel.empty()
-
         // Capture options in a local variable to avoid dataflow broadcast issues
         def provided_options = options
         def strict_mode = strict
 
-        // Parse defaults and merge with provided options
-        ch_merged_options = channel.of(meta_file)
-            .map { meta_file_path ->
-                def defaults = parseDefaultsFromMeta(meta_file_path.toString())
-                def merged = mergeWithDefaults(provided_options, defaults, strict_mode)
-                merged
-            }
-
+        merged_options = getOptionsWithDefaults(provided_options, meta_file, strict_mode)
     emit:
-        options = ch_merged_options.first()      // value channel: val(merged_options)
+        options = merged_options         // DataflowValue (map): [ options ]
         versions = ch_versions           // channel: [ versions.yml ]
 }
 

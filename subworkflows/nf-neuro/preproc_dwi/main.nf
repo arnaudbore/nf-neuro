@@ -32,8 +32,8 @@ workflow PREPROC_DWI {
     main:
 
         // Merge options with defaults from meta.yml
-        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
-        options = UTILS_OPTIONS.out.options
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
 
         ch_versions = channel.empty()
         ch_multiqc_files = channel.empty()

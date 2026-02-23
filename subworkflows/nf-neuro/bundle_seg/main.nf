@@ -52,8 +52,8 @@ workflow BUNDLE_SEG {
 
     main:
         // Merge options with defaults from meta.yml
-        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
-        options = UTILS_OPTIONS.out.options
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
 
         if ( options.run_easyreg ) error "The BUNDLE_SEG workflow does not support the easyreg registration method."
         if ( options.run_synthmorph ) {

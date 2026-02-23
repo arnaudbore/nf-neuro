@@ -130,7 +130,7 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta_strict_true.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = test_meta_file
+                input[0] = "\${workDir}/test_meta_strict_true.yml"
                 input[1] = [
                     "option_a": true,
                     "option_unknown": false  // Unknown option, strict=true so it should be ignored with warning
@@ -175,7 +175,7 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta_partial.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = test_meta_file
+                input[0] = "\${workDir}/test_meta_partial.yml"
                 input[1] = [
                     "option_a": true,
                     "option_unknown": false
@@ -220,7 +220,7 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta_defaults.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = test_meta_file
+                input[0] = "\${workDir}/test_meta_defaults.yml"
                 input[1] = [:]  // Empty options, should use all defaults
                 input[2] = true  // strict = true (default)
                 """
@@ -258,7 +258,7 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta_invalid.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = test_meta_file
+                input[0] = "\${workDir}/test_meta_invalid.yml"
                 input[1] = ["option_a", "option_b"]  // List instead of Map - should fail
                 input[2] = true  // strict = true (default)
                 """

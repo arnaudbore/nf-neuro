@@ -16,8 +16,8 @@ workflow RECONST_FW_NODDI {
         options         // Map of options [ options ] , including:
     main:
         // Merge options with defaults from meta.yml
-        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
-        options = UTILS_OPTIONS.out.options
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
         ch_versions = channel.empty()
 
         // Make sure that at least one of the two reconstructions is requested

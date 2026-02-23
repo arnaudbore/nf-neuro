@@ -30,8 +30,8 @@ workflow REGISTRATION {
         ch_mqc = channel.empty()
 
         // Merge options with defaults from meta.yml
-        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
-        options = UTILS_OPTIONS.out.options
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
 
         if ( options.run_easyreg ) {
             // ** Registration using Easyreg ** //

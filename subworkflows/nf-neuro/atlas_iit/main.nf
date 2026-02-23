@@ -133,8 +133,8 @@ workflow ATLAS_IIT {
         ch_versions = channel.empty()
 
         // Merge options with defaults from meta.yml
-        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
-        options = UTILS_OPTIONS.out.options
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
 
         def input_b0 = options.atlas_iit_b0 ?: null
         def input_bundle_masks_dir = options.atlas_iit_bundle_masks_dir ?: null

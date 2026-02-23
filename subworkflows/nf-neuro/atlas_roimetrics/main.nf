@@ -15,8 +15,8 @@ workflow ATLAS_ROIMETRICS {
         ch_bundle_masks = channel.empty()
         ch_template_ref = channel.empty()
 
-        UTILS_OPTIONS(file("${moduleDir}/meta.yml"), options, true)
-        options = UTILS_OPTIONS.out.options
+        UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
+        options = UTILS_OPTIONS.out.options.value
 
         assert [options.use_atlas_iit].count(true) <= 1 :
             "Only one atlas can be selected at a time for ROI metrics extraction." +
