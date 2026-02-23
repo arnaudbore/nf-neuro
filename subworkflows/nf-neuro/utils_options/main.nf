@@ -1,3 +1,31 @@
+
+workflow UTILS_OPTIONS {
+
+    take:
+        meta_file    // file: path(.../meta.yml)
+        options      // map: val(options)
+        strict       // bool: val(strict) - if true, only allow options that exist in defaults
+
+    main:
+        ch_versions = channel.empty()
+
+        // Capture options in a local variable to avoid dataflow broadcast issues
+        def provided_options = options
+        def strict_mode = strict
+
+        // Parse defaults and merge with provided options
+        ch_merged_options = channel.of(meta_file)
+            .map { meta_file_path ->
+                def defaults = parseDefaultsFromMeta(meta_file_path.toString())
+                def merged = mergeWithDefaults(provided_options, defaults, strict_mode)
+                merged
+            }
+
+    emit:
+        options = ch_merged_options.first()      // value channel: val(merged_options)
+        versions = ch_versions           // channel: [ versions.yml ]
+}
+
 /**
  * Parse default options from a subworkflow meta.yml file
  * @param metaFilePath Path to the meta.yml file
@@ -101,30 +129,3 @@ def getOptionsWithDefaults(Object options, String metaPath, boolean strict = tru
     return mergeWithDefaults(options, defaults, strict)
 }
 
-
-workflow UTILS_OPTIONS {
-
-    take:
-        meta_file    // file: path(.../meta.yml)
-        options      // map: val(options)
-        strict       // bool: val(strict) - if true, only allow options that exist in defaults
-
-    main:
-        ch_versions = channel.empty()
-
-        // Capture options in a local variable to avoid dataflow broadcast issues
-        def provided_options = options
-        def strict_mode = strict
-
-        // Parse defaults and merge with provided options
-        ch_merged_options = channel.of(meta_file)
-            .map { meta_file_path ->
-                def defaults = parseDefaultsFromMeta(meta_file_path.toString())
-                def merged = mergeWithDefaults(provided_options, defaults, strict_mode)
-                merged
-            }
-
-    emit:
-        options = ch_merged_options.first()      // value channel: val(merged_options)
-        versions = ch_versions           // channel: [ versions.yml ]
-}
