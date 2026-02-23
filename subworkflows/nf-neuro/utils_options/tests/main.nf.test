@@ -39,7 +39,7 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = test_meta_file
+                input[0] = "\${workDir}/test_meta.yml"
                 input[1] = [
                     "option_a": true,
                     "option_b": false,
@@ -85,7 +85,7 @@ input:
                 def test_meta_file = file("\${workDir}/test_meta_strict_false.yml")
                 test_meta_file.text = test_meta_content
 
-                input[0] = test_meta_file
+                input[0] = "\${workDir}/test_meta_strict_false.yml"
                 input[1] = [
                     "option_a": true,
                     "option_unknown": false  // Unknown option, but strict=false so it should be accepted
@@ -268,7 +268,7 @@ input:
         then {
             assertAll(
                 { assert workflow.failed },
-                { assert workflow.stdout.contains("ERROR ~ Provided options must be a Map, but received java.util.ArrayList") }
+                { assert workflow.stdout.contains("ERROR ~ Options must be a Map, but received java.util.ArrayList") }
             )
         }
     }
