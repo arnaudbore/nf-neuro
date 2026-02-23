@@ -181,7 +181,7 @@ input:
           type: boolean
           description: Perform N4 bias field correction using ANTs' N4BiasFieldCorrection.
           default: true
-        preproc_t1_run_resample:
+        preproc_t1_run_resampling:
           type: boolean
           description: Resample the anatomical image using the resample method from DIPY.
           default: true
