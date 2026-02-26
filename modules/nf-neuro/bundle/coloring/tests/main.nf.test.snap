@@ -2,14 +2,14 @@
     "bundle - coloring - stub-run": {
         "content": [
             [
-                "versions.yml:md5,2fa06ba647ec635dc65318d94bef61da"
+                "versions.yml:md5,70c3800c8cd3333e1aff0b0c65726b20"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-17T17:37:44.412307164"
+        "timestamp": "2026-02-26T14:08:24.672226291"
     },
     "bundle - coloring": {
         "content": [
@@ -32,7 +32,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,2fa06ba647ec635dc65318d94bef61da"
+                    "versions.yml:md5,70c3800c8cd3333e1aff0b0c65726b20"
                 ],
                 "bundles": [
                     [
@@ -52,14 +52,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,2fa06ba647ec635dc65318d94bef61da"
+                    "versions.yml:md5,70c3800c8cd3333e1aff0b0c65726b20"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-17T17:37:31.633001852"
+        "timestamp": "2026-02-26T14:08:19.383668171"
     }
 }
