@@ -2,7 +2,7 @@ process RECONST_DIFFUSIVITYPRIORS {
     tag "$meta.id"
     label 'process_single'
 
-    container "scilus/scilpy:2.2.2_cpu"
+    container "scilus/scilpy:dev" // TODO: Replace this container with an official one once available.
 
     input:
         tuple val(meta), path(fa), path(ad), path(rd), path(md)
