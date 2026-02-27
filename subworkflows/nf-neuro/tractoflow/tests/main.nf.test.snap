@@ -392,9 +392,9 @@
                 ],
                 "versions": [
                     "versions.yml:md5,229b67add04c70923f1bca378b7b2187",
-                    "versions.yml:md5,5011203328febedfa9c5af5684bcc20c",
                     "versions.yml:md5,68aaff09474ed3ae149c1cffb0651f0d",
                     "versions.yml:md5,7cabc91ec64b5e824e9b8f60d7dcf930",
+                    "versions.yml:md5,7fae1f6758d48901013496c0a680b81b",
                     "versions.yml:md5,85cf18214259841972e1ea51961dc19d",
                     "versions.yml:md5,cdfc3f4153b62c413e2fc6e948f2ef21",
                     "versions.yml:md5,e808fc7967f50aad087f14c8cbcdc7e1",
@@ -438,7 +438,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-26T22:49:51.955140843"
+        "timestamp": "2026-02-26T22:58:28.671493865"
     },
     "tractoflow - no rev": {
         "content": [
@@ -891,10 +891,10 @@
                 ],
                 "versions": [
                     "versions.yml:md5,35eb6cc8d3a3b200123613abf38d6c98",
-                    "versions.yml:md5,5011203328febedfa9c5af5684bcc20c",
                     "versions.yml:md5,68aaff09474ed3ae149c1cffb0651f0d",
                     "versions.yml:md5,772acc9a4938fc99817db1c00efd2100",
                     "versions.yml:md5,7cabc91ec64b5e824e9b8f60d7dcf930",
+                    "versions.yml:md5,7fae1f6758d48901013496c0a680b81b",
                     "versions.yml:md5,85cf18214259841972e1ea51961dc19d",
                     "versions.yml:md5,cdfc3f4153b62c413e2fc6e948f2ef21",
                     "versions.yml:md5,e808fc7967f50aad087f14c8cbcdc7e1",
@@ -938,6 +938,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-26T22:48:41.476063377"
+        "timestamp": "2026-02-26T22:57:18.393937215"
     }
 }
