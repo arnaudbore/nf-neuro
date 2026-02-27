@@ -2,14 +2,14 @@
     "connectivity - decompose - stub-run": {
         "content": [
             [
-                "versions.yml:md5,0bc28b022d820ea06732a243e7c2e956"
+                "versions.yml:md5,7fe2c9f230d4f6e291b6d136175fd491"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-21T20:47:06.04922597"
+        "timestamp": "2026-02-26T21:56:26.643784054"
     },
     "connectivity - decompose - without option": {
         "content": [
@@ -33,7 +33,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,0bc28b022d820ea06732a243e7c2e956"
+                    "versions.yml:md5,7fe2c9f230d4f6e291b6d136175fd491"
                 ],
                 "hdf5": [
                     [
@@ -54,15 +54,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,0bc28b022d820ea06732a243e7c2e956"
+                    "versions.yml:md5,7fe2c9f230d4f6e291b6d136175fd491"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-17T18:45:53.818958451"
+        "timestamp": "2026-02-26T21:56:15.502512443"
     },
     "connectivity - decompose - with all option": {
         "content": [
@@ -86,7 +86,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,0bc28b022d820ea06732a243e7c2e956"
+                    "versions.yml:md5,7fe2c9f230d4f6e291b6d136175fd491"
                 ],
                 "hdf5": [
                     [
@@ -107,14 +107,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,0bc28b022d820ea06732a243e7c2e956"
+                    "versions.yml:md5,7fe2c9f230d4f6e291b6d136175fd491"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-17T18:46:15.854894153"
+        "timestamp": "2026-02-26T21:56:21.172007044"
     }
 }
