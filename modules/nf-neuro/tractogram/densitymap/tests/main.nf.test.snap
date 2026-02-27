@@ -12,7 +12,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,99078ff3904c269f687e76f248685e2d"
+                    "versions.yml:md5,c58f4d4900b16d4ed7b7783b7e9b8326"
                 ],
                 "density_map": [
                     [
@@ -24,15 +24,15 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,99078ff3904c269f687e76f248685e2d"
+                    "versions.yml:md5,c58f4d4900b16d4ed7b7783b7e9b8326"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-23T00:30:48.604554342"
+        "timestamp": "2026-02-26T15:52:30.545672047"
     },
     "densitymap - mask": {
         "content": [
@@ -47,7 +47,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,99078ff3904c269f687e76f248685e2d"
+                    "versions.yml:md5,c58f4d4900b16d4ed7b7783b7e9b8326"
                 ],
                 "density_map": [
                     [
@@ -59,26 +59,26 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,99078ff3904c269f687e76f248685e2d"
+                    "versions.yml:md5,c58f4d4900b16d4ed7b7783b7e9b8326"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-23T00:30:59.827759348"
+        "timestamp": "2026-02-26T15:52:35.091527214"
     },
     "densitymap - stub-run": {
         "content": [
             [
-                "versions.yml:md5,99078ff3904c269f687e76f248685e2d"
+                "versions.yml:md5,c58f4d4900b16d4ed7b7783b7e9b8326"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-23T00:31:15.408992193"
+        "timestamp": "2026-02-26T15:52:39.699637141"
     }
 }
