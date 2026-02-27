@@ -29,14 +29,14 @@
                 ]
             ],
             [
-                "versions.yml:md5,e0f2705d122d83d3a6625951bcbfd464"
+                "versions.yml:md5,c9077089fdf49fdcbcf5a2be79a8e83e"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-20T14:57:05.985127779"
+        "timestamp": "2026-02-26T21:45:20.759233425"
     },
     "dwishell - extract single shell": {
         "content": [
@@ -68,26 +68,26 @@
                 ]
             ],
             [
-                "versions.yml:md5,e0f2705d122d83d3a6625951bcbfd464"
+                "versions.yml:md5,c9077089fdf49fdcbcf5a2be79a8e83e"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-20T14:57:00.024365812"
+        "timestamp": "2026-02-26T21:45:14.549188999"
     },
     "dwishell - stub": {
         "content": [
             [
-                "versions.yml:md5,e0f2705d122d83d3a6625951bcbfd464"
+                "versions.yml:md5,c9077089fdf49fdcbcf5a2be79a8e83e"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-20T14:57:18.230279221"
+        "timestamp": "2026-02-26T21:45:33.375893043"
     },
     "dwishell - extract out indices": {
         "content": [
@@ -128,13 +128,13 @@
                 ]
             ],
             [
-                "versions.yml:md5,e0f2705d122d83d3a6625951bcbfd464"
+                "versions.yml:md5,c9077089fdf49fdcbcf5a2be79a8e83e"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-20T14:57:12.134213782"
+        "timestamp": "2026-02-26T21:45:27.327847763"
     }
 }
