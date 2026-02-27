@@ -2,14 +2,14 @@
     "burnvoxels - stub-run": {
         "content": [
             [
-                "versions.yml:md5,de956775260cce25ab713779410f6175"
+                "versions.yml:md5,fac54d1bf0f91da6f93177ec157f7255"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-22T19:25:53.507196331"
+        "timestamp": "2026-02-26T16:35:17.192051811"
     },
     "burnvoxels - two masks": {
         "content": [
@@ -20,7 +20,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test__all.nii.gz:md5,7e8fe36daf0dfba28a5701c55e98a0ab"
+                        "test__all.nii.gz:md5,8c2b65f46f5f0124eb2c1a83ad755773"
                     ]
                 ],
                 "1": [
@@ -30,13 +30,13 @@
                             "single_end": false
                         },
                         [
-                            "test__IFGWM_25.nii.gz:md5,d9654356d7f9c2b0eda5f69e8e71b9c4",
-                            "test__IFGWM_labels_map_325.nii.gz:md5,1169f8f2dba2ef2addaea6afd0ee82c2"
+                            "test__IFGWM_25.nii.gz:md5,72280c105f922edc617cfbc0ea061978",
+                            "test__IFGWM_labels_map_325.nii.gz:md5,58e8a9c67da25b68b7a3fe02e0f04811"
                         ]
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,de956775260cce25ab713779410f6175"
+                    "versions.yml:md5,fac54d1bf0f91da6f93177ec157f7255"
                 ],
                 "all_masks_burned": [
                     [
@@ -44,7 +44,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test__all.nii.gz:md5,7e8fe36daf0dfba28a5701c55e98a0ab"
+                        "test__all.nii.gz:md5,8c2b65f46f5f0124eb2c1a83ad755773"
                     ]
                 ],
                 "each_mask_burned": [
@@ -54,20 +54,20 @@
                             "single_end": false
                         },
                         [
-                            "test__IFGWM_25.nii.gz:md5,d9654356d7f9c2b0eda5f69e8e71b9c4",
-                            "test__IFGWM_labels_map_325.nii.gz:md5,1169f8f2dba2ef2addaea6afd0ee82c2"
+                            "test__IFGWM_25.nii.gz:md5,72280c105f922edc617cfbc0ea061978",
+                            "test__IFGWM_labels_map_325.nii.gz:md5,58e8a9c67da25b68b7a3fe02e0f04811"
                         ]
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,de956775260cce25ab713779410f6175"
+                    "versions.yml:md5,fac54d1bf0f91da6f93177ec157f7255"
                 ]
             }
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-22T19:25:46.625620408"
+        "timestamp": "2026-02-26T16:36:18.63798712"
     }
 }

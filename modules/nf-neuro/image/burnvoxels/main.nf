@@ -2,7 +2,7 @@ process IMAGE_BURNVOXELS {
     tag "$meta.id"
     label 'process_single'
 
-    container "scilus/scilus:2.0.2"
+    container "scilus/scilus:2.2.2"
 
     input:
     tuple val(meta), path(masks), path(anat)
@@ -22,8 +22,8 @@ process IMAGE_BURNVOXELS {
     Integer nb_masks = masks.size()
     """
     # Normalize the anatomy between 0 and 300
-    scil_volume_math.py convert ${anat} anat_f32.nii.gz --data_type float32 -f
-    scil_volume_math.py normalize_max anat_f32.nii.gz anat_normalize.nii.gz -f
+    scil_volume_math convert ${anat} anat_f32.nii.gz --data_type float32 -f
+    scil_volume_math normalize_max anat_f32.nii.gz anat_normalize.nii.gz -f
     mrcalc 300 anat_normalize.nii.gz -multiply anat_normalize_300.nii.gz -force
 
     # Set the step value for be applied to each bundle
@@ -36,7 +36,7 @@ process IMAGE_BURNVOXELS {
     do
         mname=\${m%%.*}
         mname=\${mname##*__}
-        scil_volume_math.py convert \${m} masks_burned/tmp_\${mname}_f32.nii.gz --data_type float32 -f
+        scil_volume_math convert \${m} masks_burned/tmp_\${mname}_f32.nii.gz --data_type float32 -f
         mrcalc \${cnt} masks_burned/tmp_\${mname}_f32.nii.gz -multiply masks_burned/mask_\${mname}_\${cnt}.nii.gz -force
         ImageMath 3 ${prefix}__\${mname}_\${cnt}.nii.gz addtozero masks_burned/mask_\${mname}_\${cnt}.nii.gz anat_normalize_300.nii.gz
         rm masks_burned/tmp_\${mname}_f32.nii.gz
@@ -47,7 +47,7 @@ process IMAGE_BURNVOXELS {
     if [ \$nb_masks -eq 1 ]; then
         mv masks_burned/mask_*.nii.gz mask_all_masks.nii.gz
     else
-        scil_volume_math.py addition masks_burned/mask_*.nii.gz mask_all_masks.nii.gz -f
+        scil_volume_math addition masks_burned/mask_*.nii.gz mask_all_masks.nii.gz -f
     fi
 
     ImageMath 3 ${prefix}__all.nii.gz addtozero mask_all_masks.nii.gz anat_normalize_300.nii.gz
