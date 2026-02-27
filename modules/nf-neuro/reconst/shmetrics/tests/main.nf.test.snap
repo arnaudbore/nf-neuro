@@ -2,14 +2,14 @@
     "reconst - shmetrics - stub-run": {
         "content": [
             [
-                "versions.yml:md5,9bd2b90c1a1148e83d8037357a93ef04"
+                "versions.yml:md5,8f505433b1cc6688bca3ab824167411a"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-22T20:18:36.560384817"
+        "timestamp": "2026-02-26T14:57:49.871938322"
     },
     "reconst - shmetrics": {
         "content": [
@@ -22,13 +22,13 @@
             "test__nufo.nii.gz:md5:header,c5e41f89848f91c53a9a7be44970d4b1,data,786f036ddab6d83d14d27664dfc5258f",
             "test__ventricles_mask.nii.gz:md5:header,c5e41f89848f91c53a9a7be44970d4b1,data,c99be28705f53b65f3dd406c53e273e6",
             [
-                "versions.yml:md5,9bd2b90c1a1148e83d8037357a93ef04"
+                "versions.yml:md5,8f505433b1cc6688bca3ab824167411a"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.7"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-09-24T00:51:38.107144086"
+        "timestamp": "2026-02-26T14:57:42.604937345"
     }
 }
