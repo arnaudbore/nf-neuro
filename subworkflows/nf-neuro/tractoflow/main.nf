@@ -89,6 +89,7 @@ workflow TRACTOFLOW {
             ch_sbref = ch_sbref ? CONVERT3D_B0( ch_sbref ).image : channel.empty()
             ch_rev_sbref = ch_rev_sbref ? CONVERT3D_REV_B0( ch_rev_sbref ).image : channel.empty()
             ch_t1 = CONVERT3D_T1( ch_t1 ).image
+            ch_versions = ch_versions.mix(dwi_converted.versions)
         }
 
         //

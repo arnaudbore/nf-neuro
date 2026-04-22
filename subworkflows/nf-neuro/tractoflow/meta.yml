@@ -42,8 +42,8 @@ keywords:
   - fodf
   - dti
 components:
-  - image_convertdwi
-  - image_convert
+  - image/convertdwi
+  - image/convert
   - anatomical_segmentation
   - preproc_dwi
   - preproc_t1
