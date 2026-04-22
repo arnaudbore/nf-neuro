@@ -17,7 +17,7 @@ process IMAGE_CONVERT {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def datatype = task.ext.datatype ? "-datatype ${task.ext.datatype}" : '' // REQUIRED.
-    def strides = task.ext.strides ? "-strides ${task.ext.strides}" : ''
+    def strides = task.ext.strides ? "-strides \"${task.ext.strides}\"" : ''
     def suffix = task.ext.first_suffix ? "${task.ext.first_suffix}_${task.ext.datatype}_converted" : "${task.ext.datatype}_converted"
 
     """

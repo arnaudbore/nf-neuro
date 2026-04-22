@@ -20,7 +20,7 @@ process IMAGE_CONVERTDWI {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def datatype = task.ext.datatype ? "-datatype ${task.ext.datatype}" : ''
     def suffix = task.ext.suffix ? "${task.ext.suffix}" : (task.ext.datatype ? "${task.ext.datatype}_converted" : "converted")
-    def strides = task.ext.strides ? "-strides ${task.ext.strides}" : ''
+    def strides = task.ext.strides ? "-strides \"${task.ext.strides}\"" : ''
 
     """
     mrconvert $image ${prefix}_${suffix}.nii.gz $datatype $strides -nthreads 0 \

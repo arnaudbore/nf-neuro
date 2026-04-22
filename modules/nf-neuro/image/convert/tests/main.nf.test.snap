@@ -50,16 +50,28 @@
         "content": [
             {
                 "0": [
-                    
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_float32_converted.nii.gz:md5,ff17eba4a7cc26abdccfbab1d389c783"
+                    ]
                 ],
                 "1": [
-                    
+                    "versions.yml:md5,5c6f0565fe5f61aea47dc7436b5cd390"
                 ],
                 "image": [
-                    
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_float32_converted.nii.gz:md5,ff17eba4a7cc26abdccfbab1d389c783"
+                    ]
                 ],
                 "versions": [
-                    
+                    "versions.yml:md5,5c6f0565fe5f61aea47dc7436b5cd390"
                 ]
             }
         ],
@@ -67,6 +79,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-04-22T11:14:01.510434654"
+        "timestamp": "2026-04-22T15:13:04.210464013"
     }
 }
