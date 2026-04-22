@@ -22,6 +22,10 @@ include { TRACKING_LOCALTRACKING } from '../../../modules/nf-neuro/tracking/loca
 // UTILS
 include { UTILS_OPTIONS } from '../utils_options/main'
 
+// IMAGE
+includes { IMAGE_CONVERTDWI   } from '../../../modules/nf-neuro/image/convertdwi/main'
+includes { IMAGE_CONVERT   } from '../../../modules/nf-neuro/image/convert/main'
+
 // ** UTILITY FUNCTIONS ** //
 
 def group_frf ( label, ch_frf ) {
@@ -57,6 +61,20 @@ workflow TRACTOFLOW {
         ch_global_mqc_files = channel.empty()
 
         /* PREPROCESSING */
+
+        //
+        // SUBWORKFLOW: Prepare data if running BundleParc
+        //
+        if ( options.run_bundleparc ) {
+            warning "#####"
+            warning "Running BundleParc requires all images to be strided to '-1 2 3 4'."
+            warning "#####"
+            ch_dwi = IMAGE_CONVERTDWI( ch_dwi )
+            ch_rev_dwi = ch_rev_dwi ? IMAGE_CONVERTDWI( ch_rev_dwi ) : channel.empty()
+            ch_sbref = ch_sbref ? IMAGE_CONVERT( ch_sbref ) : channel.empty()
+            ch_rev_sbref = ch_rev_sbref ? IMAGE_CONVERT( ch_rev_sbref ) : channel.empty()
+            ch_t1 = IMAGE_CONVERT( ch_t1 )
+        }
 
         //
         // SUBWORKFLOW: Run PREPROC_DWI
