@@ -81,3 +81,10 @@ args:
       type: bool
       default: false
       description: "Use half precision (float16) for inference. This reduces memory usage but may lead to reduced accuracy."
+  - sh_basis:
+      type: string
+      default: ""
+      description: |
+        "Spherical harmonics basis used in the input fodf. This is required to determine the number of coefficients per voxel."
+        "Only 'descoteaux07' is currently supported. but needs to be specified for the module to run."
+        " You need to link this parameter with params.fodf_sh_basis from tractoflow subworkflow and/or params.sh_basis from fodf module"

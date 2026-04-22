@@ -24,6 +24,9 @@ process BUNDLE_BUNDLEPARC {
     if ( task.ext.half ) args += ["--half_precision"]
     if ( task.ext.continuous ) args += ["--continuous"]
     if ( task.ext.bundles ) args += ["--bundles $task.ext.bundles"]
+    if ( task.ext.sh_basis && task.ext.sh_basis != "descoteaux07" ) {
+        error "Unsupported SH basis '${task.ext.sh_basis}'. Only 'descoteaux07' is currently supported."
+    }
 
     """
     export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=${task.ext.single_thread ? 1 : task.cpus}

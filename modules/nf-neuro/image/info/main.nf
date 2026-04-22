@@ -29,7 +29,11 @@ process IMAGE_INFO {
     stub:
     def property = task.ext.property ? "-${task.ext.property}" : '-all' // REQUIRED.
     """
-    echo "Some property values for ${image} with ${property}"
+    if [[ "$property" == "-strides" ]] ; then
+        echo "-1 2 3 4"
+    else
+        echo "Some property values for ${image} with ${property}"
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -10,6 +10,7 @@ nextflow_workflow {
     tag "subworkflows/bundleparc"
 
     tag "bundle/bundleparc"
+    tag "image/info"
 
     tag "load_test_data"
 
