@@ -38,6 +38,11 @@ args:
       type: string
       description: Optional suffix to add to the output filename before the datatype.
         If not specified, the output filename will only include the datatype as a suffix.
+  - strides:
+      type: string
+      description: |
+        Optional strides to apply to the output image.
+        This should be a string of four integers separated by spaces, such as "-1 2 3" for 3D images.
 output:
   image:
     - - meta:
