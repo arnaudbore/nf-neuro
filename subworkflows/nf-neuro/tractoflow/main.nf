@@ -23,8 +23,11 @@ include { TRACKING_LOCALTRACKING } from '../../../modules/nf-neuro/tracking/loca
 include { UTILS_OPTIONS } from '../utils_options/main'
 
 // IMAGE
-includes { IMAGE_CONVERTDWI   } from '../../../modules/nf-neuro/image/convertdwi/main'
-includes { IMAGE_CONVERT   } from '../../../modules/nf-neuro/image/convert/main'
+include { IMAGE_CONVERTDWI as CONVERT4D_DWI   } from '../../../modules/nf-neuro/image/convertdwi/main'
+include { IMAGE_CONVERTDWI as CONVERT4D_REV_DWI } from '../../../modules/nf-neuro/image/convertdwi/main'
+include { IMAGE_CONVERT as CONVERT3D_T1  } from '../../../modules/nf-neuro/image/convert/main'
+include { IMAGE_CONVERT as CONVERT3D_B0  } from '../../../modules/nf-neuro/image/convert/main'
+include { IMAGE_CONVERT as CONVERT3D_REV_B0  } from '../../../modules/nf-neuro/image/convert/main'
 
 // ** UTILITY FUNCTIONS ** //
 
@@ -66,14 +69,26 @@ workflow TRACTOFLOW {
         // SUBWORKFLOW: Prepare data if running BundleParc
         //
         if ( options.run_bundleparc ) {
-            warning "#####"
-            warning "Running BundleParc requires all images to be strided to '-1 2 3 4'."
-            warning "#####"
-            ch_dwi = IMAGE_CONVERTDWI( ch_dwi )
-            ch_rev_dwi = ch_rev_dwi ? IMAGE_CONVERTDWI( ch_rev_dwi ) : channel.empty()
-            ch_sbref = ch_sbref ? IMAGE_CONVERT( ch_sbref ) : channel.empty()
-            ch_rev_sbref = ch_rev_sbref ? IMAGE_CONVERT( ch_rev_sbref ) : channel.empty()
-            ch_t1 = IMAGE_CONVERT( ch_t1 )
+            log.warn "#####"
+            log.warn "Running BundleParc requires all images to be strided to '-1 2 3 4'."
+            log.warn "#####"
+
+            // Stride 4D DWI images
+            dwi_converted = CONVERT4D_DWI( ch_dwi )
+            rev_dwi_converted = CONVERT4D_REV_DWI( ch_rev_dwi )
+            ch_dwi = dwi_converted.image
+                        .join(dwi_converted.bval)
+                        .join(dwi_converted.bvec)
+            ch_rev_dwi = ch_rev_dwi
+                ? rev_dwi_converted.image
+                    .join(rev_dwi_converted.bval)
+                    .join(rev_dwi_converted.bvec)
+                : channel.empty()
+
+            // Stride 3D images
+            ch_sbref = ch_sbref ? CONVERT3D_B0( ch_sbref ).image : channel.empty()
+            ch_rev_sbref = ch_rev_sbref ? CONVERT3D_REV_B0( ch_rev_sbref ).image : channel.empty()
+            ch_t1 = CONVERT3D_T1( ch_t1 ).image
         }
 
         //
