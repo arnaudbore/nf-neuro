@@ -17,6 +17,7 @@ keywords:
   - Parcellation
 components:
   - bundle/bundleparc
+  - image/info
 input:
   - ch_fodf:
       type: file

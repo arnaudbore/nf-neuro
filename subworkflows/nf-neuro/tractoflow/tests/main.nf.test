@@ -16,6 +16,8 @@ nextflow_workflow {
     tag "subworkflows/preproc_t1"
     tag "subworkflows/registration"
 
+    tag "image/convert"
+    tag "image/convertdwi"
     tag "reconst/dtimetrics"
     tag "reconst/frf"
     tag "reconst/fodf"
@@ -171,6 +173,7 @@ nextflow_workflow {
                 input[10] = channel.empty()
                 input[11] = channel.empty()
                 input[12] = [
+                    "run_bundleparc": true,
                     "preproc_dwi_run_denoising": true,
                     "preproc_dwi_run_degibbs": false,
                     "topup_eddy_run_topup": true,

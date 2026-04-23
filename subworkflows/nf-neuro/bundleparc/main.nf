@@ -1,4 +1,5 @@
 include { BUNDLE_BUNDLEPARC } from '../../../modules/nf-neuro/bundle/bundleparc/main.nf'
+include { IMAGE_INFO } from '../../../modules/nf-neuro/image/info/main.nf'
 
 def compute_file_hash(file_path) {
     def file = new File(file_path)
@@ -9,7 +10,7 @@ def compute_file_hash(file_path) {
     def digest = java.security.MessageDigest.getInstance("MD5")
     def fileBytes = java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(file_path))
     def hashBytes = digest.digest(fileBytes)
-    return hashBytes.collect { String.format("%02x", it) }.join('')
+    return hashBytes.collect { value -> String.format("%02x", value) }.join('')
 }
 
 def fetch_bundleparc_checkpoint(dest) {
@@ -60,11 +61,33 @@ workflow BUNDLEPARC {
             checkpoint_path = file("$workflow.workDir/checkpoint/123_4_5_bundleparc.ckpt", checkIfExists: true)
         }
 
-        ch_fodf = ch_fodf
+        ch_fodf_bundleparc = ch_fodf
             .combine(channel.value(checkpoint_path))
             .map { meta, fodf, checkpoint -> [meta, fodf instanceof List ? fodf[0] : fodf, checkpoint] }
 
-        BUNDLE_BUNDLEPARC(ch_fodf)
+        ch_fodf_info = ch_fodf
+            .map { meta, fodf -> [meta, fodf instanceof List ? fodf[0] : fodf] }
+
+        IMAGE_INFO(ch_fodf_info)
+        ch_versions = ch_versions.mix(IMAGE_INFO.out.versions)
+
+        ch_stride_check = IMAGE_INFO.out.property.map { meta, property_output ->
+            def matcher = (property_output =~ /Data strides:\s*\[\s*([^\]]+)\s*\]/)
+            def strides = matcher ? matcher[0][1] : property_output
+            def normalized_strides = strides.trim().replaceAll(/\s+/, ' ')
+
+            if (normalized_strides != '-1 2 3 4') {
+                error "Invalid fODF strides for ${meta.id}: '${normalized_strides}'. Expected '-1 2 3 4'."
+            }
+
+            return [meta, true]
+        }
+
+        ch_fodf_bundleparc = ch_fodf_bundleparc
+            .join(ch_stride_check)
+            .map { meta, fodf, checkpoint, _ok -> [meta, fodf, checkpoint] }
+
+        BUNDLE_BUNDLEPARC(ch_fodf_bundleparc)
         ch_versions = ch_versions.mix(BUNDLE_BUNDLEPARC.out.versions)
 
     emit:

@@ -22,6 +22,13 @@ include { TRACKING_LOCALTRACKING } from '../../../modules/nf-neuro/tracking/loca
 // UTILS
 include { UTILS_OPTIONS } from '../utils_options/main'
 
+// IMAGE
+include { IMAGE_CONVERTDWI as CONVERT4D_DWI   } from '../../../modules/nf-neuro/image/convertdwi/main'
+include { IMAGE_CONVERTDWI as CONVERT4D_REV_DWI } from '../../../modules/nf-neuro/image/convertdwi/main'
+include { IMAGE_CONVERT as CONVERT3D_T1  } from '../../../modules/nf-neuro/image/convert/main'
+include { IMAGE_CONVERT as CONVERT3D_B0  } from '../../../modules/nf-neuro/image/convert/main'
+include { IMAGE_CONVERT as CONVERT3D_REV_B0  } from '../../../modules/nf-neuro/image/convert/main'
+
 // ** UTILITY FUNCTIONS ** //
 
 def group_frf ( label, ch_frf ) {
@@ -57,6 +64,33 @@ workflow TRACTOFLOW {
         ch_global_mqc_files = channel.empty()
 
         /* PREPROCESSING */
+
+        //
+        // SUBWORKFLOW: Prepare data if running BundleParc
+        //
+        if ( options.run_bundleparc ) {
+            log.warn "#####"
+            log.warn "Running BundleParc requires all images to be strided to '-1 2 3 4'."
+            log.warn "#####"
+
+            // Stride 4D DWI images
+            dwi_converted = CONVERT4D_DWI( ch_dwi )
+            rev_dwi_converted = CONVERT4D_REV_DWI( ch_rev_dwi )
+            ch_dwi = dwi_converted.image
+                        .join(dwi_converted.bval)
+                        .join(dwi_converted.bvec)
+            ch_rev_dwi = ch_rev_dwi
+                ? rev_dwi_converted.image
+                    .join(rev_dwi_converted.bval)
+                    .join(rev_dwi_converted.bvec)
+                : channel.empty()
+
+            // Stride 3D images
+            ch_sbref = ch_sbref ? CONVERT3D_B0( ch_sbref ).image : channel.empty()
+            ch_rev_sbref = ch_rev_sbref ? CONVERT3D_REV_B0( ch_rev_sbref ).image : channel.empty()
+            ch_t1 = CONVERT3D_T1( ch_t1 ).image
+            ch_versions = ch_versions.mix(dwi_converted.versions)
+        }
 
         //
         // SUBWORKFLOW: Run PREPROC_DWI
