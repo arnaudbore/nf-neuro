@@ -9,7 +9,7 @@ process BETCROP_FSLBETCROP {
         tuple val(meta), path(image), path(bval), path(bvec)
 
     output:
-        tuple val(meta), path("*_bet.nii.gz")            , emit: image, optional: true
+        tuple val(meta), path("*_bet.nii.gz")            , emit: image
         tuple val(meta), path("*_bet_mask.nii.gz")       , emit: mask
         tuple val(meta), path("*_boundingBox.pkl")       , emit: bbox , optional: true
         path "versions.yml"                              , emit: versions
