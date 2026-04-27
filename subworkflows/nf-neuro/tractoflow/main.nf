@@ -14,6 +14,7 @@ include { RECONST_MEANFRF    } from '../../../modules/nf-neuro/reconst/meanfrf/m
 include { RECONST_DTIMETRICS } from '../../../modules/nf-neuro/reconst/dtimetrics/main'
 include { RECONST_FODF       } from '../../../modules/nf-neuro/reconst/fodf/main'
 include { RECONST_QBALL      } from '../../../modules/nf-neuro/reconst/qball/main'
+include { IMAGE_MATH         } from '../../../modules/nf-neuro/image/math/main'
 
 // TRACKING
 include { TRACKING_PFTTRACKING   } from '../../../modules/nf-neuro/tracking/pfttracking/main'
@@ -160,10 +161,18 @@ workflow TRACTOFLOW {
         //
         // SUBWORKFLOW: Run REGISTRATION
         //
+        if ( options.preproc_dwi_keep_dwi_with_skull ) {
+            IMAGE_MATH(RECONST_DTIMETRICS.out.fa.join(PREPROC_DWI.out.b0_mask))
+            ch_fa_for_registration = IMAGE_MATH.out.image
+        }
+        else {
+            ch_fa_for_registration = RECONST_DTIMETRICS.out.fa
+        }
+
         T1_REGISTRATION(
             PREPROC_DWI.out.b0,
             PREPROC_T1.out.t1_final,
-            !options.preproc_dwi_keep_dwi_with_skull ? RECONST_DTIMETRICS.out.fa : channel.empty(),
+            ch_fa_for_registration,
             channel.empty(),
             channel.empty(),
             channel.empty(),
