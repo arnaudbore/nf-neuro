@@ -18,6 +18,7 @@ nextflow_workflow {
 
     tag "image/convert"
     tag "image/convertdwi"
+    tag "image/math"
     tag "reconst/dtimetrics"
     tag "reconst/frf"
     tag "reconst/fodf"

@@ -44,6 +44,7 @@ keywords:
 components:
   - image/convertdwi
   - image/convert
+  - image/math
   - anatomical_segmentation
   - preproc_dwi
   - preproc_t1
