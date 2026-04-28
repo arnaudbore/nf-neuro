@@ -25,7 +25,7 @@ process BETCROP_FSLBETCROP {
     def size_dil = task.ext.size_dil ? task.ext.size_dil : ""
     def crop = task.ext.crop == null ?: task.ext.crop as Boolean
     def dilate = task.ext.dilate == null ?: task.ext.dilate as Boolean
-    def keep_image_with_skull = task.ext.keep_image_with_skull == null ?: task.ext.keep_image_with_skull as Boolean
+    def keep_image_with_skull = task.ext.keep_image_with_skull == null ? false : task.ext.keep_image_with_skull as Boolean
     def nthreads_mrtrix = task.ext.single_thread ? "-nthreads 0" : "-nthreads ${task.cpus}"
     def has_bval = bval && bval.toString() != '[]' && file(bval.toString()).exists()
 
