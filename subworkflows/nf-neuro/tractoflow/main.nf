@@ -14,6 +14,7 @@ include { RECONST_MEANFRF    } from '../../../modules/nf-neuro/reconst/meanfrf/m
 include { RECONST_DTIMETRICS } from '../../../modules/nf-neuro/reconst/dtimetrics/main'
 include { RECONST_FODF       } from '../../../modules/nf-neuro/reconst/fodf/main'
 include { RECONST_QBALL      } from '../../../modules/nf-neuro/reconst/qball/main'
+include { IMAGE_MATH         } from '../../../modules/nf-neuro/image/math/main'
 
 // TRACKING
 include { TRACKING_PFTTRACKING   } from '../../../modules/nf-neuro/tracking/pfttracking/main'
@@ -63,6 +64,8 @@ workflow TRACTOFLOW {
         ch_mqc_files = channel.empty()
         ch_global_mqc_files = channel.empty()
 
+        ch_versions = ch_versions.mix(UTILS_OPTIONS.out.versions.first())
+
         /* PREPROCESSING */
 
         //
@@ -74,22 +77,36 @@ workflow TRACTOFLOW {
             log.warn "#####"
 
             // Stride 4D DWI images
-            dwi_converted = CONVERT4D_DWI( ch_dwi )
-            rev_dwi_converted = CONVERT4D_REV_DWI( ch_rev_dwi )
-            ch_dwi = dwi_converted.image
-                        .join(dwi_converted.bval)
-                        .join(dwi_converted.bvec)
-            ch_rev_dwi = ch_rev_dwi
-                ? rev_dwi_converted.image
-                    .join(rev_dwi_converted.bval)
-                    .join(rev_dwi_converted.bvec)
-                : channel.empty()
+            CONVERT4D_DWI( ch_dwi )
+            ch_dwi = CONVERT4D_DWI.out.image
+                        .join(CONVERT4D_DWI.out.bval)
+                        .join(CONVERT4D_DWI.out.bvec)
+            ch_versions = ch_versions.mix(CONVERT4D_DWI.out.versions.first())
+
+            if (ch_rev_dwi) {
+                CONVERT4D_REV_DWI( ch_rev_dwi )
+                ch_rev_dwi = CONVERT4D_REV_DWI.out.image
+                        .join(CONVERT4D_REV_DWI.out.bval)
+                        .join(CONVERT4D_REV_DWI.out.bvec)
+                ch_versions = ch_versions.mix(CONVERT4D_REV_DWI.out.versions.first())
+            }
 
             // Stride 3D images
-            ch_sbref = ch_sbref ? CONVERT3D_B0( ch_sbref ).image : channel.empty()
-            ch_rev_sbref = ch_rev_sbref ? CONVERT3D_REV_B0( ch_rev_sbref ).image : channel.empty()
-            ch_t1 = CONVERT3D_T1( ch_t1 ).image
-            ch_versions = ch_versions.mix(dwi_converted.versions)
+            if ( ch_sbref ) {
+                CONVERT3D_B0( ch_sbref )
+                ch_sbref = CONVERT3D_B0.out.image
+                ch_versions = ch_versions.mix(CONVERT3D_B0.out.versions.first())
+            }
+
+            if ( ch_rev_sbref ) {
+                CONVERT3D_REV_B0( ch_rev_sbref )
+                ch_rev_sbref = CONVERT3D_REV_B0.out.image
+                ch_versions = ch_versions.mix(CONVERT3D_REV_B0.out.versions.first())
+            }
+
+            CONVERT3D_T1(ch_t1)
+            ch_t1 = CONVERT3D_T1.out.image
+            ch_versions = ch_versions.mix(CONVERT3D_T1.out.versions.first())
         }
 
         //
@@ -160,10 +177,19 @@ workflow TRACTOFLOW {
         //
         // SUBWORKFLOW: Run REGISTRATION
         //
+        if ( options.preproc_dwi_keep_dwi_with_skull ) {
+            IMAGE_MATH(RECONST_DTIMETRICS.out.fa.join(PREPROC_DWI.out.b0_mask))
+            ch_fa_for_registration = IMAGE_MATH.out.image
+            ch_versions = ch_versions.mix(IMAGE_MATH.out.versions.first())
+        }
+        else {
+            ch_fa_for_registration = RECONST_DTIMETRICS.out.fa
+        }
+
         T1_REGISTRATION(
             PREPROC_DWI.out.b0,
             PREPROC_T1.out.t1_final,
-            RECONST_DTIMETRICS.out.fa,
+            ch_fa_for_registration,
             channel.empty(),
             channel.empty(),
             channel.empty(),
