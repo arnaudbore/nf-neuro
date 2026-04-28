@@ -101,6 +101,7 @@ nextflow_workflow {
                     "preproc_dwi_run_resampling": true,
                     "preproc_dwi_run_normalize": true,
                     "preproc_dwi_run_synthstrip": true,
+                    "preproc_dwi_keep_dwi_with_skull": false,
                     "frf_average_from_data": false,
                     "run_local_tracking": true,
                     "run_pft_tracking": true
