@@ -51,7 +51,9 @@ process REGISTRATION_ANATTODWI {
         --convergence [50x25x10,1e-6,10] --shrink-factors 4x2x1\
         --smoothing-sigmas 3x2x1
 
-    moving_id=\$(basename $moving_anat .nii.gz)
+    moving_base=\$(basename "${moving_anat}")
+    ext=\${moving_base#*.}
+    moving_id=\${moving_base%.\${ext}}
     moving_id=\${moving_id#${prefix}_*}
 
     mv warped.nii.gz ${prefix}_\${moving_id}_warped.nii.gz
@@ -78,16 +80,16 @@ process REGISTRATION_ANATTODWI {
 
         # Get fixed ID, moving ID already computed
         fixed_id=\$(basename $fixed_reference .nii.gz)
-        fixed_id=\${fixed_id#${meta.id}_*}
+        fixed_id=\${fixed_id#${prefix}_*}
 
         # Iterate over images.
         for image in \${moving_id}_warped \${fixed_id}; do
-            mrconvert *\${image}.nii.gz *\${image}_viz.nii.gz -stride -1,2,3
-            scil_viz_volume_screenshot *\${image}_viz.nii.gz \${image}_coronal.png \
+            mrconvert *\${image}.nii.gz \${image}_viz.nii.gz -stride -1,2,3
+            scil_viz_volume_screenshot \${image}_viz.nii.gz \${image}_coronal.png \
                 --slices \$coronal_mid --axis coronal \$viz_params
-            scil_viz_volume_screenshot *\${image}_viz.nii.gz \${image}_sagittal.png \
+            scil_viz_volume_screenshot \${image}_viz.nii.gz \${image}_sagittal.png \
                 --slices \$sagittal_mid --axis sagittal \$viz_params
-            scil_viz_volume_screenshot *\${image}_viz.nii.gz \${image}_axial.png \
+            scil_viz_volume_screenshot \${image}_viz.nii.gz \${image}_axial.png \
                 --slices \$axial_mid --axis axial \$viz_params
 
             if [ \$image != \${fixed_id} ]; then
@@ -135,7 +137,7 @@ process REGISTRATION_ANATTODWI {
     convert -help .
 
     moving_id=\$(basename $moving_anat .nii.gz)
-    moving_id=\${moving_id#${meta.id}_*}
+    moving_id=\${moving_id#${prefix}_*}
 
     touch ${prefix}_\${moving_id}_warped.nii.gz
     touch ${prefix}_forward1_affine.mat
