@@ -55,6 +55,7 @@ nextflow_process {
                     process.out.bval_corrected,
                     file(process.out.bvec_corrected.get(0).get(1)).name,
                     process.out.b0_mask,
+                    process.out.nan_percentage,
                     file(process.out.dwi_eddy_mqc.get(0).get(1)).name,
                     file(process.out.rev_dwi_eddy_mqc.get(0).get(1)).name,
                     file(process.out.eddy_fd_mqc.get(0).get(1)).name,
@@ -91,6 +92,7 @@ nextflow_process {
                     process.out.bval_corrected,
                     file(process.out.bvec_corrected.get(0).get(1)).name,
                     process.out.b0_mask,
+                    process.out.nan_percentage,
                     file(process.out.dwi_eddy_mqc.get(0).get(1)).name,
                     file(process.out.eddy_fd_mqc.get(0).get(1)).name,
                     process.out.versions
