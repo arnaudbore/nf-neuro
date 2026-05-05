@@ -111,6 +111,11 @@ input:
           type: boolean
           description: Run FSL Eddy for motion and eddy current correction.
           default: true
+        eddy_nan_threshold:
+          type: integer
+          description: Threshold for the percentage of NaN voxels in the brain mask after Eddy correction to raise a warning.
+          default: 0
+
 output:
   - dwi:
       type: file
