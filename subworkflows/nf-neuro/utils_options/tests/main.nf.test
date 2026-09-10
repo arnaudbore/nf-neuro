@@ -14,7 +14,8 @@ nextflow_workflow {
             workflow {
                 """
                 // Create a test meta.yml file content
-                def test_meta_content = '''
+                def test_meta_content =
+'''
 name: "test_workflow"
 input:
     - options:
@@ -23,9 +24,9 @@ input:
         mandatory: false
         entries:
             option_a:
-            type: boolean
-            description: Enable feature A
-            default: false
+                type: boolean
+                description: Enable feature A
+                default: false
             option_b:
                 type: boolean
                 description: Enable feature B
