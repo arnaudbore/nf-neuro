@@ -73,7 +73,7 @@ jobs:
         run: npm install -g editorconfig-checker@2
 
       - name: Run ECLint check
-        run: editorconfig-checker -exclude README.md -exclude docs $(git ls-files | grep -v test)
+        run: editorconfig-checker -exclude README.md -exclude docs -exclude .vscode $(git ls-files | grep -v test)
 
   lint-changes:
     name: lint - changes
