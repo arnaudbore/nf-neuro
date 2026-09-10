@@ -17,7 +17,7 @@ process IMAGE_APPLYMASK {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def suffix = task.ext.first_suffix ? task.ext.first_suffix + "_masked"  : "masked"
-    def data_type = task.ext.data_type ? "-datatype ${task.ext.data_type}" : "-datatype float32"
+    def data_type = task.ext.data_type ? "-datatype ${task.ext.data_type}" : ""
     def nthreads_mrtrix = task.ext.single_thread ? "-nthreads 0" : "-nthreads ${task.cpus}"
 
     """
