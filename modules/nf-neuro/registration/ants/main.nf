@@ -155,6 +155,10 @@ process REGISTRATION_ANTS {
         antsRegistrationSyNQuick.sh -h
     }
 
+    antsApplyTransforms -h
+    convert -help .
+    scil_viz_volume_screenshot -h
+
     moving_base=\$(basename "${moving_image}")
     ext=\${moving_base#*.}
     moving_id=\${moving_base%.\${ext}}
