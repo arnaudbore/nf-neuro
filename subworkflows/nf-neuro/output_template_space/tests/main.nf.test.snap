@@ -77,7 +77,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-09T16:08:24.255254045"
+        "timestamp": "2026-09-10T19:13:21.276156347"
     },
     "Template MNI152NLin2009aAsym - using synthmorph registration": {
         "content": [
@@ -232,6 +232,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-09T16:07:17.373841057"
+        "timestamp": "2026-09-10T19:12:32.054661507"
     }
 }
