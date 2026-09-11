@@ -45,7 +45,7 @@ args:
       description: |
         Data type for the output image. Use the following format:
         uint8, int16, int32, int64, float16, float32 or float64.
-      default: "float32"
+        Original type is preserved if data_type is not supplied.
 output:
   image:
     - - meta:
