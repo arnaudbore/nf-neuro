@@ -53,6 +53,7 @@ workflow REGISTRATION {
 
             // ** Set compulsory outputs ** //
             out_image_warped = REGISTRATION_EASYREG.out.image_warped
+            out_ref_warped = REGISTRATION_EASYREG.out.fixed_warped
             out_forward_affine = channel.empty()
             out_forward_warp = REGISTRATION_EASYREG.out.forward_warp
             out_backward_affine = channel.empty()
@@ -65,7 +66,6 @@ workflow REGISTRATION {
             // ** Set optional outputs. ** //
             // If segmentations are not provided as inputs,
             // easyreg will outputs synthseg segmentations
-            out_ref_warped = REGISTRATION_EASYREG.out.fixed_warped
             out_segmentation = ch_segmentation.mix( REGISTRATION_EASYREG.out.segmentation_warped )
             out_ref_segmentation = ch_moving_segmentation.mix( REGISTRATION_EASYREG.out.fixed_segmentation_warped )
         }
