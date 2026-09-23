@@ -64,7 +64,7 @@ process REGISTRATION_SYNTHMORPH {
     initializer=""
     init_assoc=""
     backward_transform=()
-    
+
     for model in ${models.join(" ")}; do
         echo "Processing model: \$model"
         # Post-incrementation ensure no error on last index = 0

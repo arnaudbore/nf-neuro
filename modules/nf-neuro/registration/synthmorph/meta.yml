@@ -95,7 +95,7 @@ args:
       description: |
         Custom suffix to add to the output file name. In any case, the suffix "_warped"
         will be appended to the supplied suffix or directly used to prevent overwriting input files.
-        e.g. : the suffix `to_T1w` will result in the name `image_to_T1w_warped.nii.gz`.      
+        e.g. : the suffix `to_T1w` will result in the name `image_to_T1w_warped.nii.gz`.
 output:
   image_warped:
     - - meta:
@@ -158,7 +158,7 @@ output:
           description: Fixed image warped to moving space.
           pattern: "*_warped_reference.nii.gz"
           ontologies:
-            - edam: http://edamontology.org/format_4001 # NIFTI format            
+            - edam: http://edamontology.org/format_4001 # NIFTI format
   backward_affine:
     - - meta:
           type: map
