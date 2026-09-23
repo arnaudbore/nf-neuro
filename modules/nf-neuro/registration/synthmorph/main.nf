@@ -10,6 +10,7 @@ process REGISTRATION_SYNTHMORPH {
 
     output:
     tuple val(meta), path("*_warped.nii.gz")                               , emit: image_warped
+    tuple val(meta), path("*_warped_reference.nii.gz")                     , emit: fixed_warped
     tuple val(meta), path("*_forward{0,1,_standalone}_affine.lta")         , emit: forward_affine, optional: true
     tuple val(meta), path("*_forward0_deform.nii.gz")                      , emit: forward_warp, optional: true
     tuple val(meta), path("*_backward1_deform.nii.gz")                     , emit: backward_warp, optional: true
@@ -25,7 +26,7 @@ process REGISTRATION_SYNTHMORPH {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-
+    def suffix = task.ext.suffix ? "${task.ext.suffix}_warped" : "warped"
     def models = task.ext.models ?: ["affine", "deform"]
     def weights = (task.ext.weights ?: [null] * models.size()).collect{ it ? "-w $it" : "none" }.join(" ")
     def use_gpu = task.ext.use_gpu ? "-g" : ""
@@ -40,6 +41,11 @@ process REGISTRATION_SYNTHMORPH {
     export CUDA_VISIBLE_DEVICES="-1"
 
     echo "Available memory : ${task.memory}"
+
+    moving_base=\$(basename "${moving_image}")
+    ext=\${moving_base#*.}
+    moving_id=\${moving_base%.\${ext}}
+    moving_id=\${moving_id#${prefix}_*}
 
     moving=$moving_image
     mv $fixed_image fixed.nii.gz
@@ -56,6 +62,7 @@ process REGISTRATION_SYNTHMORPH {
     j=${models.size()}
     initializer=""
     init_assoc=""
+    backward_transform=""
     for model in ${models.join(" ")}; do
         echo "Processing model: \$model"
         # Post-incrementation ensure no error on last index = 0
@@ -88,6 +95,8 @@ process REGISTRATION_SYNTHMORPH {
             args="\$args -i \$initializer"
         fi
 
+        backward_transform=${prefix}_backward\${i}_\${model}.\${extension[\$model]}
+
         mri_synthmorph register \$moving fixed.nii.gz -v -m \$model \$weight \$args \
             -t ${prefix}_forward\${j}_\$model.\${extension[\$model]} \
             -T ${prefix}_backward\${i}_\$model.\${extension[\$model]} \
@@ -112,7 +121,13 @@ process REGISTRATION_SYNTHMORPH {
 
     done
 
-    mv warped.nii.gz ${prefix}_warped.nii.gz
+    echo "Applying final backward transform: \$backward_transform"
+    mri_synthmorph apply \\
+        \$backward_transform \\
+        fixed.nii.gz \\
+        ${prefix}_${suffix}_reference.nii.gz
+
+    mv warped.nii.gz ${prefix}_\${moving_id}_${suffix}.nii.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -122,11 +137,18 @@ process REGISTRATION_SYNTHMORPH {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def suffix = task.ext.suffix ? "${task.ext.suffix}_warped" : "warped"
 
     """
     mri_synthmorph -h
 
-    touch ${prefix}_warped.nii.gz
+    moving_base=\$(basename "${moving_image}")
+    ext=\${moving_base#*.}
+    moving_id=\${moving_base%.\${ext}}
+    moving_id=\${moving_id#${prefix}_*}
+
+    touch ${prefix}_\${moving_id}_${suffix}.nii.gz
+    touch ${prefix}_${suffix}_reference.nii.gz
     touch ${prefix}_forward1_affine.lta
     touch ${prefix}_forward0_warp.nii.gz
     touch ${prefix}_backward1_warp.nii.gz
