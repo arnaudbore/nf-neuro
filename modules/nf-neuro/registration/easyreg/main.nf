@@ -23,17 +23,18 @@ process REGISTRATION_EASYREG {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def suffix = task.ext.suffix ? "${task.ext.suffix}_warped" : "warped"
     def affine_only = task.ext.affine_only ? "--affine_only " : ""
     def nthreads = task.ext.single_thread ? 1 : task.cpus
-    fixed_segmentation = "--ref_seg ${fixed_segmentation ?: "${prefix}_warped_segmentation.nii.gz" }"
-    moving_segmentation = "--flo_seg ${moving_segmentation ?: "${prefix}_warped_reference_segmentation.nii.gz" }"
+    fixed_segmentation = "--ref_seg ${fixed_segmentation ?: "${prefix}_${suffix}_segmentation.nii.gz" }"
+    moving_segmentation = "--flo_seg ${moving_segmentation ?: "${prefix}_${suffix}_reference_segmentation.nii.gz" }"
     """
     export OMP_NUM_THREADS=${task.ext.single_thread ? 1 : task.cpus}
 
     mri_easyreg --ref $fixed_image \
         --flo $moving_image \
-        --flo_reg ${prefix}_warped.nii.gz \
-        --ref_reg ${prefix}_warped_reference.nii.gz \
+        --flo_reg ${prefix}_${suffix}.nii.gz \
+        --ref_reg ${prefix}_${suffix}_reference.nii.gz \
         --fwd_field ${prefix}_forward0_warp.nii.gz \
         --bak_field ${prefix}_backward0_warp.nii.gz \
         $fixed_segmentation $moving_segmentation \
@@ -47,14 +48,15 @@ process REGISTRATION_EASYREG {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def suffix = task.ext.suffix ? "${task.ext.suffix}_warped" : "warped"
 
     """
     mri_easyreg -h
 
-    touch ${prefix}_warped.nii.gz
-    touch ${prefix}_warped_reference.nii.gz
-    touch ${prefix}_warped_segmentation.nii.gz
-    touch ${prefix}_warped_reference_segmentation.nii.gz
+    touch ${prefix}_${suffix}.nii.gz
+    touch ${prefix}_${suffix}_reference.nii.gz
+    touch ${prefix}_${suffix}_segmentation.nii.gz
+    touch ${prefix}_${suffix}_reference_segmentation.nii.gz
     touch ${prefix}_forward0_warp.nii.gz
     touch ${prefix}_backward0_warp.nii.gz
 
