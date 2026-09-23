@@ -153,7 +153,6 @@ workflow REGISTRATION {
             out_forward_tractogram_transform = out_backward_image_transform
             out_backward_tractogram_transform = out_forward_image_transform
             // ** and optional outputs. ** //
-            out_ref_warped = channel.empty()
             out_segmentation = channel.empty()
             out_ref_segmentation = channel.empty()
         }

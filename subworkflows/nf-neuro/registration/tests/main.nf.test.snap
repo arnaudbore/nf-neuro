@@ -59,7 +59,15 @@
                         {
                             "id": "test"
                         },
-                        "test_warped.nii.gz"
+                        "test_b0_warped.nii.gz"
+                    ]
+                ],
+                "reference_warped": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_warped_reference.nii.gz"
                     ]
                 ],
                 "versions": [
@@ -69,10 +77,10 @@
             }
         ],
         "meta": {
-            "nf-test": "0.9.0",
-            "nextflow": "25.04.8"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-10-16T20:51:47.326447932"
+        "timestamp": "2026-09-23T12:55:26.179875082"
     },
     "registration - easyreg": {
         "content": [
