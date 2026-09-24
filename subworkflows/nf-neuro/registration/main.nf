@@ -139,6 +139,7 @@ workflow REGISTRATION {
 
             // ** Set compulsory outputs ** //
             out_image_warped = REGISTRATION_SYNTHMORPH.out.image_warped
+            out_ref_warped = REGISTRATION_SYNTHMORPH.out.fixed_warped
             out_forward_affine = ch_conversion_outputs.forward_affine
             out_forward_warp = ch_conversion_outputs.forward_warp
             out_backward_affine = ch_conversion_outputs.backward_affine
@@ -152,7 +153,6 @@ workflow REGISTRATION {
             out_forward_tractogram_transform = out_backward_image_transform
             out_backward_tractogram_transform = out_forward_image_transform
             // ** and optional outputs. ** //
-            out_ref_warped = channel.empty()
             out_segmentation = channel.empty()
             out_ref_segmentation = channel.empty()
         }
