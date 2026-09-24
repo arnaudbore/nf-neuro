@@ -17,7 +17,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,61a3d05d0311d862d189c5f22af437bd"
+                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,6587fa3b88abf3f5bdc466c0d5ac6e9e"
                     ]
                 ],
                 "backward_tractogram_transform": [
@@ -26,7 +26,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,fe1f14f96c00dadd331325d91c7f3768"
+                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,451cb90872ebe40ee5229c200855351f"
                     ]
                 ],
                 "backward_warp": [
@@ -35,7 +35,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,61a3d05d0311d862d189c5f22af437bd"
+                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,6587fa3b88abf3f5bdc466c0d5ac6e9e"
                     ]
                 ],
                 "fixed_warped": [
@@ -44,7 +44,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_warped_reference.nii.gz:md5:header,616ccfd9e4dd6202483736565cca4946,data,a32d1204bdccb1731e67f6090a9b8cfe"
+                        "test_warped_reference.nii.gz:md5:header,616ccfd9e4dd6202483736565cca4946,data,3d0ff9f76992434cf33aff9b403f1aa9"
                     ]
                 ],
                 "forward_affine": [
@@ -62,7 +62,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,fe1f14f96c00dadd331325d91c7f3768"
+                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,451cb90872ebe40ee5229c200855351f"
                     ]
                 ],
                 "forward_tractogram_transform": [
@@ -71,7 +71,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,61a3d05d0311d862d189c5f22af437bd"
+                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,6587fa3b88abf3f5bdc466c0d5ac6e9e"
                     ]
                 ],
                 "forward_warp": [
@@ -80,7 +80,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,fe1f14f96c00dadd331325d91c7f3768"
+                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,451cb90872ebe40ee5229c200855351f"
                     ]
                 ],
                 "image_warped": [
@@ -89,7 +89,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_b0_mean_warped.nii.gz:md5:header,af2f9e1c2c6725a40973523df0683219,data,bb4aa16cf2e98f7fe6b95f60196149fa"
+                        "test_b0_mean_warped.nii.gz:md5:header,af2f9e1c2c6725a40973523df0683219,data,a109030d1bf5cedac351bcf82184b3e8"
                     ]
                 ],
                 "versions": [
@@ -101,7 +101,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-23T22:10:14.032647764"
+        "timestamp": "2026-09-23T22:51:25.934326857"
     },
     "registration - synthmorph - affine": {
         "content": [
@@ -139,7 +139,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_warped_reference.nii.gz:md5:header,616ccfd9e4dd6202483736565cca4946,data,bf073ed79a44135766a0b33693b3a13e"
+                        "test_warped_reference.nii.gz:md5:header,616ccfd9e4dd6202483736565cca4946,data,75efc4aba7cb3e20903b7a1e00d56af8"
                     ]
                 ],
                 "forward_affine": [
@@ -175,7 +175,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_b0_mean_warped.nii.gz:md5:header,af2f9e1c2c6725a40973523df0683219,data,74d69a0837cf9db3c52a8cadafee5182"
+                        "test_b0_mean_warped.nii.gz:md5:header,af2f9e1c2c6725a40973523df0683219,data,f404c51058de4dc96aed5a8d8e4dd4db"
                     ]
                 ],
                 "versions": [
@@ -187,7 +187,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-23T21:53:16.659630327"
+        "timestamp": "2026-09-23T22:52:05.268811536"
     },
     "registration - synthmorph - stub-run": {
         "content": [
