@@ -112,9 +112,8 @@ process REGISTRATION_SYNTHMORPH {
             mv \$initializer \$standalone_initializer
             mv \$init_assoc \$standalone_backward
 
-            # The previous backward transform was renamed,
-            # so update its entry in the array.
-            backward_transform[\${#backward_transform[@]}-1]=\$standalone_backward
+            # -T output includes the initializer, so drop it from the chain.
+            unset 'backward_transform[-1]'
         fi
 
         if [ \${extension[\$model]} = "lta" ]; then

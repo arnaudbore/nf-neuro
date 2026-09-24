@@ -51,7 +51,11 @@ nextflow_process {
                             [(channel.key): ["versions"].contains(channel.key)
                                 ? channel.value
                                 : channel.value.collect{ subject ->
-                                    [ subject[0] ] + subject[1..-1].flatten().collect{ entry -> entry ? file(entry).name : "" }
+                                    [ subject[0] ] + subject[1..-1].flatten().collect{ entry ->
+                                        entry && entry.toString().endsWith('.nii.gz')
+                                            ? niftiMD5SUM(entry)
+                                            : entry ? entry.toString() : ""
+                                    }
                             } ]
                         }
                 ).match() }
@@ -74,22 +78,27 @@ nextflow_process {
                 """
             }
         }
-        then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(
-                    process.out
-                        .findAll{ channel -> !channel.key.isInteger() && channel.value  }
-                        .collectEntries{ channel ->
-                            [(channel.key): ["versions"].contains(channel.key)
-                                ? channel.value
-                                : channel.value.collect{ subject ->
-                                    [ subject[0] ] + subject[1..-1].flatten().collect{ entry -> entry ? file(entry).name : "" }
-                            } ]
+then {
+    assertAll(
+        { assert process.success },
+        { assert snapshot(
+            process.out
+                .findAll{ channel -> !channel.key.isInteger() && channel.value }
+                .collectEntries{ channel ->
+                    [(channel.key): ["versions"].contains(channel.key)
+                        ? channel.value
+                        : channel.value.collect{ subject ->
+                            [ subject[0] ] + subject[1..-1].flatten().collect{ entry ->
+                                entry && entry.toString().endsWith('.nii.gz')
+                                    ? niftiMD5SUM(entry)
+                                    : entry ? entry.toString() : ""
+                            }
                         }
-                ).match() }
-            )
-        }
+                    ]
+                }
+        ).match() }
+    )
+}
     }
 
     test("registration - synthmorph - stub-run") {
