@@ -134,16 +134,11 @@ process REGISTRATION_SYNTHMORPH {
     printf '  %s\\n' "\${backward_transform[@]}"
 
     # Apply the inverse registration transforms in reverse order.
+    # A transform used as an initializer (-i) is not in the list,
+    # because the next -T output already includes it.
     #
-    # Example:
-    #   backward_transform=(
-    #       test_backward_standalone_affine.lta
-    #       test_backward1_deform.nii.gz
-    #   )
-    #
-    # Applied as:
-    #   backward1_deform
-    #   backward_standalone_affine
+    # Example with models ["affine", "deform"]:
+    #   backward_transform=( test_backward1_deform.nii.gz )
 
     current_image=fixed.nii.gz
 

@@ -8,7 +8,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward_standalone_affine.lta:md5,1f08f3e7559d6f4f1b6b2917fc8bf0b5"
+                        "test_backward_standalone_affine.lta"
                     ]
                 ],
                 "backward_image_transform": [
@@ -17,7 +17,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,3e06766c69238a84c0b037530947c827"
+                        "test_backward1_deform.nii.gz"
                     ]
                 ],
                 "backward_tractogram_transform": [
@@ -26,7 +26,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,03b6cb9ee5214b34b3ec124b7dc64613"
+                        "test_forward0_deform.nii.gz"
                     ]
                 ],
                 "backward_warp": [
@@ -35,7 +35,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,3e06766c69238a84c0b037530947c827"
+                        "test_backward1_deform.nii.gz"
                     ]
                 ],
                 "fixed_warped": [
@@ -44,7 +44,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_warped_reference.nii.gz:md5:header,616ccfd9e4dd6202483736565cca4946,data,2a6ef6d9577139ad8e6e71cf13036b05"
+                        "test_warped_reference.nii.gz"
                     ]
                 ],
                 "forward_affine": [
@@ -53,7 +53,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward_standalone_affine.lta:md5,373908a1fb79a212383ff1d900cbe361"
+                        "test_forward_standalone_affine.lta"
                     ]
                 ],
                 "forward_image_transform": [
@@ -62,7 +62,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,03b6cb9ee5214b34b3ec124b7dc64613"
+                        "test_forward0_deform.nii.gz"
                     ]
                 ],
                 "forward_tractogram_transform": [
@@ -71,7 +71,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward1_deform.nii.gz:md5:header,513f2229597974a5b77a761d52d2c671,data,3e06766c69238a84c0b037530947c827"
+                        "test_backward1_deform.nii.gz"
                     ]
                 ],
                 "forward_warp": [
@@ -80,7 +80,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_deform.nii.gz:md5:header,ac8df625899d3c830b63efb42e74de0b,data,03b6cb9ee5214b34b3ec124b7dc64613"
+                        "test_forward0_deform.nii.gz"
                     ]
                 ],
                 "image_warped": [
@@ -89,7 +89,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_b0_mean_warped.nii.gz:md5:header,af2f9e1c2c6725a40973523df0683219,data,17af3a2ee6984f453fd69bdff80a7143"
+                        "test_b0_mean_warped.nii.gz"
                     ]
                 ],
                 "versions": [
@@ -101,7 +101,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-23T23:30:02.908489093"
+        "timestamp": "2026-09-24T10:13:42.797416631"
     },
     "registration - synthmorph - affine": {
         "content": [
@@ -112,7 +112,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward0_affine.lta:md5,1f08f3e7559d6f4f1b6b2917fc8bf0b5"
+                        "test_backward0_affine.lta"
                     ]
                 ],
                 "backward_image_transform": [
@@ -121,7 +121,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward0_affine.lta:md5,1f08f3e7559d6f4f1b6b2917fc8bf0b5"
+                        "test_backward0_affine.lta"
                     ]
                 ],
                 "backward_tractogram_transform": [
@@ -130,7 +130,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_affine.lta:md5,373908a1fb79a212383ff1d900cbe361"
+                        "test_forward0_affine.lta"
                     ]
                 ],
                 "fixed_warped": [
@@ -139,7 +139,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_warped_reference.nii.gz:md5:header,616ccfd9e4dd6202483736565cca4946,data,2d031dbb683a01f9ba3b346ace150271"
+                        "test_warped_reference.nii.gz"
                     ]
                 ],
                 "forward_affine": [
@@ -148,7 +148,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_affine.lta:md5,373908a1fb79a212383ff1d900cbe361"
+                        "test_forward0_affine.lta"
                     ]
                 ],
                 "forward_image_transform": [
@@ -157,7 +157,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_forward0_affine.lta:md5,373908a1fb79a212383ff1d900cbe361"
+                        "test_forward0_affine.lta"
                     ]
                 ],
                 "forward_tractogram_transform": [
@@ -166,7 +166,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_backward0_affine.lta:md5,1f08f3e7559d6f4f1b6b2917fc8bf0b5"
+                        "test_backward0_affine.lta"
                     ]
                 ],
                 "image_warped": [
@@ -175,7 +175,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test_b0_mean_warped.nii.gz:md5:header,af2f9e1c2c6725a40973523df0683219,data,c5f8be2485b0832e582d6c24b73aa761"
+                        "test_b0_mean_warped.nii.gz"
                     ]
                 ],
                 "versions": [
@@ -187,7 +187,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-23T23:30:32.700666992"
+        "timestamp": "2026-09-24T10:14:11.281918176"
     },
     "registration - synthmorph - stub-run": {
         "content": [
