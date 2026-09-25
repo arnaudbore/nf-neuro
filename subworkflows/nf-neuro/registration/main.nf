@@ -68,6 +68,14 @@ workflow REGISTRATION {
             error "The ${options.masking_strategy} masking strategy is not compatible with the easyreg or synthmorph registration methods."
         }
 
+        if ( options.method !in ["ants", "easyreg", "synthmorph"] ) {
+            error "Unsupported registration method '${options.method}'."
+        }
+
+        if ( options.masking_strategy !in ["none", "apriori", "internal", "both"] ) {
+            error "Unsupported masking strategy '${options.masking_strategy}'."
+        }
+
         if ( options.method == "easyreg" ) {
             // ** Registration using Easyreg ** //
             // Result : [ meta, reference, image | [], ref-segmentation | [], segmentation | [] ]
@@ -281,7 +289,7 @@ workflow REGISTRATION {
                                 .join(ch_fixed_image)
                                 .join(out_forward_image_transform)
                                 .join(ch_moving_mask)
-                                .filter{ _meta, _moving, _fixed, _transform, mask -> mask }
+                                .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
                                 .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] } )
         out_image_warped = out_image_warped
             .join(WARP_IMAGE_TO_FIXED.out.warped_image, remainder: true)
@@ -293,7 +301,7 @@ workflow REGISTRATION {
                                 .join(ch_moving_image)
                                 .join(out_backward_image_transform)
                                 .join(ch_fixed_mask)
-                                .filter{ _meta, _moving, _fixed, _transform, mask -> mask }
+                                .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
                                 .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] } )
         out_ref_warped = out_ref_warped
             .join(WARP_IMAGE_TO_MOVING.out.warped_image, remainder: true)
