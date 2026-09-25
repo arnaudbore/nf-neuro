@@ -42,6 +42,8 @@ keywords:
   - DWI
   - Anatomical
 components:
+  - image/applymask
+  - registration/antsapplytransforms
   - registration/anattodwi
   - registration/ants
   - registration/convert
