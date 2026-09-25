@@ -81,8 +81,8 @@ input:
       entries:
         method:
           type: string
-          choices: [ants, easyreg, synthmorph]
-          description: Registration method to use. Options are 'ants', 'easyreg', or 'synthmorph'.
+          choices: [ants, synthmorph]
+          description: Registration method to use. Options are 'ants' or 'synthmorph'.
           default: ants
         atlas_directory:
           type: string

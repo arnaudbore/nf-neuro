@@ -177,6 +177,31 @@ output:
             description: Warped reference image in moving space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
+  - image_warped_masked:
+      type: file
+      description: |
+        Channel containing images warped in fixed space.
+      structure:
+        - meta:
+            type: map
+            description: Metadata map.
+        - image:
+            type: file
+            description: Warped image masked in fixed space.
+      pattern: "*.{nii,nii.gz}"
+  - reference_warped_masked:
+      type: file
+      description: |
+        Channel containing the reference image warped in moving space.
+      structure:
+        - meta:
+            type: map
+            description: Metadata map.
+        - image:
+            type: file
+            description: Warped reference image masked in moving space.
+      pattern: "*.{nii,nii.gz}"
+      mandatory: false
   - forward_affine:
       type: file
       description: |

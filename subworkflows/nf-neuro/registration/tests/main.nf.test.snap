@@ -753,13 +753,11 @@
                         {
                             "id": "test"
                         },
-                        "test_fixed_warped.nii.gz"
+                        "test_warped_reference.nii.gz"
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,17bd535afe87cfe8fd4ed5dc814a4a1a",
-                    "versions.yml:md5,3764dd2f067db355da3536c1b0c94619",
-                    "versions.yml:md5,8d90eba5eb0cfe9c82c7280c1b6e66a8"
+                    "versions.yml:md5,17bd535afe87cfe8fd4ed5dc814a4a1a"
                 ]
             }
         ],
@@ -767,6 +765,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-24T22:15:29.483561629"
+        "timestamp": "2026-09-25T00:01:15.977223404"
     }
 }

@@ -39,7 +39,6 @@ nextflow_workflow {
     }
 
     test("registration - ANTs - Anat to DWI") {
-        tag "anat2dwi"
         when {
             workflow {
                 """
