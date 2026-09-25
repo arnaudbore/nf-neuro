@@ -5,10 +5,17 @@ process REGISTRATION_ANATTODWI {
     container "scilus/scilus:2.3.0"
 
     input:
+<<<<<<< HEAD
         tuple val(meta), path(fixed_image), path(moving_image), path(metric), path(fixed_mask), path(moving_mask)
 
     output:
         tuple val(meta), path("*_warped.nii.gz")                            , emit: image_warped
+=======
+        tuple val(meta), path(fixed_reference), path(moving_anat), path(metric), path(fixed_mask), path(moving_mask)
+
+    output:
+        tuple val(meta), path("*_warped.nii.gz")                            , emit: anat_warped
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
         tuple val(meta), path("*_warped_reference.nii.gz")                  , emit: fixed_warped
         tuple val(meta), path("*_forward1_affine.mat")                      , emit: forward_affine
         tuple val(meta), path("*_forward0_warp.nii.gz")                     , emit: forward_warp
@@ -27,18 +34,28 @@ process REGISTRATION_ANATTODWI {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def suffix = task.ext.suffix ? "${task.ext.suffix}_warped" : "warped"
+<<<<<<< HEAD
     def suffix_qc = task.ext.suffix_qc ? "${task.ext.suffix_qc}_": ""
     def run_qc = task.ext.run_qc as Boolean || false
     def args = task.ext.args ?: ''
     if (fixed_mask || moving_mask) args += " -x \"[${fixed_mask ?: ''},${moving_mask ?: ''}]\""
+=======
+    def run_qc = task.ext.run_qc as Boolean || false
+    def args = task.ext.args ?: ''
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 
+    if (fixed_mask || moving_mask) args += " -x \"[${fixed_mask ?: 'NULL'},${moving_mask ?: 'NULL'}]\""
     """
     export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=${task.ext.single_thread ? 1 : task.cpus}
     export OMP_NUM_THREADS=${task.ext.single_thread ? 1 : task.cpus}
     export ANTS_RANDOM_SEED=${task.ext.ants_rng_seed ? task.ext.ants_rng_seed : "1234"}
 
     antsRegistration --dimensionality 3 --float 0\
+<<<<<<< HEAD
         --output [forward,warped.nii.gz,inverse_warped.nii.gz]\
+=======
+        --output [forward,warped.nii.gz,InverseWarped.nii.gz]\
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
         --interpolation Linear --use-histogram-matching 0\
         --winsorize-image-intensities [0.005,0.995]\
         --initial-moving-transform [$fixed_image,$moving_image,1]\
@@ -57,13 +74,21 @@ process REGISTRATION_ANATTODWI {
         --smoothing-sigmas 3x2x1\
         $args
 
+<<<<<<< HEAD
     moving_base=\$(basename "${moving_image}")
+=======
+    moving_base=\$(basename $moving_anat .nii.gz)
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     ext=\${moving_base#*.}
     moving_id=\${moving_base%.\${ext}}
     moving_id=\${moving_id#${prefix}_*}
 
     mv warped.nii.gz ${prefix}_\${moving_id}_${suffix}.nii.gz
+<<<<<<< HEAD
     mv inverse_warped.nii.gz ${prefix}_${suffix}_reference.nii.gz
+=======
+    mv InverseWarped.nii.gz ${prefix}_warped_reference.nii.gz
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     mv forward0GenericAffine.mat ${prefix}_forward1_affine.mat
     mv forward1Warp.nii.gz ${prefix}_forward0_warp.nii.gz
     mv forward1InverseWarp.nii.gz ${prefix}_backward1_warp.nii.gz
@@ -117,7 +142,11 @@ process REGISTRATION_ANATTODWI {
         # Create GIF.
         convert -delay 10 -loop 0 -morph 10 \
             \${moving_id}_${suffix}_mosaic.png \${fixed_id}_mosaic.png \${moving_id}_${suffix}_mosaic.png \
+<<<<<<< HEAD
             ${prefix}_${suffix_qc}registration_anattodwi_mqc.gif
+=======
+            ${prefix}_registration_anattodwi_mqc.gif
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 
         # Clean up.
         rm \${moving_id}_${suffix}_mosaic.png \${fixed_id}_mosaic.png
@@ -137,6 +166,10 @@ process REGISTRATION_ANATTODWI {
     def suffix = task.ext.suffix ? "${task.ext.suffix}_warped" : "warped"
     def suffix_qc = task.ext.suffix_qc ? "${task.ext.suffix_qc}_" : ""
     def run_qc = task.ext.run_qc as Boolean || false
+<<<<<<< HEAD
+=======
+    def suffix = task.ext.suffix ? "${task.ext.suffix}_warped" : "warped"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     """
     antsRegistration -h
     antsApplyTransforms -h
@@ -144,13 +177,21 @@ process REGISTRATION_ANATTODWI {
     scil_viz_volume_screenshot -h
     convert -help .
 
+<<<<<<< HEAD
     moving_base=\$(basename "${moving_image}")
+=======
+    moving_base=\$(basename $moving_anat .nii.gz)
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     ext=\${moving_base#*.}
     moving_id=\${moving_base%.\${ext}}
     moving_id=\${moving_id#${prefix}_*}
 
     touch ${prefix}_\${moving_id}_${suffix}.nii.gz
+<<<<<<< HEAD
     touch ${prefix}_${suffix}_reference.nii.gz
+=======
+    touch ${prefix}_warped_reference.nii.gz
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     touch ${prefix}_forward1_affine.mat
     touch ${prefix}_forward0_warp.nii.gz
     touch ${prefix}_backward1_warp.nii.gz

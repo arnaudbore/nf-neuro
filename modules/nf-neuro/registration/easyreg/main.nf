@@ -38,8 +38,13 @@ process REGISTRATION_EASYREG {
 
     mri_easyreg --ref $fixed_image \
         --flo $moving_image \
+<<<<<<< HEAD
         --flo_reg ${prefix}_\${moving_id}_${suffix}.nii.gz \
         --ref_reg ${prefix}_${suffix}_reference.nii.gz \
+=======
+        --flo_reg ${prefix}_\${moving_id}_warped.nii.gz \
+        --ref_reg ${prefix}_warped_reference.nii.gz \
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
         --fwd_field ${prefix}_forward0_warp.nii.gz \
         --bak_field ${prefix}_backward0_warp.nii.gz \
         $fixed_segmentation $moving_segmentation \
@@ -63,10 +68,17 @@ process REGISTRATION_EASYREG {
     moving_id=\${moving_base%.\${ext}}
     moving_id=\${moving_id#${prefix}_*}
 
+<<<<<<< HEAD
     touch ${prefix}_\${moving_id}_${suffix}.nii.gz
     touch ${prefix}_${suffix}_reference.nii.gz
     touch ${prefix}_${suffix}_segmentation.nii.gz
     touch ${prefix}_${suffix}_reference_segmentation.nii.gz
+=======
+    touch ${prefix}_\${moving_id}_warped.nii.gz
+    touch ${prefix}_warped_reference.nii.gz
+    touch ${prefix}_warped_segmentation.nii.gz
+    touch ${prefix}_warped_reference_segmentation.nii.gz
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     touch ${prefix}_forward0_warp.nii.gz
     touch ${prefix}_backward0_warp.nii.gz
 

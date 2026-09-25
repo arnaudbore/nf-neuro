@@ -41,6 +41,11 @@ process REGISTRATION_SYNTHMORPH {
     export OMP_NUM_THREADS=${task.ext.single_thread ? 1 : task.cpus}
     export CUDA_VISIBLE_DEVICES="-1"
 
+    moving_base=\$(basename "${moving_image}")
+    ext=\${moving_base#*.}
+    moving_id=\${moving_base%.\${ext}}
+    moving_id=\${moving_id#${prefix}_*}
+
     echo "Available memory : ${task.memory}"
 
     moving_base=\$(basename "${moving_image}")
@@ -97,12 +102,21 @@ process REGISTRATION_SYNTHMORPH {
             args="\$args -i \$initializer"
         fi
 
+<<<<<<< HEAD
         current_backward=${prefix}_backward\${i}_\$model.\${extension[\$model]}
 
         mri_synthmorph register \$moving fixed.nii.gz -v -m \$model \$weight \$args \\
             -t ${prefix}_forward\${j}_\$model.\${extension[\$model]} \\
             -T \$current_backward \\
             -o warped.nii.gz -j ${nthreads} $extent $use_gpu
+=======
+        mri_synthmorph register \$moving fixed.nii.gz -v -m \$model \$weight \$args \
+            -t ${prefix}_forward\${j}_\$model.\${extension[\$model]} \
+            -T ${prefix}_backward\${i}_\$model.\${extension[\$model]} \
+            -o warped.nii.gz \
+            -O fixed_warped.nii.gz \
+            -j ${nthreads} $extent $use_gpu
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 
         if [ \$initializer ]; then
             standalone_initializer=\$(echo "\$initializer" | sed -r 's/(_forward|_backward)[[:digit:]]+/\\1_standalone/')
@@ -130,6 +144,7 @@ process REGISTRATION_SYNTHMORPH {
         ((++i))
     done
 
+<<<<<<< HEAD
     echo "Backward transforms:"
     printf '  %s\\n' "\${backward_transform[@]}"
 
@@ -164,6 +179,10 @@ process REGISTRATION_SYNTHMORPH {
     done
 
     mv warped.nii.gz ${prefix}_\${moving_id}_${suffix}.nii.gz
+=======
+    mv warped.nii.gz ${prefix}_\${moving_id}_warped.nii.gz
+    mv fixed_warped.nii.gz ${prefix}_warped_reference.nii.gz
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -183,8 +202,13 @@ process REGISTRATION_SYNTHMORPH {
     moving_id=\${moving_base%.\${ext}}
     moving_id=\${moving_id#${prefix}_*}
 
+<<<<<<< HEAD
     touch ${prefix}_\${moving_id}_${suffix}.nii.gz
     touch ${prefix}_${suffix}_reference.nii.gz
+=======
+    touch ${prefix}_\${moving_id}_warped.nii.gz
+    touch ${prefix}_warped_reference.nii.gz
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     touch ${prefix}_forward1_affine.lta
     touch ${prefix}_forward0_warp.nii.gz
     touch ${prefix}_backward1_warp.nii.gz

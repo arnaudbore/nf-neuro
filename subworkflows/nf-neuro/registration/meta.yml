@@ -44,9 +44,11 @@ keywords:
 components:
   - registration/anattodwi
   - registration/ants
+  - registration/antsapplytransforms
   - registration/convert
   - registration/easyreg
   - registration/synthmorph
+  - image/applymask
   - utils_options
 input:
   - ch_fixed_image:
@@ -93,7 +95,11 @@ input:
   - ch_fixed_mask:
       type: file
       description: |
+<<<<<<< HEAD
         Fixed mask will be use to mask the fixed image during registration.
+=======
+        Fixed mask will be used to mask the fixed image during registration.
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
       structure:
         - meta:
             type: map
@@ -106,7 +112,11 @@ input:
   - ch_moving_mask:
       type: file
       description: |
+<<<<<<< HEAD
         Moving mask will be use to mask the moving image during registration.
+=======
+        Moving mask will be used to mask the moving image during registration.
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
       structure:
         - meta:
             type: map
@@ -135,6 +145,18 @@ input:
       description: Map of options for the registration subworkflow.
       mandatory: false
       entries:
+<<<<<<< HEAD
+=======
+        masking_strategy:
+          type: string
+          choices:
+            - none
+            - apriori
+            - internal
+            - both
+          description: Masking strategy to use for registration. Options are 'none', 'apriori', 'internal' or 'both'.
+          default: "none"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
         method:
           type: string
           choices: [ants, easyreg, synthmorph]
@@ -164,6 +186,31 @@ output:
         - image:
             type: file
             description: Warped reference image in moving space.
+      pattern: "*.{nii,nii.gz}"
+      mandatory: false
+  - image_warped_masked:
+      type: file
+      description: |
+        Channel containing images warped in fixed space.
+      structure:
+        - meta:
+            type: map
+            description: Metadata map.
+        - image:
+            type: file
+            description: Warped image masked in fixed space.
+      pattern: "*.{nii,nii.gz}"
+  - reference_warped_masked:
+      type: file
+      description: |
+        Channel containing the reference image warped in moving space.
+      structure:
+        - meta:
+            type: map
+            description: Metadata map.
+        - image:
+            type: file
+            description: Warped reference image masked in moving space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
   - forward_affine:

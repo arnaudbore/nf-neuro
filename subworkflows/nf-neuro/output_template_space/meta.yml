@@ -142,6 +142,14 @@ input:
           choices: [ants, easyreg, synthmorph]
           description: Registration method to use. Options are 'ants', 'easyreg', or 'synthmorph'.
           default: ants
+<<<<<<< HEAD
+=======
+        masking_strategy:
+          type: string
+          choices: [none, apriori, internal, both]
+          description: Masking strategy to use for registration. Options are 'none', 'apriori', 'internal' or 'both'.
+          default: "none"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 output:
   - ch_t1w_tpl:
       type: file

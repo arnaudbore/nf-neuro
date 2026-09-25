@@ -15,7 +15,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-23T11:03:10.212177861"
+=======
+        "timestamp": "2026-07-13T10:18:12.32065037"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     },
     "registration - easyreg - stub-run": {
         "content": [

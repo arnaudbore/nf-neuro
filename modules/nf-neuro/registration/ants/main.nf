@@ -46,7 +46,11 @@ process REGISTRATION_ANTS {
     if ( task.ext.histogram_matching ) args += " -j $task.ext.histogram_matching"
     if ( task.ext.repro_mode ) args += " -y $task.ext.repro_mode"
     if ( task.ext.collapse_output ) args += " -z $task.ext.collapse_output"
+<<<<<<< HEAD
     if ( fixed_mask || moving_mask ) args += " -x \"${fixed_mask ?: ''},${moving_mask ?: ''}\""
+=======
+    if ( fixed_mask || moving_mask ) args += " -x \"${fixed_mask ?: 'NULL'},${moving_mask ?: 'NULL'}\""
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 
     """
     export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=${task.ext.single_thread ? 1 : task.cpus}
@@ -61,7 +65,11 @@ process REGISTRATION_ANTS {
     moving_id=\${moving_id#${prefix}_*}
 
     mv outputWarped.nii.gz ${prefix}_\${moving_id}_${suffix}.nii.gz
+<<<<<<< HEAD
     mv outputInverseWarped.nii.gz ${prefix}_${suffix}_reference.nii.gz
+=======
+    mv outputInverseWarped.nii.gz ${prefix}_warped_reference.nii.gz
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 
     if [ $transform != "bo" ] && [ $transform != "so" ]; then
         mv output0GenericAffine.mat ${prefix}_forward1_affine.mat
@@ -155,17 +163,21 @@ process REGISTRATION_ANTS {
         antsRegistrationSyNQuick.sh -h
     }
 
-    antsApplyTransforms -h
-    convert -help .
-    scil_viz_volume_screenshot -h
-
     moving_base=\$(basename "${moving_image}")
     ext=\${moving_base#*.}
     moving_id=\${moving_base%.\${ext}}
     moving_id=\${moving_id#${prefix}_*}
 
+    antsApplyTransforms -h
+    convert -help .
+    scil_viz_volume_screenshot -h
+
     touch ${prefix}_\${moving_id}_${suffix}.nii.gz
+<<<<<<< HEAD
     touch ${prefix}_${suffix}_reference.nii.gz
+=======
+    touch ${prefix}_warped_reference.nii.gz
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     touch ${prefix}_forward1_affine.mat
     touch ${prefix}_forward0_warp.nii.gz
     touch ${prefix}_backward1_warp.nii.gz

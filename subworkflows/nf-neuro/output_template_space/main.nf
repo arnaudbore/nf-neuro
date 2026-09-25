@@ -159,7 +159,12 @@ workflow OUTPUT_TEMPLATE_SPACE {
             channel.empty(),
             ch_freesurfer_license,
             [
+<<<<<<< HEAD
                 "method": options.method
+=======
+                "method": options.method,
+                "masking_strategy": options.masking_strategy
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
             ]
         )
         ch_versions = ch_versions.mix(REGISTRATION.out.versions)

@@ -40,7 +40,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-11T11:41:30.423462519"
+=======
+        "timestamp": "2026-09-03T11:02:13.321063094"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     },
     "atlas_roimetrics - IIT atlas - binary": {
         "content": [
@@ -84,6 +88,10 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-11T11:41:04.756413368"
+=======
+        "timestamp": "2026-09-03T11:01:47.261129436"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     }
 }

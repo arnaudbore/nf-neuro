@@ -226,7 +226,11 @@ workflow REGISTRATION {
             ch_mqc = ch_mqc.mix(REGISTRATION_ANATTODWI.out.mqc)
 
             // ** Set compulsory outputs ** //
+<<<<<<< HEAD
             out_image_warped = REGISTRATION_ANATTODWI.out.image_warped
+=======
+            out_image_warped = REGISTRATION_ANATTODWI.out.anat_warped
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
             out_ref_warped = REGISTRATION_ANATTODWI.out.fixed_warped
             out_forward_affine = REGISTRATION_ANATTODWI.out.forward_affine
             out_forward_warp = REGISTRATION_ANATTODWI.out.forward_warp

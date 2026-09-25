@@ -132,8 +132,13 @@ nextflow_process {
         }
     }
 
+<<<<<<< HEAD
     test("registration - ants - moving mask") {
         config "./nextflow_quick.config"
+=======
+    test("registration - ants - both - moving mask") {
+        config "./nextflow_both_moving_mask.config"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
         when {
             process {
                 """
@@ -175,8 +180,13 @@ nextflow_process {
         }
     }
 
+<<<<<<< HEAD
     test("registration - ants - fixed mask") {
         config "./nextflow_quick.config"
+=======
+    test("registration - ants - both - fixed mask") {
+        config "./nextflow_both_moving_mask.config"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
         when {
             process {
                 """

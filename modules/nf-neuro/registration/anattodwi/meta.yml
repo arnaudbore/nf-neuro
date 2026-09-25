@@ -116,7 +116,11 @@ output:
             e.g. `[ id:'test', single_end:false ]`
       - "*_warped_reference.nii.gz":
           type: file
+<<<<<<< HEAD
           description: Fixed image warped to moving space.
+=======
+          description: B0 warped to T1 space
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
           pattern: "*_warped_reference.nii.gz"
           ontologies:
             - edam: http://edamontology.org/format_4001 # NIFTI format

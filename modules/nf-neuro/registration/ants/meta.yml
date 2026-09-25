@@ -178,7 +178,11 @@ output:
           description: Nifti volume after registration.
           pattern: "*_warped.nii.gz"
           ontologies:
+<<<<<<< HEAD
             - edam: http://edamontology.org/format_4001 # NIFTI format
+=======
+            - edam: http://edamontology.org/format_3989 # GZIP format
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
   fixed_warped:
     - - meta:
           type: map
@@ -187,10 +191,17 @@ output:
             e.g. `[ id:'test', single_end:false ]`
       - "*_warped_reference.nii.gz":
           type: file
+<<<<<<< HEAD
           description: Fixed image warped to moving space.
           pattern: "*_warped_reference.nii.gz"
           ontologies:
             - edam: http://edamontology.org/format_4001 # NIFTI format
+=======
+          description: Reference warped to moving space.
+          pattern: "*_warped_reference.nii.gz"
+          ontologies:
+            - edam: http://edamontology.org/format_3989 # GZIP format
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
   forward_affine:
     - - meta:
           type: map

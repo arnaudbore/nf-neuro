@@ -200,9 +200,13 @@ workflow TRACTOFLOW {
             channel.empty(),
             channel.empty(),
             channel.empty(),
+<<<<<<< HEAD
             [
                 "method": "ants"
             ]
+=======
+            [:]
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
         )
         ch_versions = ch_versions.mix(T1_REGISTRATION.out.versions.first())
         ch_mqc_files = ch_mqc_files.mix(T1_REGISTRATION.out.mqc)

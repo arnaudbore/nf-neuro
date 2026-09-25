@@ -45,6 +45,10 @@ args:
       description: |
         Data type for the output image. Use the following format:
         uint8, int16, int32, int64, float16, float32 or float64.
+<<<<<<< HEAD
+=======
+      default: "float32"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
 output:
   image:
     - - meta:

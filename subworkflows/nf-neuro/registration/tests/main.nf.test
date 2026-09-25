@@ -77,8 +77,12 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = channel.empty()
                 input[7] = channel.empty()
+<<<<<<< HEAD
                 input[8] = [ "method": "ants",
                             "masking_strategy": "apriori" ]
+=======
+                input[8] = [ "masking_strategy": "apriori" ]
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
                 """
             }
         }
@@ -206,8 +210,12 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = channel.empty()
                 input[7] = channel.empty()
+<<<<<<< HEAD
                 input[8] = [ "method": "ants",
                             "masking_strategy": "apriori" ]
+=======
+                input[8] = [ "masking_strategy": "apriori" ]
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
                 """
             }
         }
@@ -275,8 +283,12 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = channel.empty()
                 input[7] = channel.empty()
+<<<<<<< HEAD
                 input[8] = [ "method": "ants",
                             "masking_strategy": "internal" ]
+=======
+                input[8] = [ "masking_strategy": "internal" ]
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
                 """
             }
         }

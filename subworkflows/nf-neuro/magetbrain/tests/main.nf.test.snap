@@ -45,7 +45,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-11T11:42:07.476378036"
+=======
+        "timestamp": "2026-09-03T11:13:14.568301351"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     },
     "resample_combinations": {
         "content": [

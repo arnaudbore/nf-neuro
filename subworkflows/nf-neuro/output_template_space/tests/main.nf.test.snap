@@ -77,7 +77,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-21T15:53:33.908358502"
+=======
+        "timestamp": "2026-09-02T18:17:26.784386998"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     },
     "Template MNI152NLin2009aAsym - using synthmorph registration": {
         "content": [
@@ -139,7 +143,11 @@
                         {
                             "id": "test"
                         },
+<<<<<<< HEAD
                         "test_registration_ants_mqc.gif"
+=======
+                        "test__registration_ants_mqc.gif"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
                     ]
                 ],
                 "versions": [
@@ -157,7 +165,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-24T21:36:52.647107711"
+=======
+        "timestamp": "2026-09-02T18:18:10.972082102"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     },
     "Template MNI152NLin2009cAsym - local templates": {
         "content": [
@@ -237,6 +249,10 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-21T15:52:55.93371868"
+=======
+        "timestamp": "2026-09-02T18:16:42.03307248"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     }
 }

@@ -101,6 +101,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
+<<<<<<< HEAD
         "timestamp": "2026-09-24T10:13:42.797416631"
     },
     "registration - synthmorph - affine": {
@@ -188,6 +189,9 @@
             "nextflow": "25.10.2"
         },
         "timestamp": "2026-09-24T10:14:11.281918176"
+=======
+        "timestamp": "2026-07-13T10:27:23.471066239"
+>>>>>>> 71ce77985474fe8cdccbf04c8351ace437f43fd9
     },
     "registration - synthmorph - stub-run": {
         "content": [
