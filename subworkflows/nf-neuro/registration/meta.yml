@@ -189,6 +189,7 @@ output:
             type: file
             description: Warped image masked in fixed space.
       pattern: "*.{nii,nii.gz}"
+      mandatory: false
   - reference_warped_masked:
       type: file
       description: |

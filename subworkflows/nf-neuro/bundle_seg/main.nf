@@ -55,6 +55,8 @@ workflow BUNDLE_SEG {
         UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
         options = UTILS_OPTIONS.out.options.value
 
+        if ( options.method == "easyreg" ) error "The BUNDLE_SEG workflow does not support the easyreg registration method."
+
         ch_versions = channel.empty()
         ch_mqc = channel.empty()
 
