@@ -20,8 +20,8 @@ workflow REGISTRATION {
     // REGISTRATION_EASYREG or REGISTRATION_SYNTHMORPH
 
     take:
-        ch_fixed_image                  // channel: [ val(meta), image ]
-        ch_moving_image                 // channel: [ val(meta), reference ]
+        ch_fixed_image                  // channel: [ val(meta), fixed_image ]
+        ch_moving_image                 // channel: [ val(meta), moving_image ]
         ch_metric                       // channel: [ val(meta), metric ], optional
         ch_fixed_mask                   // channel: [ val(meta), fixed_mask ], optional
         ch_moving_mask                  // channel: [ val(meta), moving_mask ], optional
@@ -38,34 +38,29 @@ workflow REGISTRATION {
         UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
         options = UTILS_OPTIONS.out.options.value
 
+        if ( ( options.masking_strategy == "both" || options.masking_strategy == "internal" ) && ( options.method == "easyreg" || options.method == "synthmorph" ) ) {
+            error "The ${options.masking_strategy} masking strategy is not compatible with the easyreg or synthmorph registration methods."
+        }
+
         // Initialize channels
         ch_fixed_image_ready  = ch_fixed_image
         ch_moving_image_ready = ch_moving_image
         ch_fixed_metric_ready = ch_metric
-        if ( ( options.masking_strategy == "apriori" || options.masking_strategy == "both" ) && ( ch_fixed_mask || ch_moving_mask || ch_metric ) ) {
-            if ( ch_fixed_mask ) {
-                MASK_FIXED_IMAGE ( ch_fixed_image.join(ch_fixed_mask) )
-                ch_fixed_image_ready = ch_fixed_image.join(MASK_FIXED_IMAGE.out.image, remainder: true)
-                                        .map({ meta, orig, masked -> [meta, masked?: orig] })
-                ch_versions = ch_versions.mix(MASK_FIXED_IMAGE.out.versions.first())
+        if ( options.masking_strategy == "apriori" || options.masking_strategy == "both" ) {
+            MASK_FIXED_IMAGE ( ch_fixed_image.join(ch_fixed_mask) )
+            ch_fixed_image_ready = ch_fixed_image.join(MASK_FIXED_IMAGE.out.image, remainder: true)
+                                    .map({ meta, orig, masked -> [meta, masked?: orig] })
+            ch_versions = ch_versions.mix(MASK_FIXED_IMAGE.out.versions.first())
 
-                if ( ch_metric ) {
-                    MASK_FIXED_METRIC ( ch_metric.join(ch_fixed_mask) )
-                    ch_fixed_metric_ready = ch_metric.join(MASK_FIXED_METRIC.out.image, remainder: true)
-                                                .map({ meta, orig, masked -> [meta, masked?: orig] })
-                    ch_versions = ch_versions.mix(MASK_FIXED_METRIC.out.versions.first())
-                }
-            }
-            if ( ch_moving_mask ) {
-                MASK_MOVING_IMAGE ( ch_moving_image.join(ch_moving_mask) )
-                ch_moving_image_ready = ch_moving_image.join(MASK_MOVING_IMAGE.out.image, remainder: true)
+            MASK_FIXED_METRIC ( ch_metric.join(ch_fixed_mask) )
+            ch_fixed_metric_ready = ch_metric.join(MASK_FIXED_METRIC.out.image, remainder: true)
                                         .map({ meta, orig, masked -> [meta, masked?: orig] })
-                ch_versions = ch_versions.mix(MASK_MOVING_IMAGE.out.versions.first())
-            }
-        }
+            ch_versions = ch_versions.mix(MASK_FIXED_METRIC.out.versions.first())
 
-        if ( ( options.masking_strategy == "both" || options.masking_strategy == "internal" ) && ( options.method == "easyreg" || options.method == "synthmorph" ) ) {
-            error "The ${options.masking_strategy} masking strategy is not compatible with the easyreg or synthmorph registration methods."
+            MASK_MOVING_IMAGE ( ch_moving_image.join(ch_moving_mask) )
+            ch_moving_image_ready = ch_moving_image.join(MASK_MOVING_IMAGE.out.image, remainder: true)
+                                    .map({ meta, orig, masked -> [meta, masked?: orig] })
+            ch_versions = ch_versions.mix(MASK_MOVING_IMAGE.out.versions.first())
         }
 
         if ( options.method !in ["ants", "easyreg", "synthmorph"] ) {
@@ -78,16 +73,16 @@ workflow REGISTRATION {
 
         if ( options.method == "easyreg" ) {
             // ** Registration using Easyreg ** //
-            // Result : [ meta, reference, image | [], ref-segmentation | [], segmentation | [] ]
+            // Result : [ meta, fixed, moving, fixed_segmentation | [], segmentation | [] ]
             //  Steps :
-            //   - join [ meta, reference, image | null ]
-            //   - join [ meta, reference, image | null, ref-segmentation | null ]
-            //   - join [ meta, reference, image | null, ref-segmentation | null, segmentation | null ]
-            //   -  map [ meta, reference, image | [], ref-segmentation | [], segmentation | [] ]
-            ch_register = ch_moving_image_ready
-                .join(ch_fixed_image_ready, remainder: true)
-                .join(ch_moving_segmentation, remainder: true)
+            //   - join [ meta, fixed, moving ]
+            //   - join [ meta, fixed, moving, fixed_segmentation | null ]
+            //   - join [ meta, fixed, moving, fixed_segmentation | null, moving_segmentation | null ]
+            //   -  map [ meta, fixed, moving, fixed_segmentation | [], moving_segmentation | [] ]
+            ch_register = ch_fixed_image_ready
+                .join(ch_moving_image_ready)
                 .join(ch_segmentation, remainder: true)
+                .join(ch_moving_segmentation, remainder: true)
                 .map{ it[0..1] + [it[2] ?: [], it[3] ?: [], it[4] ?: []] }
 
             REGISTRATION_EASYREG ( ch_register )
@@ -95,7 +90,7 @@ workflow REGISTRATION {
 
             // ** Set compulsory outputs ** //
             out_image_warped = REGISTRATION_EASYREG.out.image_warped
-            out_ref_warped = REGISTRATION_EASYREG.out.fixed_warped
+            out_fixed_warped = REGISTRATION_EASYREG.out.fixed_warped
             out_forward_affine = channel.empty()
             out_forward_warp = REGISTRATION_EASYREG.out.forward_warp
             out_backward_affine = channel.empty()
@@ -109,7 +104,7 @@ workflow REGISTRATION {
             // If segmentations are not provided as inputs,
             // easyreg will outputs synthseg segmentations
             out_segmentation = ch_segmentation.mix( REGISTRATION_EASYREG.out.segmentation_warped )
-            out_ref_segmentation = ch_moving_segmentation.mix( REGISTRATION_EASYREG.out.fixed_segmentation_warped )
+            out_fixed_segmentation = ch_moving_segmentation.mix( REGISTRATION_EASYREG.out.fixed_segmentation_warped )
         }
         else if ( options.method == "synthmorph" ) {
             // ** Registration using synthmorph ** //
@@ -181,7 +176,7 @@ workflow REGISTRATION {
 
             // ** Set compulsory outputs ** //
             out_image_warped = REGISTRATION_SYNTHMORPH.out.image_warped
-            out_ref_warped = REGISTRATION_SYNTHMORPH.out.fixed_warped
+            out_fixed_warped = REGISTRATION_SYNTHMORPH.out.fixed_warped
             out_forward_affine = ch_conversion_outputs.forward_affine
             out_forward_warp = ch_conversion_outputs.forward_warp
             out_backward_affine = ch_conversion_outputs.backward_affine
@@ -196,37 +191,37 @@ workflow REGISTRATION {
             out_backward_tractogram_transform = out_forward_image_transform
             // ** and optional outputs. ** //
             out_segmentation = channel.empty()
-            out_ref_segmentation = channel.empty()
+            out_fixed_segmentation = channel.empty()
         }
         else {
             // ** Classic registration using antsRegistration  ** //
-            // Result : [ meta, image, reference, metric | [] ]
+            // Result : [ meta, fixed, moving, metric | [] ]
             //  Steps :
-            //   - join [ meta, image, ref ]
-            //   - join [ meta, image, ref, metric | null ]
-            //   - map  [ meta, image, ref, metric | [] ]
+            //   - join [ meta, fixed, moving ]
+            //   - join [ meta, fixed, moving, metric | null ]
+            //   - map  [ meta, fixed, moving, metric | [] ]
             // Branches :
             //   - anat_to_dwi : has a metric at index 3
             //   - ants_syn    : doesn't have a metric at index 3 ( [] or null )
             ch_register = ch_fixed_image_ready
                 .join(ch_moving_image_ready)
                 .join(ch_fixed_metric_ready, remainder: true)
-                    if ( options.masking_strategy == "both" || options.masking_strategy == "internal" ) {
-                        ch_register = ch_register
-                            .join(ch_fixed_mask, remainder: true)
-                            .join(ch_moving_mask, remainder: true)
-                            .map{ it[0..2] + [it[3] ?: [], it[4] ?: [], it[5] ?: []] }
-                    }
-                    else {
-                        ch_register = ch_register
-                            .map{ it[0..2] + [it[3] ?: [], [], []] }
-                    }
-                    ch_register = ch_register
-                .branch{
-                    anat_to_dwi : it[3]
-                    ants_syn: true
-                        return it[0..2] + it[4..5]
-                }
+            if ( options.masking_strategy == "both" || options.masking_strategy == "internal" ) {
+                ch_register = ch_register
+                    .join(ch_fixed_mask, remainder: true)
+                    .join(ch_moving_mask, remainder: true)
+                    .map{ it[0..2] + [it[3] ?: [], it[4] ?: [], it[5] ?: []] }
+            }
+            else {
+                ch_register = ch_register
+                    .map{ it[0..2] + [it[3] ?: [], [], []] }
+            }
+
+            ch_register = ch_register.branch{
+                anat_to_dwi : it[3]
+                ants_syn: true
+                    return it[0..2] + it[4..5]
+            }
 
             // ** Registration using ANAT TO DWI ** //
             REGISTRATION_ANATTODWI ( ch_register.anat_to_dwi )
@@ -235,7 +230,7 @@ workflow REGISTRATION {
 
             // ** Set compulsory outputs ** //
             out_image_warped = REGISTRATION_ANATTODWI.out.image_warped
-            out_ref_warped = REGISTRATION_ANATTODWI.out.fixed_warped
+            out_fixed_warped = REGISTRATION_ANATTODWI.out.fixed_warped
             out_forward_affine = REGISTRATION_ANATTODWI.out.forward_affine
             out_forward_warp = REGISTRATION_ANATTODWI.out.forward_warp
             out_backward_affine = REGISTRATION_ANATTODWI.out.backward_affine
@@ -248,10 +243,7 @@ workflow REGISTRATION {
             // ** Registration using ANTS SYN SCRIPTS ** //
             // Registration using antsRegistrationSyN.sh or antsRegistrationSyNQuick.sh, has
             // to be defined in the config file or else the default (SyN) will be used.
-            // Result : [ meta, image, mask | [] ]
-            //  Steps :
-            //   - join [ meta, image, metric | [], mask | null ]
-            //   - map  [ meta, image ]
+            // Result : [ meta, fixed, moving, fixed_mask | [], moving_mask | [] ]
 
             REGISTRATION_ANTS ( ch_register.ants_syn )
             ch_versions = ch_versions.mix(REGISTRATION_ANTS.out.versions.first())
@@ -259,7 +251,7 @@ workflow REGISTRATION {
 
             // ** Set compulsory outputs ** //
             out_image_warped = out_image_warped.mix(REGISTRATION_ANTS.out.image_warped)
-            out_ref_warped = out_ref_warped.mix(REGISTRATION_ANTS.out.fixed_warped)
+            out_fixed_warped = out_fixed_warped.mix(REGISTRATION_ANTS.out.fixed_warped)
             out_forward_affine = out_forward_affine.mix(REGISTRATION_ANTS.out.forward_affine)
             out_forward_warp = out_forward_warp.mix(REGISTRATION_ANTS.out.forward_warp)
             out_backward_affine = out_backward_affine.mix(REGISTRATION_ANTS.out.backward_affine)
@@ -271,7 +263,7 @@ workflow REGISTRATION {
 
             // **and optional outputs **//
             out_segmentation = channel.empty()
-            out_ref_segmentation = channel.empty()
+            out_fixed_segmentation = channel.empty()
         }
 
         out_image_warped_masked = out_image_warped
@@ -279,40 +271,42 @@ workflow REGISTRATION {
             .filter{ _meta, _warped, mask -> options.masking_strategy in ["both", "apriori"] && mask }
             .map{ meta, warped, _mask -> [meta, warped] }
 
-        out_ref_warped_masked = out_ref_warped
+        out_fixed_warped_masked = out_fixed_warped
             .join(ch_fixed_mask)
             .filter{ _meta, _warped, mask -> options.masking_strategy in ["both", "apriori"] && mask }
             .map{ meta, warped, _mask -> [meta, warped] }
 
-        // Register original moving image
-        WARP_IMAGE_TO_FIXED ( ch_moving_image
+        if ( options.method != "easyreg" ) {
+            // Register original moving image
+            WARP_IMAGE_TO_FIXED ( ch_moving_image
                                 .join(ch_fixed_image)
                                 .join(out_forward_image_transform)
                                 .join(ch_moving_mask)
                                 .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
                                 .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] } )
-        out_image_warped = out_image_warped
+            out_image_warped = out_image_warped
             .join(WARP_IMAGE_TO_FIXED.out.warped_image, remainder: true)
             .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
-        ch_versions = ch_versions.mix(WARP_IMAGE_TO_FIXED.out.versions.first())
+            ch_versions = ch_versions.mix(WARP_IMAGE_TO_FIXED.out.versions.first())
 
-        // Register original ref image
-        WARP_IMAGE_TO_MOVING ( ch_fixed_image
+            // Register original fixed image
+            WARP_IMAGE_TO_MOVING ( ch_fixed_image
                                 .join(ch_moving_image)
                                 .join(out_backward_image_transform)
                                 .join(ch_fixed_mask)
-                                .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
-                                .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] } )
-        out_ref_warped = out_ref_warped
+                                .filter{ _meta, _fixed, _moving, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
+                                .map{ meta, fixed, moving, transform, _mask -> [meta, fixed, moving, transform] } )
+            out_fixed_warped = out_fixed_warped
             .join(WARP_IMAGE_TO_MOVING.out.warped_image, remainder: true)
             .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
-        ch_versions = ch_versions.mix(WARP_IMAGE_TO_MOVING.out.versions.first())
+            ch_versions = ch_versions.mix(WARP_IMAGE_TO_MOVING.out.versions.first())
+        }
 
     emit:
         image_warped                    = out_image_warped                  // channel: [ val(meta), image ]
-        reference_warped                = out_ref_warped                    // channel: [ val(meta), ref ]
+        fixed_warped                    = out_fixed_warped                    // channel: [ val(meta), fixed ]
         image_warped_masked             = out_image_warped_masked           // channel: [ val(meta), image ]
-        reference_warped_masked         = out_ref_warped_masked             // channel: [ val(meta), ref ]
+        fixed_warped_masked             = out_fixed_warped_masked             // channel: [ val(meta), fixed ]
         // Individual transforms
         forward_affine                  = out_forward_affine                // channel: [ val(meta), <forward-affine> ]
         forward_warp                    = out_forward_warp                  // channel: [ val(meta), <forward-warp> ]
@@ -325,7 +319,7 @@ workflow REGISTRATION {
         backward_tractogram_transform   = out_backward_tractogram_transform // channel: [ val(meta), [ <forward-warp>, <forward-affine> ] ]
         // Segmentations
         segmentation                    = out_segmentation                  // channel: [ val(meta), segmentation ]
-        reference_segmentation          = out_ref_segmentation              // channel: [ val(meta), ref-segmentation ]
+        fixed_segmentation              = out_fixed_segmentation              // channel: [ val(meta), fixed-segmentation ]
 
         mqc                             = ch_mqc                            // channel: [ *mqc.*, ... ]
         versions                        = ch_versions                       // channel: [ versions.yml ]
