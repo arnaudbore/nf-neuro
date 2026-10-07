@@ -31,7 +31,7 @@ nextflow_workflow {
             script "../../load_test_data/main.nf"
             process {
                 """
-                input[0] = channel.from( [ "freesurfer.zip", "T1w.zip", "b0.zip", "dti.zip", "others.zip" ] )
+                input[0] = channel.from( [ "freesurfer.zip", "WB-common.zip", "b0.zip", "dti.zip", "mni_152_sym_09c.zip" ] )
                 input[1] = "test.load-test-data"
                 """
             }
@@ -44,7 +44,7 @@ nextflow_workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
                     .branch{
-                        t1w: it.simpleName == "T1w"
+                        fixed: it.simpleName == "WB-common"
                         b0: it.simpleName == "b0"
                         dti: it.simpleName == "dti"
                     }
@@ -54,10 +54,10 @@ nextflow_workflow {
                         file("\${test_data_directory}/b0.nii.gz")
                     ]
                 }
-                input[1] = ch_split_test_data.t1w.map{
+                input[1] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]
                 }
                 input[2] = ch_split_test_data.dti.map{
@@ -108,36 +108,37 @@ nextflow_workflow {
         }
     }
 
-    test("registration - ANTs - SyNQuick") {
+    test("registration - ANTs - SyNQuick - apriori - one mask") {
         when {
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
                     .branch{
-                        t1w: it.simpleName == "T1w"
-                        moving: it.simpleName == "others"
+                        fixed: it.simpleName == "WB-common"
+                        moving: it.simpleName == "mni_152_sym_09c"
                     }
-                input[0] = ch_split_test_data.t1w.map{
+                input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]}
                 input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/t1.nii.gz")
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
                     ]}
                 input[2] = channel.empty()
-                input[3] = ch_split_test_data.t1w.map{
+                input[3] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w_mask.nii.gz")
+                        file("\${test_data_directory}/brainmask.nii.gz")
                     ]}
                 input[4] = channel.empty()
                 input[5] = channel.empty()
                 input[6] = channel.empty()
                 input[7] = channel.empty()
-                input[8] = [ "masking_strategy": "apriori" ]
+                input[8] = [ "method": "ants",
+                            "masking_strategy": "apriori" ]
                 """
             }
         }
@@ -174,33 +175,29 @@ nextflow_workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
                     .branch{
-                        t1w: it.simpleName == "T1w"
-                        moving: it.simpleName == "others"
+                        fixed: it.simpleName == "WB-common"
+                        moving: it.simpleName == "mni_152_sym_09c"
                     }
-                input[0] = ch_split_test_data.t1w.map{
+                input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz").copyTo(
-                                "\${test_data_directory}/fixed.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]}
-                input[1] = ch_split_test_data.t1w.map{
+                input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz").copyTo(
-                                "\${test_data_directory}/moving.nii.gz")
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
                     ]}
                 input[2] = channel.empty()
-                input[3] = ch_split_test_data.t1w.map{
+                input[3] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w_mask.nii.gz").copyTo(
-                                "\${test_data_directory}/fixed_mask.nii.gz")
+                        file("\${test_data_directory}/brainmask.nii.gz")
                     ]}
-                input[4] = ch_split_test_data.t1w.map{
+                input[4] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w_mask.nii.gz").copyTo(
-                                "\${test_data_directory}/moving_mask.nii.gz")
+                        file("\${test_data_directory}/t1/t1_brain_mask.nii.gz")
                     ]}
                 input[5] = channel.empty()
                 input[6] = channel.empty()
@@ -237,39 +234,36 @@ nextflow_workflow {
         }
     }
 
-    test("registration - ANTs - SyNQuick - internal") {
+    test("registration - ANTs - SyNQuick - internal - two masks") {
+        tag "ants_synquick_internal_two_masks"
         when {
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
                     .branch{
-                        t1w: it.simpleName == "T1w"
-                        moving: it.simpleName == "others"
+                        fixed: it.simpleName == "WB-common"
+                        moving: it.simpleName == "mni_152_sym_09c"
                     }
-                input[0] = ch_split_test_data.t1w.map{
+                input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz").copyTo(
-                                "\${test_data_directory}/fixed.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]}
-                input[1] = ch_split_test_data.t1w.map{
+                input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz").copyTo(
-                                "\${test_data_directory}/moving.nii.gz")
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
                     ]}
                 input[2] = channel.empty()
-                input[3] = ch_split_test_data.t1w.map{
+                input[3] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w_mask.nii.gz").copyTo(
-                                "\${test_data_directory}/fixed_mask.nii.gz")
+                        file("\${test_data_directory}/brainmask.nii.gz")
                     ]}
-                input[4] = ch_split_test_data.t1w.map{
+                input[4] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w_mask.nii.gz").copyTo(
-                                "\${test_data_directory}/moving_mask.nii.gz")
+                        file("\${test_data_directory}/t1/t1_brain_mask.nii.gz")
                     ]}
                 input[5] = channel.empty()
                 input[6] = channel.empty()
@@ -306,39 +300,35 @@ nextflow_workflow {
         }
     }
 
-    test("registration - ANTs - SyNQuick - both") {
+    test("registration - ANTs - SyNQuick - both - two masks") {
         when {
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
                     .branch{
-                        t1w: it.simpleName == "T1w"
-                        moving: it.simpleName == "others"
+                        fixed: it.simpleName == "WB-common"
+                        moving: it.simpleName == "mni_152_sym_09c"
                     }
-                input[0] = ch_split_test_data.t1w.map{
+                input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz").copyTo(
-                                "\${test_data_directory}/fixed.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]}
-                input[1] = ch_split_test_data.t1w.map{
+                input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz").copyTo(
-                                "\${test_data_directory}/moving.nii.gz")
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
                     ]}
                 input[2] = channel.empty()
-                input[3] = ch_split_test_data.t1w.map{
+                input[3] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w_mask.nii.gz").copyTo(
-                                "\${test_data_directory}/fixed_mask.nii.gz")
+                        file("\${test_data_directory}/brainmask.nii.gz")
                     ]}
-                input[4] = ch_split_test_data.t1w.map{
+                input[4] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w_mask.nii.gz").copyTo(
-                                "\${test_data_directory}/moving_mask.nii.gz")
+                        file("\${test_data_directory}/t1_brain_mask.nii.gz")
                     ]}
                 input[5] = channel.empty()
                 input[6] = channel.empty()
@@ -374,25 +364,25 @@ nextflow_workflow {
         }
     }
 
-    test("registration - easyreg") {
+    test("registration - easyreg - none - no mask") {
         when {
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
                     .branch{
-                        t1w: it.simpleName == "T1w"
-                        b0: it.simpleName == "b0"
+                        fixed: it.simpleName == "WB-common"
+                        moving: it.simpleName == "mni_152_sym_09c"
                     }
-                input[0] = ch_split_test_data.t1w.map{
+                input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]
                 }
-                input[1] = ch_split_test_data.b0.map{
+                input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/b0.nii.gz")
+                        file("\${test_data_directory}/t1_template.nii.gz")
                     ]
                 }
                 input[2] = channel.empty()
@@ -401,6 +391,68 @@ nextflow_workflow {
                 input[5] = channel.empty()
                 input[6] = channel.empty()
                 input[7] = channel.empty()
+                input[8] = [ "masking_strategy": "none",
+                            "method": "easyreg" ]
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out
+                        .findAll{ channel -> !channel.key.isInteger() && channel.value  }
+                        .collectEntries{ channel ->
+                            [(channel.key): ["versions"].contains(channel.key)
+                                ? channel.value
+                                : channel.value.collect{ subject ->
+                                    [ subject[0] ] + subject[1..-1].flatten().collect{ entry -> entry ? file(entry).name : "" }
+                            } ]
+                        }
+                ).match() }
+            )
+        }
+    }
+
+    test("registration - easyreg - apriori - two masks") {
+        tag "easyreg_apriori_two_masks"
+        when {
+            workflow {
+                """
+                ch_split_test_data = LOAD_DATA.out.test_data_directory
+                    .branch{
+                        fixed: it.simpleName == "WB-common"
+                        moving: it.simpleName == "mni_152_sym_09c"
+                        freesurfer: it.simpleName == "freesurfer"
+                    }
+                input[0] = ch_split_test_data.fixed.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
+                    ]
+                }
+                input[1] = ch_split_test_data.moving.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
+                    ]
+                }
+                input[2] = channel.empty()
+                input[3] = ch_split_test_data.fixed.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/brainmask.nii.gz")
+                    ]}
+                input[4] = ch_split_test_data.moving.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/t1/t1_brain_mask.nii.gz")
+                    ]}
+                input[5] = channel.empty()
+                input[6] = channel.empty()
+                input[7] = ch_split_test_data.freesurfer.map{
+                    test_data_directory -> file("\${test_data_directory}/license.txt")
+                }
                 input[8] = [ "masking_strategy": "apriori",
                             "method": "easyreg" ]
                 """
@@ -424,31 +476,39 @@ nextflow_workflow {
         }
     }
 
-    test("registration - Synthmorph") {
+    test("registration - Synthmorph - apriori - two masks") {
         when {
             workflow {
                 """
                 ch_split_test_data = LOAD_DATA.out.test_data_directory
                     .branch{
-                        t1w: it.simpleName == "T1w"
-                        b0: it.simpleName == "b0"
+                        fixed: it.simpleName == "WB-common"
+                        moving: it.simpleName == "mni_152_sym_09c"
                         freesurfer: it.simpleName == "freesurfer"
                     }
-                input[0] = ch_split_test_data.t1w.map{
+                input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/T1w.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]
                 }
-                input[1] = ch_split_test_data.b0.map{
+                input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/b0.nii.gz")
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
                     ]
                 }
                 input[2] = channel.empty()
-                input[3] = channel.empty()
-                input[4] = channel.empty()
+                input[3] = ch_split_test_data.fixed.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/brainmask.nii.gz")
+                    ]}
+                input[4] = ch_split_test_data.moving.map{
+                    test_data_directory -> [
+                        [ id:'test' ],
+                        file("\${test_data_directory}/t1/t1_brain_mask.nii.gz")
+                    ]}
                 input[5] = channel.empty()
                 input[6] = channel.empty()
                 input[7] = ch_split_test_data.freesurfer.map{

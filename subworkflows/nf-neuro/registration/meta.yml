@@ -35,7 +35,7 @@ description: |
 
     Run ANTs registration using antsRegistrationSyN.sh (quick version also available).
 
-    NOTE : Transformation to DWI space is available. To trigger it, supply a metric file (ch_metric) in DWI space (e.g. FA map) in addition to the moving (ch_image) and reference (ch_ref) images.
+    NOTE : Transformation to DWI space is available. To trigger it, supply a metric file (metric) in DWI space (e.g. FA map) in addition to the moving (fixed_image) and fixed (moving_image) images.
 keywords:
   - Registration
   - Transformation
@@ -74,7 +74,7 @@ input:
         - meta:
             type: map
             description: Metadata map.
-        - image:
+        - moving_image:
             type: file
             description: Moving image file.
       pattern: "*.{nii,nii.gz}"
@@ -141,10 +141,15 @@ input:
           type: string
           choices:
             - none
-            - apriori
+            - apriori 
             - internal
             - both
-          description: Masking strategy to use for registration. Options are 'none', 'apriori', 'internal' or 'both'.
+          description: 
+            Masking strategy to use for registration. Options are:
+              none: do not use any masks.
+              apriori: multiply the inputs by the masks before registration, then warp the unmasked images again. The masked results go to *_warped_masked.
+              internal: give the masks to ANTs only. Only works with method=ants.
+              both: do both. Only works with method=ants.
           default: "none"
         method:
           type: string
@@ -155,26 +160,26 @@ output:
   - image_warped:
       type: file
       description: |
-        Channel containing images warped in fixed space.
+        Channel containing images warped to fixed space.
       structure:
         - meta:
             type: map
             description: Metadata map.
         - image:
             type: file
-            description: Warped image in fixed space.
+            description: Warped image to fixed space.
       pattern: "*.{nii,nii.gz}"
-  - reference_warped:
+  - fixed_warped:
       type: file
       description: |
-        Channel containing the reference image warped in moving space.
+        Channel containing the fixed image warped to moving space.
       structure:
         - meta:
             type: map
             description: Metadata map.
         - image:
             type: file
-            description: Warped reference image in moving space.
+            description: Warped fixed image to moving space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
   - image_warped_masked:
@@ -190,17 +195,17 @@ output:
             description: Warped image masked in fixed space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
-  - reference_warped_masked:
+  - fixed_warped_masked:
       type: file
       description: |
-        Channel containing the reference image warped in moving space.
+        Channel containing the fixed image masked and warped in moving space.
       structure:
         - meta:
             type: map
             description: Metadata map.
         - image:
             type: file
-            description: Warped reference image masked in moving space.
+            description: Warped fixed image masked and warped in moving space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
   - forward_affine:
@@ -318,10 +323,10 @@ output:
             description: Metadata map.
         - segmentation:
             type: file
-            description: Segmentation image file.
+            description: Segmentation image file in moving space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
-  - reference_segmentation:
+  - fixed_segmentation:
       type: file
       description: |
         ONLY PROVIDED BY REGISTRATION_SYNTHMORPH. Channel containing the SynthSeg v2 (non-robust)
@@ -330,9 +335,9 @@ output:
         - meta:
             type: map
             description: Metadata map.
-        - reference_segmentation:
+        - fixed_segmentation:
             type: file
-            description: Reference segmentation image file.
+            description: Fixed segmentation image file in fixed space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
   - mqc:
