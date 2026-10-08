@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: registration_deform2disp
+description: Convert a deformation field to a displacement field using MRtrix3.
+  The mri_easyreg deformation field must be converted using this module before it can be used with the antsapplytransforms module (see registration subworkflow).
+keywords:
+  - registration
+  - deformation
+  - displacement
+  - conversion
+tools:
+  - MRtrix3:
+      description: |
+        MRtrix3 is a software package for various types of diffusion imaging
+        data, including diffusion-weighted, diffusion-tensor, and q-ball imaging.
+      homepage: https://www.mrtrix.org/
+      doi: 10.1016/j.neuroimage.2019.116137
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - deformation:
+        type: file
+        description: Input deformation field.
+        pattern: "*.{nii,nii.gz}"
+        mandatory: true
+        ontologies:
+          - edam: http://edamontology.org/format_4001 # NIFTI format
+output:
+  transformation:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - "*_displacement_out_warp.nii.gz":
+          type: file
+          description: Displacement field generated from the input deformation field using deformation2displacement.
+          pattern: "*_displacement_out_warp.nii.gz"
+          ontologies:
+            - edam: http://edamontology.org/format_4001 # NIFTI format
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@scilus"
+  - "@arnaudbore"
