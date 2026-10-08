@@ -2,7 +2,10 @@ include { REGISTRATION_ANATTODWI  } from '../../../modules/nf-neuro/registration
 include { REGISTRATION_ANTS   } from '../../../modules/nf-neuro/registration/ants/main'
 include { REGISTRATION_EASYREG   } from '../../../modules/nf-neuro/registration/easyreg/main'
 include { REGISTRATION_SYNTHMORPH } from '../../../modules/nf-neuro/registration/synthmorph/main'
-include { REGISTRATION_CONVERT } from '../../../modules/nf-neuro/registration/convert/main'
+include { REGISTRATION_CONVERT as CONVERT_SYNTHMORPH } from '../../../modules/nf-neuro/registration/convert/main'
+include { REGISTRATION_CONVERT as CONVERT_EASYREG } from '../../../modules/nf-neuro/registration/convert/main'
+include { REGISTRATION_DEFORM2DISP as DEFORM2DISP_FORWARD } from '../../../modules/nf-neuro/registration/deform2disp/main'
+include { REGISTRATION_DEFORM2DISP as DEFORM2DISP_BACKWARD } from '../../../modules/nf-neuro/registration/deform2disp/main'
 include { UTILS_OPTIONS } from '../utils_options/main'
 include { IMAGE_APPLYMASK as MASK_FIXED_IMAGE} from '../../../modules/nf-neuro/image/applymask/main'
 include { IMAGE_APPLYMASK as MASK_FIXED_METRIC} from '../../../modules/nf-neuro/image/applymask/main'
@@ -88,17 +91,63 @@ workflow REGISTRATION {
             REGISTRATION_EASYREG ( ch_register )
             ch_versions = ch_versions.mix(REGISTRATION_EASYREG.out.versions.first())
 
+            DEFORM2DISP_FORWARD ( REGISTRATION_EASYREG.out.forward_warp )
+            ch_versions = ch_versions.mix(DEFORM2DISP_FORWARD.out.versions.first())
+
+            DEFORM2DISP_BACKWARD ( REGISTRATION_EASYREG.out.backward_warp )
+
+            ch_convert_easyreg_forward_warp = DEFORM2DISP_FORWARD.out.transformation
+                .map{ meta, transform -> [meta, [tag: "forward_warp"], transform] }
+            ch_convert_easyreg_backward_warp = DEFORM2DISP_BACKWARD.out.transformation
+                .map{ meta, transform -> [meta, [tag: "backward_warp"], transform] }
+
+            ch_convert_easyreg = ch_convert_easyreg_forward_warp
+                .mix(ch_convert_easyreg_backward_warp)
+                .combine(ch_fixed_image, by: 0)
+                .combine(ch_moving_image, by: 0)
+                .map{ meta, tag, transform, fixed, moving ->
+                    def extension = transform.name.tokenize('.')[1..-1].join(".")
+                    return [
+                        meta + tag + [cache: meta],
+                        transform,
+                        "ras",
+                        "itk",
+                        extension == "lta" ? fixed : moving,
+                        [],
+                    ]}
+                .combine(ch_freesurfer_license)
+
+            CONVERT_EASYREG ( ch_convert_easyreg )
+            ch_versions = ch_versions.mix(CONVERT_EASYREG.out.versions.first())
+
+            // Un-mix conversion outputs using the tags. Save indexes for output sorting
+            ch_conversion_easyreg_outputs = CONVERT_EASYREG.out.transformation
+                .branch{ meta, transform ->
+                    forward_warp: meta.tag == "forward_warp"
+                        return [meta.cache, transform]
+                    backward_warp: meta.tag == "backward_warp"
+                        return [meta.cache, transform]
+                    forward_image_transform: meta.tag == "forward_image_transform"
+                        return [meta.cache, [idx: meta.idx, trans: transform]]
+                    backward_image_transform: meta.tag == "backward_image_transform"
+                        return [meta.cache, [idx: meta.idx, trans: transform]]
+                }
+
             // ** Set compulsory outputs ** //
             out_image_warped = REGISTRATION_EASYREG.out.image_warped
             out_fixed_warped = REGISTRATION_EASYREG.out.fixed_warped
             out_forward_affine = channel.empty()
-            out_forward_warp = REGISTRATION_EASYREG.out.forward_warp
+            out_forward_warp = ch_conversion_easyreg_outputs.forward_warp
             out_backward_affine = channel.empty()
-            out_backward_warp = REGISTRATION_EASYREG.out.backward_warp
-            out_forward_image_transform = REGISTRATION_EASYREG.out.forward_warp
-            out_backward_image_transform = REGISTRATION_EASYREG.out.backward_warp
-            out_forward_tractogram_transform = REGISTRATION_EASYREG.out.backward_warp
-            out_backward_tractogram_transform = REGISTRATION_EASYREG.out.forward_warp
+            out_backward_warp = ch_conversion_easyreg_outputs.backward_warp
+            out_forward_image_transform = ch_conversion_easyreg_outputs.forward_image_transform
+                .groupTuple()
+                .map{ meta, trans -> [meta, trans.sort{ t1, t2 -> t1.idx <=> t2.idx }.collect{ it.trans }] }
+            out_backward_image_transform = ch_conversion_easyreg_outputs.backward_image_transform
+                .groupTuple()
+                .map{ meta, trans -> [meta, trans.sort{ t1, t2 -> t1.idx <=> t2.idx }.collect{ it.trans }] }
+            out_forward_tractogram_transform = ch_conversion_easyreg_outputs.backward_warp
+            out_backward_tractogram_transform = ch_conversion_easyreg_outputs.forward_warp
 
             // ** Set optional outputs. ** //
             // If segmentations are not provided as inputs,
@@ -134,7 +183,7 @@ workflow REGISTRATION {
                 .map{ meta, tag, idx, transform -> [meta, tag + [idx: idx], transform]}
 
             // Mix all transforms into a single channel for conversion
-            ch_convert = ch_convert_forward_affine
+            ch_convert_synthmorph = ch_convert_forward_affine
                 .mix(ch_convert_forward_warp)
                 .mix(ch_convert_backward_affine)
                 .mix(ch_convert_backward_warp)
@@ -154,11 +203,11 @@ workflow REGISTRATION {
                     ]}
                 .combine(ch_freesurfer_license)
 
-            REGISTRATION_CONVERT ( ch_convert )
-            ch_versions = ch_versions.mix(REGISTRATION_CONVERT.out.versions.first())
+            CONVERT_SYNTHMORPH ( ch_convert_synthmorph )
+            ch_versions = ch_versions.mix(CONVERT_SYNTHMORPH.out.versions.first())
 
             // Un-mix conversion outputs using the tags. Save indexes for output sorting
-            ch_conversion_outputs = REGISTRATION_CONVERT.out.transformation
+            ch_conversion_synthmorph_outputs = CONVERT_SYNTHMORPH.out.transformation
                 .branch{ meta, transform ->
                     forward_affine: meta.tag == "forward_affine"
                         return [meta.cache, transform]
@@ -177,14 +226,14 @@ workflow REGISTRATION {
             // ** Set compulsory outputs ** //
             out_image_warped = REGISTRATION_SYNTHMORPH.out.image_warped
             out_fixed_warped = REGISTRATION_SYNTHMORPH.out.fixed_warped
-            out_forward_affine = ch_conversion_outputs.forward_affine
-            out_forward_warp = ch_conversion_outputs.forward_warp
-            out_backward_affine = ch_conversion_outputs.backward_affine
-            out_backward_warp = ch_conversion_outputs.backward_warp
-            out_forward_image_transform = ch_conversion_outputs.forward_image_transform
+            out_forward_affine = ch_conversion_synthmorph_outputs.forward_affine
+            out_forward_warp = ch_conversion_synthmorph_outputs.forward_warp
+            out_backward_affine = ch_conversion_synthmorph_outputs.backward_affine
+            out_backward_warp = ch_conversion_synthmorph_outputs.backward_warp
+            out_forward_image_transform = ch_conversion_synthmorph_outputs.forward_image_transform
                 .groupTuple()
                 .map{ meta, trans -> [meta, trans.sort{ t1, t2 -> t1.idx <=> t2.idx }.collect{ it.trans }] }
-            out_backward_image_transform = ch_conversion_outputs.backward_image_transform
+            out_backward_image_transform = ch_conversion_synthmorph_outputs.backward_image_transform
                 .groupTuple()
                 .map{ meta, trans -> [meta, trans.sort{ t1, t2 -> t1.idx <=> t2.idx }.collect{ it.trans }] }
             out_forward_tractogram_transform = out_backward_image_transform
@@ -276,31 +325,28 @@ workflow REGISTRATION {
             .filter{ _meta, _warped, mask -> options.masking_strategy in ["both", "apriori"] && mask }
             .map{ meta, warped, _mask -> [meta, warped] }
 
-        if ( options.method != "easyreg" ) {
-            // Register original moving image
-            WARP_IMAGE_TO_FIXED ( ch_moving_image
-                                .join(ch_fixed_image)
-                                .join(out_forward_image_transform)
-                                .join(ch_moving_mask)
-                                .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
-                                .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] } )
-            out_image_warped = out_image_warped
-            .join(WARP_IMAGE_TO_FIXED.out.warped_image, remainder: true)
-            .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
-            ch_versions = ch_versions.mix(WARP_IMAGE_TO_FIXED.out.versions.first())
-
-            // Register original fixed image
-            WARP_IMAGE_TO_MOVING ( ch_fixed_image
-                                .join(ch_moving_image)
-                                .join(out_backward_image_transform)
-                                .join(ch_fixed_mask)
-                                .filter{ _meta, _fixed, _moving, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
-                                .map{ meta, fixed, moving, transform, _mask -> [meta, fixed, moving, transform] } )
-            out_fixed_warped = out_fixed_warped
-            .join(WARP_IMAGE_TO_MOVING.out.warped_image, remainder: true)
-            .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
-            ch_versions = ch_versions.mix(WARP_IMAGE_TO_MOVING.out.versions.first())
-        }
+        // Register original moving image
+        WARP_IMAGE_TO_FIXED ( ch_moving_image
+                            .join(ch_fixed_image)
+                            .join(out_forward_image_transform)
+                            .join(ch_moving_mask)
+                            .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
+                            .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] } )
+        out_image_warped = out_image_warped
+        .join(WARP_IMAGE_TO_FIXED.out.warped_image, remainder: true)
+        .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
+        ch_versions = ch_versions.mix(WARP_IMAGE_TO_FIXED.out.versions.first())
+        // Register original fixed image
+        WARP_IMAGE_TO_MOVING ( ch_fixed_image
+                            .join(ch_moving_image)
+                            .join(out_backward_image_transform)
+                            .join(ch_fixed_mask)
+                            .filter{ _meta, _fixed, _moving, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
+                            .map{ meta, fixed, moving, transform, _mask -> [meta, fixed, moving, transform] } )
+        out_fixed_warped = out_fixed_warped
+        .join(WARP_IMAGE_TO_MOVING.out.warped_image, remainder: true)
+        .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
+        ch_versions = ch_versions.mix(WARP_IMAGE_TO_MOVING.out.versions.first())
 
     emit:
         image_warped                    = out_image_warped                  // channel: [ val(meta), image ]

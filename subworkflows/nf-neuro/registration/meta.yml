@@ -49,6 +49,7 @@ components:
   - registration/convert
   - registration/easyreg
   - registration/synthmorph
+  - registration/deform2disp
   - utils_options
 input:
   - ch_fixed_image:
@@ -141,10 +142,10 @@ input:
           type: string
           choices:
             - none
-            - apriori 
+            - apriori
             - internal
             - both
-          description: 
+          description:
             Masking strategy to use for registration. Options are:
               none: do not use any masks.
               apriori: multiply the inputs by the masks before registration, then warp the unmasked images again. The masked results go to *_warped_masked.

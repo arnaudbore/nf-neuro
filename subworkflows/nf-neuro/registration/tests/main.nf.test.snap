@@ -114,7 +114,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_with_skull_warped.nii.gz"
+                        "test_t1_template_warped.nii.gz"
                     ]
                 ],
                 "fixed_warped_masked": [
@@ -164,7 +164,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "mqc": [
@@ -230,7 +230,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_with_skull_warped.nii.gz"
+                        "test_t1_template_warped.nii.gz"
                     ]
                 ],
                 "fixed_warped_masked": [
@@ -280,7 +280,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "image_warped_masked": [
@@ -312,35 +312,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-29T12:33:17.506663538"
+        "timestamp": "2026-10-07T23:33:22.286417562"
     },
     "registration - easyreg - none - no mask": {
         "content": [
             {
-                "backward_image_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_backward0_warp.nii.gz"
-                    ]
-                ],
-                "backward_tractogram_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_forward0_warp.nii.gz"
-                    ]
-                ],
-                "backward_warp": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_backward0_warp.nii.gz"
-                    ]
-                ],
                 "fixed_segmentation": [
                     [
                         {
