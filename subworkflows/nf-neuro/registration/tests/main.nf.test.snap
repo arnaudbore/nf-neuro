@@ -41,7 +41,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_with_skull_warped.nii.gz"
+                        "test_t1_template_warped.nii.gz"
                     ]
                 ],
                 "fixed_warped_masked": [
@@ -91,7 +91,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "mqc": [
@@ -113,7 +113,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-10-07T09:57:50.094529012"
+        "timestamp": "2026-10-07T23:33:03.640243378"
     },
     "registration - ANTs - SyNQuick - internal - two masks": {
         "content": [
@@ -199,7 +199,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "mqc": [
@@ -219,7 +219,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-29T12:46:36.462970642"
+        "timestamp": "2026-10-07T23:33:35.401235906"
     },
     "registration - ANTs - SyNQuick - apriori - two masks": {
         "content": [
@@ -263,7 +263,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_with_skull_warped.nii.gz"
+                        "test_t1_template_warped.nii.gz"
                     ]
                 ],
                 "fixed_warped_masked": [
@@ -313,7 +313,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "image_warped_masked": [
@@ -345,35 +345,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-29T12:33:17.506663538"
+        "timestamp": "2026-10-07T23:33:22.286417562"
     },
     "registration - easyreg - none - no mask": {
         "content": [
             {
-                "backward_image_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_backward0_warp.nii.gz"
-                    ]
-                ],
-                "backward_tractogram_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_forward0_warp.nii.gz"
-                    ]
-                ],
-                "backward_warp": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_backward0_warp.nii.gz"
-                    ]
-                ],
                 "fixed_segmentation": [
                     [
                         {
@@ -388,30 +364,6 @@
                             "id": "test"
                         },
                         "test_warped_reference.nii.gz"
-                    ]
-                ],
-                "forward_image_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_forward0_warp.nii.gz"
-                    ]
-                ],
-                "forward_tractogram_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_backward0_warp.nii.gz"
-                    ]
-                ],
-                "forward_warp": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_forward0_warp.nii.gz"
                     ]
                 ],
                 "image_warped": [
@@ -431,7 +383,8 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,3f38c911476c605480c02e484fcf6e9f"
+                    "versions.yml:md5,3f38c911476c605480c02e484fcf6e9f",
+                    "versions.yml:md5,c932ccf0939130ae0cb46c2182810f45"
                 ]
             }
         ],
@@ -439,7 +392,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-29T13:32:18.464133707"
+        "timestamp": "2026-10-07T23:34:07.98951988"
     },
     "registration - Synthmorph - apriori - two masks": {
         "content": [
@@ -475,7 +428,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_with_skull_warped.nii.gz"
+                        "test_t1_template_warped.nii.gz"
                     ]
                 ],
                 "fixed_warped_masked": [
@@ -517,7 +470,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "image_warped_masked": [
@@ -530,11 +483,11 @@
                 ],
                 "versions": [
                     "versions.yml:md5,2ccd5abf931050d2e7d10740d964dc56",
-                    "versions.yml:md5,300199ef2ea6dd6438553c3ec2615e58",
                     "versions.yml:md5,3764dd2f067db355da3536c1b0c94619",
                     "versions.yml:md5,5bc0d347809508f4b94ebe433b0f21b9",
                     "versions.yml:md5,8d90eba5eb0cfe9c82c7280c1b6e66a8",
-                    "versions.yml:md5,8f4cb1a55910da303007d7c2202e62f0"
+                    "versions.yml:md5,8f4cb1a55910da303007d7c2202e62f0",
+                    "versions.yml:md5,e662c12647ab620435728a857946177f"
                 ]
             }
         ],
@@ -542,25 +495,17 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-29T13:34:57.607277769"
+        "timestamp": "2026-10-07T23:34:37.584711708"
     },
     "registration - easyreg - apriori - two masks": {
         "content": [
             {
-                "backward_image_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_backward0_warp.nii.gz"
-                    ]
-                ],
                 "backward_tractogram_transform": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_forward0_warp.nii.gz"
+                        "test_out_warp.nii.gz"
                     ]
                 ],
                 "backward_warp": [
@@ -568,7 +513,7 @@
                         {
                             "id": "test"
                         },
-                        "test_backward0_warp.nii.gz"
+                        "test_out_warp.nii.gz"
                     ]
                 ],
                 "fixed_segmentation": [
@@ -595,20 +540,12 @@
                         "test_warped_reference.nii.gz"
                     ]
                 ],
-                "forward_image_transform": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test_forward0_warp.nii.gz"
-                    ]
-                ],
                 "forward_tractogram_transform": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_backward0_warp.nii.gz"
+                        "test_out_warp.nii.gz"
                     ]
                 ],
                 "forward_warp": [
@@ -616,7 +553,7 @@
                         {
                             "id": "test"
                         },
-                        "test_forward0_warp.nii.gz"
+                        "test_out_warp.nii.gz"
                     ]
                 ],
                 "image_warped": [
@@ -646,7 +583,9 @@
                 "versions": [
                     "versions.yml:md5,2ccd5abf931050d2e7d10740d964dc56",
                     "versions.yml:md5,3f38c911476c605480c02e484fcf6e9f",
-                    "versions.yml:md5,8f4cb1a55910da303007d7c2202e62f0"
+                    "versions.yml:md5,8a090f2936c874e1083111d21fe0a56d",
+                    "versions.yml:md5,8f4cb1a55910da303007d7c2202e62f0",
+                    "versions.yml:md5,c932ccf0939130ae0cb46c2182810f45"
                 ]
             }
         ],
@@ -654,7 +593,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-10-07T09:59:40.273270414"
+        "timestamp": "2026-10-07T23:26:59.639558558"
     },
     "registration - ANTs - Anat to DWI": {
         "content": [
@@ -815,7 +754,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_with_skull_warped.nii.gz"
+                        "test_t1_template_warped.nii.gz"
                     ]
                 ],
                 "fixed_warped_masked": [
@@ -865,7 +804,7 @@
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "image_warped_masked": [
@@ -897,6 +836,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-09-29T13:28:19.420025457"
+        "timestamp": "2026-10-07T23:33:54.210898862"
     }
 }
