@@ -76,7 +76,7 @@ workflow REGISTRATION {
 
         if ( options.method == "easyreg" ) {
             // ** Registration using Easyreg ** //
-            // Result : [ meta, fixed, moving, fixed_segmentation | [], segmentation | [] ]
+            // Result : [ meta, fixed, moving, fixed_segmentation | [], moving_segmentation | [] ]
             //  Steps :
             //   - join [ meta, fixed, moving ]
             //   - join [ meta, fixed, moving, fixed_segmentation | null ]
@@ -289,11 +289,6 @@ workflow REGISTRATION {
             out_forward_tractogram_transform = REGISTRATION_ANATTODWI.out.forward_tractogram_transform
             out_backward_tractogram_transform = REGISTRATION_ANATTODWI.out.backward_tractogram_transform
 
-            // ** Registration using ANTS SYN SCRIPTS ** //
-            // Registration using antsRegistrationSyN.sh or antsRegistrationSyNQuick.sh, has
-            // to be defined in the config file or else the default (SyN) will be used.
-            // Result : [ meta, fixed, moving, fixed_mask | [], moving_mask | [] ]
-
             REGISTRATION_ANTS ( ch_register.ants_syn )
             ch_versions = ch_versions.mix(REGISTRATION_ANTS.out.versions.first())
             ch_mqc = ch_mqc.mix(REGISTRATION_ANTS.out.mqc)
@@ -326,26 +321,33 @@ workflow REGISTRATION {
             .map{ meta, warped, _mask -> [meta, warped] }
 
         // Register original moving image
-        WARP_IMAGE_TO_FIXED ( ch_moving_image
-                            .join(ch_fixed_image)
-                            .join(out_forward_image_transform)
-                            .join(ch_moving_mask)
-                            .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
-                            .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] } )
+        ch_moving_transform = ch_moving_image
+            .join(ch_fixed_image)
+            .join(out_forward_image_transform)
+            .join(ch_moving_mask)
+            .filter{ _meta, _moving, _fixed, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
+            .map{ meta, moving, fixed, transform, _mask -> [meta, moving, fixed, transform] }
+
+        WARP_IMAGE_TO_FIXED ( ch_moving_transform )
+
         out_image_warped = out_image_warped
-        .join(WARP_IMAGE_TO_FIXED.out.warped_image, remainder: true)
-        .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
+            .join(WARP_IMAGE_TO_FIXED.out.warped_image, remainder: true)
+            .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
         ch_versions = ch_versions.mix(WARP_IMAGE_TO_FIXED.out.versions.first())
+
         // Register original fixed image
-        WARP_IMAGE_TO_MOVING ( ch_fixed_image
-                            .join(ch_moving_image)
-                            .join(out_backward_image_transform)
-                            .join(ch_fixed_mask)
-                            .filter{ _meta, _fixed, _moving, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
-                            .map{ meta, fixed, moving, transform, _mask -> [meta, fixed, moving, transform] } )
+        ch_fixed_transform = ch_fixed_image
+            .join(ch_moving_image)
+            .join(out_backward_image_transform)
+            .join(ch_fixed_mask)
+            .filter{ _meta, _fixed, _moving, _transform, mask -> options.masking_strategy in ["apriori", "both"] && mask }
+            .map{ meta, fixed, moving, transform, _mask -> [meta, fixed, moving, transform] }
+
+        WARP_IMAGE_TO_MOVING ( ch_fixed_transform )
+
         out_fixed_warped = out_fixed_warped
-        .join(WARP_IMAGE_TO_MOVING.out.warped_image, remainder: true)
-        .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
+            .join(WARP_IMAGE_TO_MOVING.out.warped_image, remainder: true)
+            .map{ meta, warped, warped_from_mask -> [meta, (warped_from_mask ?: warped)] }
         ch_versions = ch_versions.mix(WARP_IMAGE_TO_MOVING.out.versions.first())
 
     emit:
