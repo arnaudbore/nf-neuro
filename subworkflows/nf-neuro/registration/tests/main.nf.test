@@ -374,17 +374,18 @@ nextflow_workflow {
                     .branch{
                         fixed: it.simpleName == "mni_152_sym_09c"
                         moving: it.simpleName == "WB-common"
+                        freesurfer: it.simpleName == "freesurfer"
                     }
                 input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/t1_with_skull.nii.gz")
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
                     ]
                 }
                 input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/t1/t1_template.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]
                 }
                 input[2] = channel.empty()
@@ -392,7 +393,9 @@ nextflow_workflow {
                 input[4] = channel.empty()
                 input[5] = channel.empty()
                 input[6] = channel.empty()
-                input[7] = channel.empty()
+                input[7] = ch_split_test_data.freesurfer.map{
+                    test_data_directory -> file("\${test_data_directory}/license.txt")
+                }
                 input[8] = [ "masking_strategy": "none",
                             "method": "easyreg" ]
                 """
