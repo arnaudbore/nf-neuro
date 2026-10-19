@@ -5,11 +5,11 @@
                 "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
             ]
         ],
+        "timestamp": "2025-10-02T20:44:37.839613055",
         "meta": {
             "nf-test": "0.9.0",
             "nextflow": "25.04.7"
-        },
-        "timestamp": "2025-10-02T20:44:37.839613055"
+        }
     },
     "registration - convert - affine - to lta (needs source)": {
         "content": [
@@ -18,11 +18,11 @@
                 "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
             ]
         ],
+        "timestamp": "2025-10-16T15:03:48.505663297",
         "meta": {
             "nf-test": "0.9.0",
             "nextflow": "25.04.8"
-        },
-        "timestamp": "2025-10-16T15:03:48.505663297"
+        }
     },
     "registration - convert - affine - lta to fsl": {
         "content": [
@@ -51,44 +51,62 @@
                 ]
             }
         ],
+        "timestamp": "2025-10-29T11:13:34.703328482",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.0"
-        },
-        "timestamp": "2025-10-29T11:13:34.703328482"
+        }
+    },
+    "registration - convert - affine - stub custom prefix": {
+        "content": [
+            [
+                "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+            ]
+        ],
+        "timestamp": "2026-10-19T23:18:58.953282528",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
+    },
+    "registration - convert - warp - downsample and affine option isolation": {
+        "content": [
+            [
+                "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+            ]
+        ],
+        "timestamp": "2026-10-19T23:18:52.982232362",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - convert - mixed - to itk": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test1"
-                        },
-                        "test1_out_warp.nii.gz:md5,69052e6226da946bad1f9466285cbb89"
-                    ]
+            [
+                [
+                    {
+                        "id": "test1"
+                    },
+                    "test1_out_warp.nii.gz:md5,69052e6226da946bad1f9466285cbb89"
                 ],
-                "1": [
-                    "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
-                ],
-                "transformation": [
-                    [
-                        {
-                            "id": "test1"
-                        },
-                        "test1_out_warp.nii.gz:md5,69052e6226da946bad1f9466285cbb89"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+                [
+                    {
+                        "id": "test2"
+                    },
+                    "test2_out_affine.txt:md5,5f989a979be61faa578ad619377a8a07"
                 ]
-            }
+            ],
+            [
+                "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7",
+                "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+            ]
         ],
+        "timestamp": "2026-10-19T23:20:43.045672581",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.0"
-        },
-        "timestamp": "2025-10-29T11:13:43.762952295"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - convert - deformation - ras to itk (lps)": {
         "content": [
@@ -117,10 +135,22 @@
                 ]
             }
         ],
+        "timestamp": "2025-10-29T11:13:25.855140969",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.0"
-        },
-        "timestamp": "2025-10-29T11:13:25.855140969"
+        }
+    },
+    "registration - convert - affine - options and custom prefix": {
+        "content": [
+            [
+                "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+            ]
+        ],
+        "timestamp": "2026-10-19T23:18:46.788097368",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     }
 }

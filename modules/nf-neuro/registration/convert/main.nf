@@ -23,7 +23,6 @@ process REGISTRATION_CONVERT {
         affine: [lta: "lta", fsl: "mat", mni: "xfm", reg: "dat", niftyreg: "txt", itk: "txt", vox: "txt"],
         warp: [m3z: "m3z", fsl: "nii.gz", lps: "nii.gz", itk: "nii.gz", ras: "nii.gz", vox: "mgz"]
     ]
-    def spaces = ["ras2ras", "vox2vox", "register_dat"]
 
     // Validation transformation type and coercion with conversion type
     def in_extension = transformation.name.tokenize('.')[1..-1].join('.')
@@ -46,14 +45,7 @@ process REGISTRATION_CONVERT {
             args += " --src $affine_source"
         }
 
-        if ( task.ext.invert ) args += " --invert"
         if ( task.ext.conform ) args += " --trgconform"
-        if ( task.ext.output_space ) {
-            if ( !spaces.contains(task.ext.output_space) ) {
-                error "Invalid output space: ${task.ext.output_space}. Valid options are: ${spaces.join(', ')}"
-            }
-            args += " --outspace " + task.ext.output_space
-        }
     }
     else {
         // Deformable transformations are defined on the source space
