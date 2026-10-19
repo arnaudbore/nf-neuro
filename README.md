@@ -43,7 +43,7 @@ to streamline the development of neuroimaging pipelines !**
 
   _Proceedings of the ISMRM Workshop on 40 Years of Diffusion: Past, Present & Future Perspectives_
 
-- ([2024]())
+- ([2024](<>))
   **Mining diamonds with wooden hammers : getting diffusion MRI processing into the age of steel**
 
   Valcourt Caron, A; Boré, A; Edde, M; Thoumyre, S; Gagnon, A; Rheault, F; Descoteaux, M.
