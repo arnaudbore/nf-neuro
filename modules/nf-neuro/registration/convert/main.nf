@@ -41,7 +41,7 @@ process REGISTRATION_CONVERT {
         args += " --in$input_type $transformation --out$output_type $output_name --trg $reference"
 
         // Validate source geometry is available for conversion to .lta
-        if ( output_type == "lta" ) {
+        if ( ["lta", "itk", "lps" ].contains(output_type) ) {
             if ( !affine_source ) error "Source geometry must be provided for conversion to .lta."
             args += " --src $affine_source"
         }
