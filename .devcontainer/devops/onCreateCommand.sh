@@ -26,7 +26,7 @@ echo "Run 'ga-test' to see available testing commands."
 echo "⚙️ Setting up linting and testing sub-dependencies..."
 npm install -g --save-dev --save-exact prettier
 npm install -g --save-dev editorconfig
-npm install -g --save-dev editorconfig-checker
+npm install -g --save-dev editorconfig-checker@6
 
 # Install nf-test
 curl -fsSL https://code.askimed.com/install/nf-test | bash -s ${NFTEST_VERSION}
