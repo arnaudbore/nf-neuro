@@ -69,13 +69,47 @@
             "nextflow": "26.10.2"
         }
     },
+    "registration - convert - affine - fsl to itk with source": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_out_affine.txt:md5,074e8ac5777a91ba0808cd58c5a0cc44"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+                ],
+                "transformation": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_out_affine.txt:md5,074e8ac5777a91ba0808cd58c5a0cc44"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+                ]
+            }
+        ],
+        "timestamp": "2026-10-20T15:01:31.562757313",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
+    },
     "registration - convert - warp - downsample and affine option isolation": {
         "content": [
+            "test_out_warp.m3z",
             [
                 "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
             ]
         ],
-        "timestamp": "2026-10-19T23:18:52.982232362",
+        "timestamp": "2026-10-20T15:01:56.276359583",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.10.2"

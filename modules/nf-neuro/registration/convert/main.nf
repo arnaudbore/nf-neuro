@@ -16,6 +16,10 @@ process REGISTRATION_CONVERT {
     task.ext.when == null || task.ext.when
 
     script:
+    if ( input_type == output_type ) {
+        error "Input and output transformation types must differ: ${input_type}."
+    }
+
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
@@ -27,7 +31,7 @@ process REGISTRATION_CONVERT {
     // Validation transformation type and coercion with conversion type
     def in_extension = transformation.name.tokenize('.')[1..-1].join('.')
     def transform_type = transform_types.affine.find{ it.value == in_extension } ? "affine" : "warp"
-    if ( transform_type == "warp" && !transform_types.warp.containsKey(output_type) ) {
+    if ( !transform_types[transform_type].containsKey(output_type) ) {
         error "Invalid combination of transformation type and conversion type: ${transform_type} to ${output_type}."
     }
 
@@ -39,9 +43,10 @@ process REGISTRATION_CONVERT {
         // Affine transformations are defined on the target space
         args += " --in$input_type $transformation --out$output_type $output_name --trg $reference"
 
-        // Validate source geometry is available for conversion to .lta
-        if ( ["lta", "itk", "lps" ].contains(output_type) ) {
-            if ( !affine_source ) error "Source geometry must be provided for conversion to .lta."
+        // Non-LTA inputs need source geometry, as does any conversion to LTA.
+        if ( input_type != "lta" || output_type == "lta" ) {
+            if ( !affine_source ) error "Source geometry (affine_source) must be provided to convert an affine from ${input_type} to ${output_type}."
+
             args += " --src $affine_source"
         }
 
@@ -71,6 +76,10 @@ process REGISTRATION_CONVERT {
     """
 
     stub:
+    if ( input_type == output_type ) {
+        error "Input and output transformation types must differ: ${input_type}."
+    }
+
     def prefix = task.ext.prefix ?: "${meta.id}"
     def transform_types = [
         affine: [lta: "lta", fsl: "mat", mni: "xfm", reg: "dat", niftyreg: "txt", itk: "txt", vox: "txt"],
@@ -79,7 +88,7 @@ process REGISTRATION_CONVERT {
     // Validation transformation type and coercion with conversion type
     def in_extension = transformation.name.tokenize('.')[1..-1].join('.')
     def transform_type = transform_types.affine.find{ it.value == in_extension } ? "affine" : "warp"
-    if ( transform_type == "warp" && !transform_types.warp.containsKey(output_type) ) {
+    if ( !transform_types[transform_type].containsKey(output_type) ) {
         error "Invalid combination of transformation type and conversion type: ${transform_type} to ${output_type}."
     }
 
