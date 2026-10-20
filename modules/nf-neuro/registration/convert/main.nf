@@ -66,11 +66,9 @@ process REGISTRATION_CONVERT {
     export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=${task.ext.single_thread ? 1 : task.cpus}
     export OMP_NUM_THREADS=${task.ext.single_thread ? 1 : task.cpus}
 
-    cp $fs_license \$FREESURFER_HOME/license.txt
+    export FS_LICENSE=\$PWD/$fs_license
 
     $command $args
-
-    rm \$FREESURFER_HOME/license.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
