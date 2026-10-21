@@ -115,6 +115,18 @@
             "nextflow": "26.10.2"
         }
     },
+    "registration - convert - stub affine - same types are allowed": {
+        "content": [
+            [
+                "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+            ]
+        ],
+        "timestamp": "2026-10-21T18:48:27.342847071",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
+    },
     "registration - convert - mixed - to itk": {
         "content": [
             [
@@ -182,6 +194,18 @@
             ]
         ],
         "timestamp": "2026-10-19T23:18:46.788097368",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
+    },
+    "registration - convert - affine - same types are allowed": {
+        "content": [
+            [
+                "versions.yml:md5,8fa42279d7793bb057cd5680bcb241e7"
+            ]
+        ],
+        "timestamp": "2026-10-21T18:50:47.2753511",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.10.2"

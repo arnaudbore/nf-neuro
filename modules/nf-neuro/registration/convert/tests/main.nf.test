@@ -271,7 +271,7 @@ nextflow_process {
         }
     }
 
-    test("registration - convert - same types fails") {
+    test("registration - convert - affine - same types are allowed") {
         when {
             process {
                 """
@@ -285,6 +285,46 @@ nextflow_process {
                         "lta",
                         "lta",
                         file("\${reslice}/fa_reslice.nii.gz"),
+                        file("\${reslice}/t1_reslice.nii.gz"),
+                        file("\${freesurfer}/license.txt")
+                    ]
+                }
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.transformation.size() == 1 },
+                { assert process.out.transformation[0][0] == [id: 'test'] },
+                { assert file(process.out.transformation[0][1]).name == "test_out_affine.lta" },
+                { assert file(process.out.transformation[0][1]).size() > 0 },
+                {
+                    def command = path(process.out.transformation[0][1]).getParent().resolve('.command.sh').text
+                    assert command.contains("--inlta fs_affine.lta")
+                    assert command.contains("--outlta test_out_affine.lta")
+                    assert command.contains("--src t1_reslice.nii.gz")
+                },
+                { assert snapshot(process.out.versions).match() }
+            )
+        }
+    }
+
+    test("registration - convert - warp - same types fails") {
+        when {
+            process {
+                """
+                input[0] = LOAD_DATA.out.test_data_directory.collect().map{ directories ->
+                    def transforms = directories.find{ it.simpleName == "freesurfer_transforms" }
+                    def reslice = directories.find{ it.simpleName == "freesurfer_reslice" }
+                    def freesurfer = directories.find{ it.simpleName == "freesurfer" }
+                    [
+                        [id: 'test'],
+                        file("\${transforms}/fs_deform.nii.gz"),
+                        "ras",
+                        "ras",
+                        file("\${reslice}/t1_reslice.nii.gz"),
                         [],
                         file("\${freesurfer}/license.txt")
                     ]
@@ -296,7 +336,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Input and output transformation types must differ: lta.") }
+                { assert process.errorReport.contains("Input and output warp transformation types must differ: ras.") }
             )
         }
     }
@@ -400,7 +440,7 @@ nextflow_process {
         }
     }
 
-    test("registration - convert - stub same types fails") {
+    test("registration - convert - stub affine - same types are allowed") {
         tag "stub"
         options "-stub-run"
 
@@ -427,8 +467,46 @@ nextflow_process {
 
         then {
             assertAll(
+                { assert process.success },
+                { assert process.out.transformation.size() == 1 },
+                { assert process.out.transformation[0][0] == [id: 'test'] },
+                { assert file(process.out.transformation[0][1]).name == "test_out_affine.lta" },
+                { assert file(process.out.transformation[0][1]).exists() },
+                { assert file(process.out.transformation[0][1]).size() == 0 },
+                { assert snapshot(process.out.versions).match() }
+            )
+        }
+    }
+
+    test("registration - convert - stub warp same types fails") {
+        tag "stub"
+        options "-stub-run"
+
+        when {
+            process {
+                """
+                input[0] = LOAD_DATA.out.test_data_directory.collect().map{ directories ->
+                    def transforms = directories.find{ it.simpleName == "freesurfer_transforms" }
+                    def reslice = directories.find{ it.simpleName == "freesurfer_reslice" }
+                    def freesurfer = directories.find{ it.simpleName == "freesurfer" }
+                    [
+                        [id: 'test'],
+                        file("\${transforms}/fs_deform.nii.gz"),
+                        "ras",
+                        "ras",
+                        file("\${reslice}/t1_reslice.nii.gz"),
+                        [],
+                        file("\${freesurfer}/license.txt")
+                    ]
+                }
+                """
+            }
+        }
+
+        then {
+            assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Input and output transformation types must differ: lta.") }
+                { assert process.errorReport.contains("Input and output transformation types must differ: ras.") }
             )
         }
     }
@@ -458,7 +536,37 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Invalid combination of transformation type and conversion type: warp to lta.") }
+                { assert process.errorReport.contains("Invalid output type for warp transformation: lta.") }
+            )
+        }
+    }
+
+    test("registration - convert - warp - unsupported input") {
+        when {
+            process {
+                """
+                input[0] = LOAD_DATA.out.test_data_directory.collect().map{ directories ->
+                    def transforms = directories.find{ it.simpleName == "freesurfer_transforms" }
+                    def reslice = directories.find{ it.simpleName == "freesurfer_reslice" }
+                    def freesurfer = directories.find{ it.simpleName == "freesurfer" }
+                    [
+                        [id: 'test'],
+                        file("\${transforms}/fs_deform.nii.gz"),
+                        "lta",
+                        "itk",
+                        file("\${reslice}/t1_reslice.nii.gz"),
+                        [],
+                        file("\${freesurfer}/license.txt")
+                    ]
+                }
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Invalid input type for warp transformation: lta.") }
             )
         }
     }
@@ -488,7 +596,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Invalid combination of transformation type and conversion type: affine to lps.") }
+                { assert process.errorReport.contains("Invalid output type for affine transformation: lps.") }
             )
         }
     }
@@ -521,7 +629,40 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.failed },
-                { assert process.errorReport.contains("Invalid combination of transformation type and conversion type: affine to lps.") }
+                { assert process.errorReport.contains("Invalid output type for affine transformation: lps.") }
+            )
+        }
+    }
+
+    test("registration - convert - warp - stub unsupported input") {
+        tag "stub"
+        options "-stub-run"
+
+        when {
+            process {
+                """
+                input[0] = LOAD_DATA.out.test_data_directory.collect().map{ directories ->
+                    def transforms = directories.find{ it.simpleName == "freesurfer_transforms" }
+                    def reslice = directories.find{ it.simpleName == "freesurfer_reslice" }
+                    def freesurfer = directories.find{ it.simpleName == "freesurfer" }
+                    [
+                        [id: 'test'],
+                        file("\${transforms}/fs_deform.nii.gz"),
+                        "lta",
+                        "itk",
+                        file("\${reslice}/t1_reslice.nii.gz"),
+                        [],
+                        file("\${freesurfer}/license.txt")
+                    ]
+                }
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("Invalid input type for warp transformation: lta.") }
             )
         }
     }

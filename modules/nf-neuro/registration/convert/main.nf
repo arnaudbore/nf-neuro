@@ -16,10 +16,6 @@ process REGISTRATION_CONVERT {
     task.ext.when == null || task.ext.when
 
     script:
-    if ( input_type == output_type ) {
-        error "Input and output transformation types must differ: ${input_type}."
-    }
-
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
@@ -31,8 +27,11 @@ process REGISTRATION_CONVERT {
     // Validation transformation type and coercion with conversion type
     def in_extension = transformation.name.tokenize('.')[1..-1].join('.')
     def transform_type = transform_types.affine.find{ it.value == in_extension } ? "affine" : "warp"
+    if ( !transform_types[transform_type].containsKey(input_type) ) {
+        error "Invalid input type for ${transform_type} transformation: ${input_type}."
+    }
     if ( !transform_types[transform_type].containsKey(output_type) ) {
-        error "Invalid combination of transformation type and conversion type: ${transform_type} to ${output_type}."
+        error "Invalid output type for ${transform_type} transformation: ${output_type}."
     }
 
     def out_extension = transform_types[transform_type][output_type]
@@ -53,6 +52,9 @@ process REGISTRATION_CONVERT {
         if ( task.ext.conform ) args += " --trgconform"
     }
     else {
+        if ( input_type == output_type ) {
+            error "Input and output warp transformation types must differ: ${input_type}."
+        }
         // Deformable transformations are defined on the source space
         args += " --insrcgeom $reference --in$input_type $transformation --out$output_type $output_name"
 
@@ -76,10 +78,6 @@ process REGISTRATION_CONVERT {
     """
 
     stub:
-    if ( input_type == output_type ) {
-        error "Input and output transformation types must differ: ${input_type}."
-    }
-
     def prefix = task.ext.prefix ?: "${meta.id}"
     def transform_types = [
         affine: [lta: "lta", fsl: "mat", mni: "xfm", reg: "dat", niftyreg: "txt", itk: "txt", vox: "txt"],
@@ -88,8 +86,17 @@ process REGISTRATION_CONVERT {
     // Validation transformation type and coercion with conversion type
     def in_extension = transformation.name.tokenize('.')[1..-1].join('.')
     def transform_type = transform_types.affine.find{ it.value == in_extension } ? "affine" : "warp"
+    if ( !transform_types[transform_type].containsKey(input_type) ) {
+        error "Invalid input type for ${transform_type} transformation: ${input_type}."
+    }
     if ( !transform_types[transform_type].containsKey(output_type) ) {
-        error "Invalid combination of transformation type and conversion type: ${transform_type} to ${output_type}."
+        error "Invalid output type for ${transform_type} transformation: ${output_type}."
+    }
+
+    if ( transform_type =="warp" ) {
+        if ( input_type == output_type ) {
+            error "Input and output transformation types must differ: ${input_type}."
+        }
     }
 
     def out_extension = transform_types[transform_type][output_type]
