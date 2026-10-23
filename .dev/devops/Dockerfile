@@ -56,7 +56,7 @@ RUN curl -fsSL https://get.nextflow.io | NXF_VER=${NEXTFLOW_VERSION} bash \
     && chmod u+x /usr/local/bin/nextflow
 
 RUN npm install -g --prefix /usr/local --save-exact prettier \
-    && npm install -g --prefix /usr/local editorconfig editorconfig-checker@2 \
+    && npm install -g --prefix /usr/local editorconfig editorconfig-checker@6 \
     && chgrp -R nodeusers /usr/local/lib/node_modules \
     && chmod -R g+w /usr/local/lib/node_modules
 
