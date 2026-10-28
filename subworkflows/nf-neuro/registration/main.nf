@@ -107,13 +107,15 @@ workflow REGISTRATION {
                 .combine(ch_moving_image, by: 0)
                 .map{ meta, tag, transform, fixed, moving ->
                     def extension = transform.name.tokenize('.')[1..-1].join(".")
+                    def is_forward = transform.name.contains("forward")
+                    def references = is_forward ? [moving, fixed] : [fixed, moving]
                     return [
                         meta + tag + [cache: meta],
                         transform,
-                        "ras",
+                        extension == "lta" ? "lta" : "ras",
                         "itk",
-                        extension == "lta" ? fixed : moving,
-                        [],
+                        extension == "lta" ? references[1] : references[0],
+                        extension == "lta" ? references[0] : references[1],
                     ]}
                 .combine(ch_freesurfer_license)
 
@@ -193,13 +195,15 @@ workflow REGISTRATION {
                 .combine(ch_moving_image, by: 0)
                 .map{ meta, tag, transform, fixed, moving ->
                     def extension = transform.name.tokenize('.')[1..-1].join(".")
+                    def is_forward = transform.name.contains("forward")
+                    def references = is_forward ? [moving, fixed] : [fixed, moving]
                     return [
                         meta + tag + [cache: meta],
                         transform,
                         extension == "lta" ? "lta" : "ras",
                         "itk",
-                        extension == "lta" ? fixed : moving,
-                        [],
+                        extension == "lta" ? references[1] : references[0],
+                        extension == "lta" ? references[0] : references[1],
                     ]}
                 .combine(ch_freesurfer_license)
 

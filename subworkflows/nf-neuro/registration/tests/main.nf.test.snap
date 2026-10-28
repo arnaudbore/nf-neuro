@@ -109,11 +109,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:08:16.63448286",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-10-07T23:33:03.640243378"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - ANTs - SyNQuick - internal - two masks": {
         "content": [
@@ -215,11 +215,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:09:02.381854008",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-10-07T23:33:35.401235906"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - ANTs - SyNQuick - apriori - two masks": {
         "content": [
@@ -341,15 +341,31 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:08:44.015334731",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-10-07T23:33:22.286417562"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - easyreg - none - no mask": {
         "content": [
             {
+                "backward_tractogram_transform": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_out_warp.nii.gz"
+                    ]
+                ],
+                "backward_warp": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_out_warp.nii.gz"
+                    ]
+                ],
                 "fixed_segmentation": [
                     [
                         {
@@ -366,12 +382,28 @@
                         "test_warped_reference.nii.gz"
                     ]
                 ],
+                "forward_tractogram_transform": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_out_warp.nii.gz"
+                    ]
+                ],
+                "forward_warp": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_out_warp.nii.gz"
+                    ]
+                ],
                 "image_warped": [
                     [
                         {
                             "id": "test"
                         },
-                        "test_t1_template_warped.nii.gz"
+                        "test_t1_with_skull_warped.nii.gz"
                     ]
                 ],
                 "segmentation": [
@@ -384,15 +416,16 @@
                 ],
                 "versions": [
                     "versions.yml:md5,3f38c911476c605480c02e484fcf6e9f",
+                    "versions.yml:md5,8a090f2936c874e1083111d21fe0a56d",
                     "versions.yml:md5,c932ccf0939130ae0cb46c2182810f45"
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:09:50.257025033",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-10-07T23:34:07.98951988"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - Synthmorph - apriori - two masks": {
         "content": [
@@ -491,11 +524,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:05:54.630617293",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-10-07T23:34:37.584711708"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - easyreg - apriori - two masks": {
         "content": [
@@ -589,11 +622,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:10:09.062785726",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-10-07T23:26:59.639558558"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - ANTs - Anat to DWI": {
         "content": [
@@ -706,11 +739,11 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:07:49.432215284",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-09-29T12:32:39.65456303"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     },
     "registration - ANTs - SyNQuick - both - two masks": {
         "content": [
@@ -832,10 +865,10 @@
                 ]
             }
         ],
+        "timestamp": "2026-10-28T20:09:29.504436094",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-10-07T23:33:54.210898862"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.2"
+        }
     }
 }

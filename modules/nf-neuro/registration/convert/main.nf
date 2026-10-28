@@ -23,13 +23,15 @@ process REGISTRATION_CONVERT {
         affine: [lta: "lta", fsl: "mat", mni: "xfm", reg: "dat", niftyreg: "txt", itk: "txt", vox: "txt"],
         warp: [m3z: "m3z", fsl: "nii.gz", lps: "nii.gz", itk: "nii.gz", ras: "nii.gz", vox: "mgz"]
     ]
-    def spaces = ["ras2ras", "vox2vox", "register_dat"]
 
     // Validation transformation type and coercion with conversion type
     def in_extension = transformation.name.tokenize('.')[1..-1].join('.')
     def transform_type = transform_types.affine.find{ it.value == in_extension } ? "affine" : "warp"
-    if ( transform_type == "warp" && !transform_types.warp.containsKey(output_type) ) {
-        error "Invalid combination of transformation type and conversion type: ${transform_type} to ${output_type}."
+    if ( !transform_types[transform_type].containsKey(input_type) ) {
+        error "Invalid input type for ${transform_type} transformation: ${input_type}."
+    }
+    if ( !transform_types[transform_type].containsKey(output_type) ) {
+        error "Invalid output type for ${transform_type} transformation: ${output_type}."
     }
 
     def out_extension = transform_types[transform_type][output_type]
@@ -40,22 +42,19 @@ process REGISTRATION_CONVERT {
         // Affine transformations are defined on the target space
         args += " --in$input_type $transformation --out$output_type $output_name --trg $reference"
 
-        // Validate source geometry is available for conversion to .lta
-        if ( output_type == "lta" ) {
-            if ( !affine_source ) error "Source geometry must be provided for conversion to .lta."
+        // Non-LTA inputs need source geometry, as does any conversion to LTA.
+        if ( input_type != "lta" || output_type == "lta" ) {
+            if ( !affine_source ) error "Source geometry (affine_source) must be provided to convert an affine from ${input_type} to ${output_type}."
+
             args += " --src $affine_source"
         }
 
-        if ( task.ext.invert ) args += " --invert"
         if ( task.ext.conform ) args += " --trgconform"
-        if ( task.ext.output_space ) {
-            if ( !spaces.contains(task.ext.output_space) ) {
-                error "Invalid output space: ${task.ext.output_space}. Valid options are: ${spaces.join(', ')}"
-            }
-            args += " --outspace " + task.ext.output_space
-        }
     }
     else {
+        if ( input_type == output_type ) {
+            error "Input and output warp transformation types must differ: ${input_type}."
+        }
         // Deformable transformations are defined on the source space
         args += " --insrcgeom $reference --in$input_type $transformation --out$output_type $output_name"
 
@@ -66,11 +65,9 @@ process REGISTRATION_CONVERT {
     export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=${task.ext.single_thread ? 1 : task.cpus}
     export OMP_NUM_THREADS=${task.ext.single_thread ? 1 : task.cpus}
 
-    cp $fs_license \$FREESURFER_HOME/license.txt
+    export FS_LICENSE=\$PWD/$fs_license
 
     $command $args
-
-    rm \$FREESURFER_HOME/license.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -87,8 +84,17 @@ process REGISTRATION_CONVERT {
     // Validation transformation type and coercion with conversion type
     def in_extension = transformation.name.tokenize('.')[1..-1].join('.')
     def transform_type = transform_types.affine.find{ it.value == in_extension } ? "affine" : "warp"
-    if ( transform_type == "warp" && !transform_types.warp.containsKey(output_type) ) {
-        error "Invalid combination of transformation type and conversion type: ${transform_type} to ${output_type}."
+    if ( !transform_types[transform_type].containsKey(input_type) ) {
+        error "Invalid input type for ${transform_type} transformation: ${input_type}."
+    }
+    if ( !transform_types[transform_type].containsKey(output_type) ) {
+        error "Invalid output type for ${transform_type} transformation: ${output_type}."
+    }
+
+    if ( transform_type =="warp" ) {
+        if ( input_type == output_type ) {
+            error "Input and output transformation types must differ: ${input_type}."
+        }
     }
 
     def out_extension = transform_types[transform_type][output_type]
