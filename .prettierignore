@@ -7,3 +7,4 @@ tests/.runs/
 venv/
 .venv/
 .vscode/
+**/devcontainer-lock.json

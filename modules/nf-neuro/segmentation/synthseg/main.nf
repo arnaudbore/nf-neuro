@@ -40,7 +40,7 @@ process SEGMENTATION_SYNTHSEG {
     """
     export OMP_NUM_THREADS=${task.ext.single_thread ? 1 : task.cpus}
 
-    cp $fs_license \$FREESURFER_HOME/license.txt
+    export FS_LICENSE=\$PWD/$fs_license
 
     mri_synthseg --i $image --o seg.nii.gz --threads $nthreads --post posteriors.nii.gz $gpu $robust $fast $ct $output_resample $output_volume $output_qc_score $crop
 
@@ -127,8 +127,6 @@ process SEGMENTATION_SYNTHSEG {
     mri_convert -i ${prefix}__mask_wm.nii.gz --out_data_type uchar -o ${prefix}__mask_wm.nii.gz
     mri_convert -i ${prefix}__mask_gm.nii.gz --out_data_type uchar -o ${prefix}__mask_gm.nii.gz
     mri_convert -i ${prefix}__mask_csf.nii.gz --out_data_type uchar -o ${prefix}__mask_csf.nii.gz
-
-    rm \$FREESURFER_HOME/license.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
