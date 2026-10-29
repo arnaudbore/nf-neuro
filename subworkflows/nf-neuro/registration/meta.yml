@@ -1,7 +1,7 @@
 name: "registration"
 description: |
   Subworkflow to perform registration between a moving and a fixed image (e.g. T1 -> DWI).
-  It requires as input at least a moving (ch_image) and a reference (ch_ref) image to properly
+  It requires as input at least a moving (ch_moving_image) and a fixed (ch_fixed_image) image to properly
   perform registration.
 
   Output transformations curated for images for use with the REGISTRATION_ANTSAPPLYTRANSFORMS module
@@ -145,7 +145,7 @@ input:
             - apriori
             - internal
             - both
-          description:
+          description: |
             Masking strategy to use for registration. Options are:
               none: do not use any masks.
               apriori: multiply the inputs by the masks before registration, then warp the unmasked images again. The masked results go to *_warped_masked.
@@ -186,7 +186,7 @@ output:
   - image_warped_masked:
       type: file
       description: |
-        Channel containing images warped in fixed space.
+        Channel containing moving images warped to fixed space.
       structure:
         - meta:
             type: map
@@ -313,24 +313,10 @@ output:
             type: file
             description: List of transformation files for tractograms.
       pattern: "*__forward*.{nii,nii.gz,mat,lta}"
-  - segmentation:
-      type: file
-      description: |
-        ONLY PROVIDED BY REGISTRATION_SYNTHMORPH. Channel containing the SynthSeg v2 (non-robust)
-        segmentation + parcellation in moving space (floating in Easyreg naming convention).
-      structure:
-        - meta:
-            type: map
-            description: Metadata map.
-        - segmentation:
-            type: file
-            description: Segmentation image file in moving space.
-      pattern: "*.{nii,nii.gz}"
-      mandatory: false
   - fixed_segmentation:
       type: file
       description: |
-        ONLY PROVIDED BY REGISTRATION_SYNTHMORPH. Channel containing the SynthSeg v2 (non-robust)
+        ONLY PROVIDED BY REGISTRATION_EASYREG. Channel containing the SynthSeg v2 (non-robust)
         segmentation + parcellation in fixed space (reference in Easyreg naming convention).
       structure:
         - meta:
@@ -338,7 +324,21 @@ output:
             description: Metadata map.
         - fixed_segmentation:
             type: file
-            description: Fixed segmentation image file in fixed space.
+            description: Segmentation image file in fixed space.
+      pattern: "*.{nii,nii.gz}"
+      mandatory: false
+  - moving_segmentation:
+      type: file
+      description: |
+        ONLY PROVIDED BY REGISTRATION_EASYREG. Channel containing the SynthSeg v2 (non-robust)
+        segmentation + parcellation in fixed space (floating in Easyreg naming convention).
+      structure:
+        - meta:
+            type: map
+            description: Metadata map.
+        - moving_segmentation:
+            type: file
+            description: Segmentation image file in the moving space.
       pattern: "*.{nii,nii.gz}"
       mandatory: false
   - mqc:

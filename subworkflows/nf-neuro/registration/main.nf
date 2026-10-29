@@ -41,6 +41,14 @@ workflow REGISTRATION {
         UTILS_OPTIONS("${moduleDir}/meta.yml", options, true)
         options = UTILS_OPTIONS.out.options.value
 
+        if ( options.method !in ["ants", "easyreg", "synthmorph"] ) {
+            error "Unsupported registration method '${options.method}'."
+        }
+
+        if ( options.masking_strategy !in ["none", "apriori", "internal", "both"] ) {
+            error "Unsupported masking strategy '${options.masking_strategy}'."
+        }
+
         if ( ( options.masking_strategy == "both" || options.masking_strategy == "internal" ) && ( options.method == "easyreg" || options.method == "synthmorph" ) ) {
             error "The ${options.masking_strategy} masking strategy is not compatible with the easyreg or synthmorph registration methods."
         }
@@ -66,13 +74,7 @@ workflow REGISTRATION {
             ch_versions = ch_versions.mix(MASK_MOVING_IMAGE.out.versions.first())
         }
 
-        if ( options.method !in ["ants", "easyreg", "synthmorph"] ) {
-            error "Unsupported registration method '${options.method}'."
-        }
 
-        if ( options.masking_strategy !in ["none", "apriori", "internal", "both"] ) {
-            error "Unsupported masking strategy '${options.masking_strategy}'."
-        }
 
         if ( options.method == "easyreg" ) {
             // ** Registration using Easyreg ** //
@@ -107,13 +109,15 @@ workflow REGISTRATION {
                 .combine(ch_moving_image, by: 0)
                 .map{ meta, tag, transform, fixed, moving ->
                     def extension = transform.name.tokenize('.')[1..-1].join(".")
+                    def is_forward = transform.name.contains("forward")
+                    def references = is_forward ? [moving, fixed] : [fixed, moving]
                     return [
                         meta + tag + [cache: meta],
                         transform,
-                        "ras",
+                        extension == "lta" ? "lta" : "ras",
                         "itk",
-                        extension == "lta" ? fixed : moving,
-                        [],
+                        extension == "lta" ? references[1] : references[0],
+                        extension == "lta" ? references[0] : references[1],
                     ]}
                 .combine(ch_freesurfer_license)
 
@@ -140,12 +144,12 @@ workflow REGISTRATION {
             out_forward_warp = ch_conversion_easyreg_outputs.forward_warp
             out_backward_affine = channel.empty()
             out_backward_warp = ch_conversion_easyreg_outputs.backward_warp
-            out_forward_image_transform = ch_conversion_easyreg_outputs.forward_image_transform
-                .groupTuple()
-                .map{ meta, trans -> [meta, trans.sort{ t1, t2 -> t1.idx <=> t2.idx }.collect{ it.trans }] }
-            out_backward_image_transform = ch_conversion_easyreg_outputs.backward_image_transform
-                .groupTuple()
-                .map{ meta, trans -> [meta, trans.sort{ t1, t2 -> t1.idx <=> t2.idx }.collect{ it.trans }] }
+            out_forward_image_transform =
+                ch_conversion_easyreg_outputs.forward_warp
+                .map { meta, transform -> [meta, [transform]] }
+            out_backward_image_transform =
+                ch_conversion_easyreg_outputs.backward_warp
+                .map { meta, transform -> [meta, [transform]] }
             out_forward_tractogram_transform = ch_conversion_easyreg_outputs.backward_warp
             out_backward_tractogram_transform = ch_conversion_easyreg_outputs.forward_warp
 
@@ -193,13 +197,15 @@ workflow REGISTRATION {
                 .combine(ch_moving_image, by: 0)
                 .map{ meta, tag, transform, fixed, moving ->
                     def extension = transform.name.tokenize('.')[1..-1].join(".")
+                    def is_forward = transform.name.contains("forward")
+                    def references = is_forward ? [moving, fixed] : [fixed, moving]
                     return [
                         meta + tag + [cache: meta],
                         transform,
                         extension == "lta" ? "lta" : "ras",
                         "itk",
-                        extension == "lta" ? fixed : moving,
-                        [],
+                        extension == "lta" ? references[1] : references[0],
+                        extension == "lta" ? references[0] : references[1],
                     ]}
                 .combine(ch_freesurfer_license)
 

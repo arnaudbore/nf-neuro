@@ -32,7 +32,7 @@ nextflow_workflow {
             script "../../load_test_data/main.nf"
             process {
                 """
-                input[0] = channel.from( [ "freesurfer.zip", "WB-common.zip", "b0.zip", "dti.zip", "mni_152_sym_09c.zip" ] )
+                input[0] = channel.from( [ "freesurfer.zip", "WB-common.zip", "b0.zip", "dti.zip", "mni_152_sym_09c.zip", "WB-registration.zip" ] )
                 input[1] = "test.load-test-data"
                 """
             }
@@ -374,17 +374,18 @@ nextflow_workflow {
                     .branch{
                         fixed: it.simpleName == "mni_152_sym_09c"
                         moving: it.simpleName == "WB-common"
+                        freesurfer: it.simpleName == "freesurfer"
                     }
                 input[0] = ch_split_test_data.fixed.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/t1_with_skull.nii.gz")
+                        file("\${test_data_directory}/t1/t1_template.nii.gz")
                     ]
                 }
                 input[1] = ch_split_test_data.moving.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/t1/t1_template.nii.gz")
+                        file("\${test_data_directory}/t1_with_skull.nii.gz")
                     ]
                 }
                 input[2] = channel.empty()
@@ -392,7 +393,9 @@ nextflow_workflow {
                 input[4] = channel.empty()
                 input[5] = channel.empty()
                 input[6] = channel.empty()
-                input[7] = channel.empty()
+                input[7] = ch_split_test_data.freesurfer.map{
+                    test_data_directory -> file("\${test_data_directory}/license.txt")
+                }
                 input[8] = [ "masking_strategy": "none",
                             "method": "easyreg" ]
                 """
@@ -452,13 +455,13 @@ nextflow_workflow {
                 input[5] = ch_split_test_data.registration.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/source-template_modality_t1_algo-synthseg_segmentation.nii.gz")
+                        file("\${test_data_directory}/mni_152_sym_09c/source-template_modality-t1_algo-synthseg_segmentation.nii.gz")
                     ]
                 }
                 input[6] = ch_split_test_data.registration.map{
                     test_data_directory -> [
                         [ id:'test' ],
-                        file("\${test_data_directory}/source-WB_modality_t1_mask-skull_segmentation.nii.gz")
+                        file("\${test_data_directory}/mni_152_sym_09c/source-WB_modality-t1_mask-skull_segmentation.nii.gz")
                     ]
                 }
                 input[7] = ch_split_test_data.freesurfer.map{
